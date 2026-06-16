@@ -48,7 +48,7 @@ jobs:
           publish_dir: ./site
           # Phase 2 cutover: uncomment once the docs.manhattanreasoning.com DNS
           # CNAME record exists, then the next deploy attaches the custom domain.
-          # cname: docs.manhattanreasoning.com
+          cname: docs.manhattanreasoning.com
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           commit_message: "deploy: ${{ github.sha }}"
