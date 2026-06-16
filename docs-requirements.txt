@@ -1,0 +1,5 @@
+# Documentation build dependencies (MkDocs Material + mkdocstrings).
+# Used locally (`pip install -r docs-requirements.txt`) and by the
+# docs deploy GitHub Action. Pinned for reproducible builds.
+mkdocs-material==9.5.39
+mkdocstrings[python]==0.26.1

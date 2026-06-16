@@ -1,0 +1,99 @@
+site_name: Manhattan Reasoning Docs
+site_description: >-
+  Cloud FPGA infrastructure for hardware-reasoning agents — guides, concepts,
+  and API reference for the Cloud FPGA Orchestrator.
+site_url: https://docs.manhattanreasoning.com/
+copyright: © Manhattan Reasoning
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  logo: assets/turnstile.svg
+  favicon: assets/turnstile.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          # Static analysis of the source — no need to install the package
+          # or its runtime deps (fastapi, redis, ...) in the docs build.
+          # The private Cloud_FPGA repo is checked out into _code/ (CI) or
+          # cloned there locally via scripts/fetch-code.sh.
+          paths: [_code/orchestrator/src]
+          options:
+            docstring_style: google
+            show_root_heading: true
+            show_source: true
+            show_signature_annotations: true
+            separate_signature: true
+            members_order: source
+            filters: ["!^_"]
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Quickstart: guides/quickstart.md
+  - Concepts:
+      - Architecture: concepts/architecture.md
+  - API Reference:
+      - REST API: api/rest.md
+      - Python package: reference/orchestrator.md

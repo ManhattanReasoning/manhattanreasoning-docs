@@ -1,0 +1,10 @@
+# MkDocs build output
+site/
+
+# Private code checkout for mkdocstrings (CI: _code/; local: scripts/fetch-code.sh)
+_code/
+
+# Python
+.venv/
+__pycache__/
+*.pyc

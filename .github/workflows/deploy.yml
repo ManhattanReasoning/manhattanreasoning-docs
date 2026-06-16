@@ -1,0 +1,54 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Allow the private code repo to trigger a rebuild when the API changes:
+  #   gh api repos/Barnard-PL-Labs/manhattanreasoning-docs/dispatches \
+  #     -f event_type=code-updated
+  repository_dispatch:
+    types: [code-updated]
+
+permissions:
+  contents: write   # required to push the built site to gh-pages
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+
+      # mkdocstrings reads the Python API reference from the private code repo.
+      # CODE_DEPLOY_KEY is a read-only deploy key registered on Cloud_FPGA.
+      - name: Checkout private code (orchestrator source)
+        uses: actions/checkout@v4
+        with:
+          repository: Barnard-PL-Labs/Cloud_FPGA
+          path: _code
+          ssh-key: ${{ secrets.CODE_DEPLOY_KEY }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: pip install -r docs-requirements.txt
+
+      - name: Build site
+        run: mkdocs build --strict
+
+      - name: Deploy to gh-pages
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./site
+          # Phase 2 cutover: uncomment once the docs.manhattanreasoning.com DNS
+          # CNAME record exists, then the next deploy attaches the custom domain.
+          # cname: docs.manhattanreasoning.com
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "deploy: ${{ github.sha }}"
