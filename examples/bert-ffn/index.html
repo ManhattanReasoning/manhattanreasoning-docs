@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://docs.manhattanreasoning.com/concepts/architecture/">
+        <link rel="canonical" href="https://docs.manhattanreasoning.com/examples/bert-ffn/">
       
       
-        <link rel="prev" href="../../examples/hello-wishbone/">
+        <link rel="prev" href="../sat-solver/">
       
       
-        <link rel="next" href="../../api/rest/">
+        <link rel="next" href="../hello-wishbone/">
       
       
       <link rel="icon" href="../../assets/turnstile.svg">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Architecture - Manhattan Reasoning Docs</title>
+        <title>BERT feed-forward - Manhattan Reasoning Docs</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#bert-feed-forward" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture
+              BERT feed-forward
             
           </span>
         </div>
@@ -404,8 +404,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -415,11 +417,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -433,7 +435,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -447,7 +449,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -468,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/sat-solver/" class="md-nav__link">
+      <a href="../sat-solver/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -486,10 +488,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/bert-ffn/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    BERT feed-forward
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -498,6 +520,62 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-ffn-reaches-the-fpga" class="md-nav__link">
+    <span class="md-ellipsis">
+      How the FFN reaches the FPGA
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run it
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verification
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contents
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -510,7 +588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hello-wishbone/" class="md-nav__link">
+      <a href="../hello-wishbone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -535,8 +613,6 @@
       
   
   
-    
-  
   
   
     
@@ -548,11 +624,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -566,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Concepts
@@ -577,30 +653,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Architecture
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -609,62 +665,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fpga-state-machine" class="md-nav__link">
-    <span class="md-ellipsis">
-      FPGA state machine
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sessions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sessions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jobs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      Putting it together
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -793,36 +793,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fpga-state-machine" class="md-nav__link">
+  <a href="#how-the-ffn-reaches-the-fpga" class="md-nav__link">
     <span class="md-ellipsis">
-      FPGA state machine
+      How the FFN reaches the FPGA
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sessions" class="md-nav__link">
+  <a href="#run-it" class="md-nav__link">
     <span class="md-ellipsis">
-      Sessions
+      Run it
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#jobs" class="md-nav__link">
+  <a href="#verification" class="md-nav__link">
     <span class="md-ellipsis">
-      Jobs
+      Verification
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#contents" class="md-nav__link">
     <span class="md-ellipsis">
-      Putting it together
+      Contents
     </span>
   </a>
   
@@ -843,124 +843,61 @@
                   
 
 
-<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
-<p>The orchestrator manages a fixed pool of <strong>10 FPGA nodes</strong> (<code>fpga_id</code> <code>0</code>–<code>9</code>).
-Every interaction flows through three core concepts: the <strong>FPGA state machine</strong>,
-<strong>sessions</strong>, and <strong>jobs</strong>.</p>
-<h2 id="fpga-state-machine">FPGA state machine<a class="headerlink" href="#fpga-state-machine" title="Permanent link">&para;</a></h2>
-<p>Each FPGA is always in exactly one state. Operations are only valid from
-certain states, which keeps two users from clobbering the same board.</p>
-<pre class="mermaid"><code>stateDiagram-v2
-    [*] --&gt; idle
-    idle --&gt; queued: submit
-    queued --&gt; building: worker picks up
-    queued --&gt; idle: cancel
-    building --&gt; programming: build ok
-    building --&gt; idle: build failed
-    programming --&gt; reserved: programmed
-    programming --&gt; error: program failed
-    reserved --&gt; reserved: run
-    reserved --&gt; idle: reset / release
-    reserved --&gt; error
-    error --&gt; idle: reset</code></pre>
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>idle</code></td>
-<td>Free. Accepts a new <code>submit</code>.</td>
-</tr>
-<tr>
-<td><code>queued</code></td>
-<td>A build-and-program job is waiting for a worker.</td>
-</tr>
-<tr>
-<td><code>building</code></td>
-<td>The design is compiling in the build sandbox.</td>
-</tr>
-<tr>
-<td><code>programming</code></td>
-<td>The bitstream is being flashed onto the board.</td>
-</tr>
-<tr>
-<td><code>reserved</code></td>
-<td>Programmed and held for the submitter. Accepts <code>run</code> transactions.</td>
-</tr>
-<tr>
-<td><code>error</code></td>
-<td>A program/run step failed. Must be <code>reset</code> back to <code>idle</code>.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Permanent link">&para;</a></h2>
-<p>When a design is successfully programmed, the FPGA becomes <code>reserved</code> and a
-<strong>session</strong> is created for the submitter. The session ties a board to its owner
-and carries a TTL (<code>expires_at</code>). While reserved, only the session holder may
-run transactions or reset the board.</p>
-<p>Releasing a session (<code>POST /fpga/{id}/session/release</code>) enqueues a reset job
-that returns the FPGA to <code>idle</code> once it completes.</p>
-<div class="admonition warning">
-<p class="admonition-title">Reset is unreliable in the prototype</p>
-<p>The reset job reflashes the base LiteX SoC, which currently fails and can
-leave the board in <code>error</code> instead of <code>idle</code>. See
-<a href="../../guides/troubleshooting/#fpga-stuck-in-error">Troubleshooting</a> for the
-recovery procedure.</p>
-</div>
-<h2 id="jobs">Jobs<a class="headerlink" href="#jobs" title="Permanent link">&para;</a></h2>
-<p>All work is asynchronous. An endpoint that changes hardware state returns
-<strong><code>202 Accepted</code></strong> with a <code>job_id</code>; you poll the job to follow its progress.</p>
-<p>There are three job <strong>types</strong>:</p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Triggered by</th>
-<th>Does</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>build_and_program</code></td>
-<td><code>POST /fpga/{id}/submit</code></td>
-<td>Compiles the HDL and flashes the bitstream.</td>
-</tr>
-<tr>
-<td><code>run</code></td>
-<td><code>POST /fpga/{id}/run</code></td>
-<td>Executes a Wishbone read/write transaction.</td>
-</tr>
-<tr>
-<td><code>reset</code></td>
-<td><code>reset</code> / <code>session/release</code></td>
-<td>Reflashes the base LiteX SoC, returns to idle.</td>
-</tr>
-</tbody>
-</table>
-<p>And five job <strong>statuses</strong>: <code>queued</code> → <code>running</code> → <code>complete</code>, or <code>failed</code>, or
-<code>cancelled</code> (only a <code>queued</code> job can be cancelled).</p>
-<p>Poll a job with <a href="../../api/rest/#jobs"><code>GET /fpga/{id}/jobs/{job_id}</code></a>; fetch its
-build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <code>/result</code>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>sequenceDiagram
-    participant C as Client
-    participant O as Orchestrator
-    participant W as Worker / FPGA
-    C-&gt;&gt;O: POST /fpga/3/submit (design.py)
-    O--&gt;&gt;C: 202 { job_id, status: queued }
-    O-&gt;&gt;W: build_and_program
-    W--&gt;&gt;O: programmed → reserved
-    C-&gt;&gt;O: GET /fpga/3/jobs/{job_id} (poll)
-    O--&gt;&gt;C: { status: complete }
-    C-&gt;&gt;O: POST /fpga/3/run { op, address, data }
-    O--&gt;&gt;C: 202 { job_id }
-    C-&gt;&gt;O: GET /fpga/3/jobs/{job_id}/result
-    O--&gt;&gt;C: { ok: true, data: [...] }
-    C-&gt;&gt;O: POST /fpga/3/session/release</code></pre>
+<h1 id="bert-feed-forward">BERT feed-forward<a class="headerlink" href="#bert-feed-forward" title="Permanent link">&para;</a></h1>
+<p>An <strong>architecturally faithful BERT encoder block</strong> whose <strong>feed-forward network
+runs on the FPGA</strong>. The pipeline is a real transformer:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>text → WordPiece tokenizer → embeddings → multi-head self-attention
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     → FEED-FORWARD (on the FPGA) → residual + LayerNorm → block output
+</code></pre></div>
+<p>The feed-forward network is the classic BERT FFN — <code>GELU(x·W₁ + b₁)·W₂ + b₂</code> with
+the 4× hidden expansion — and <strong>its two matrix multiplications execute on the
+FPGA</strong> using an int8 4×4 matmul core. Everything else (attention, GELU,
+LayerNorm, softmax) runs in float NumPy on the host.</p>
+<p>Source: <code>examples/bert_ffn/</code> in the
+<a href="https://github.com/Barnard-PL-Labs/Cloud_FPGA"><code>Cloud_FPGA</code></a> repo.</p>
+<h2 id="how-the-ffn-reaches-the-fpga">How the FFN reaches the FPGA<a class="headerlink" href="#how-the-ffn-reaches-the-fpga" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Quantize</strong> activations <code>x</code> and weights <code>W</code> to per-tensor int8 (symmetric).</li>
+<li><strong>Tile</strong> the int matmul <code>[M,K]·[K,N]</code> into 4×4 blocks, accumulating partial
+   products across K host-side in int64. All-zero tiles are skipped.</li>
+<li><strong>Run each block on the FPGA</strong>: burst-write the two operands, pulse <code>start</code>,
+   poll <code>done</code>, burst-read the 4×4 result.</li>
+<li><strong>Dequantize</strong> with the product of the two scales.</li>
+</ol>
+<p>Every 4×4 block is a network round trip, so the demo dimensions are kept tiny
+(<code>d_model=8</code>, <code>d_ff=32</code>, <code>seq≤4</code>) — about 32 tiles / ~60 s. The tiling engine
+handles arbitrary sizes; the dimensions are bounded by patience, not correctness.</p>
+<h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># hardware-free smoke test (NumPy backend, real tokenizer)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python<span class="w"> </span>examples/bert_ffn/client_sdk.py<span class="w"> </span>--sim<span class="w"> </span>--text<span class="w"> </span><span class="s2">&quot;fpga runs bert&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># on hardware (needs: pip install numpy transformers, and CLOUD_FPGA_API_KEY set)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/bert_ffn/client_sdk.py
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  input    : &#39;fpga runs bert&#39;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  tokens   : [&#39;[CLS]&#39;, &#39;f&#39;, &#39;##pg&#39;, &#39;##a&#39;]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  config   : d_model=8  d_ff=32  heads=2  seq=4
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  feed-forward backend: FPGA bert_ffn (fpga0)
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  done: 32 tiles run, 0 skipped (zero), 63.8s
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  ...
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  FPGA vs host-int matmul : max abs diff = 0.000e+00 (EXACT MATCH)
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  int8 FFN vs exact float : relative L2 error = 0.838%
+</code></pre></div>
+<h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">&para;</a></h2>
+<p>The run cross-checks the hardware three ways: the FPGA result must be
+<strong>bit-exact</strong> against the same int matmul done on the host (proving the hardware
+is correct), and the int8 FFN is compared against an exact-float forward to report
+the quantization error (typically &lt;1%).</p>
+<h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>client_sdk.py</code> — the SDK app + <code>@local_entrypoint</code>. Reuses the <code>matrix_mult</code>
+  design unchanged as the FPGA design.</li>
+<li><code>model.py</code> — the BERT block in NumPy (embeddings, attention, FFN, LayerNorm)
+  and int8 quantization helpers.</li>
+<li><code>fpga_matmul.py</code> — the 4×4 tiling engine; FPGA and NumPy tile backends.</li>
+<li><code>tests/unit/</code> — pure-Python checks of tiling, quantization, and the register map.</li>
+</ul>
+<p>See <code>examples/bert_ffn/README.md</code> for full details.</p>
 
 
 
@@ -996,7 +933,7 @@ build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <cod
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../examples/hello-wishbone/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hello Wishbone">
+          <a href="../sat-solver/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SAT solver">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1006,20 +943,20 @@ build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <cod
                 Previous
               </span>
               <div class="md-ellipsis">
-                Hello Wishbone
+                SAT solver
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../api/rest/" class="md-footer__link md-footer__link--next" aria-label="Next: REST API">
+          <a href="../hello-wishbone/" class="md-footer__link md-footer__link--next" aria-label="Next: Hello Wishbone">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                REST API
+                Hello Wishbone
               </div>
             </div>
             <div class="md-footer__button md-icon">

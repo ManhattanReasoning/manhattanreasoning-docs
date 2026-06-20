@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://docs.manhattanreasoning.com/concepts/architecture/">
+        <link rel="canonical" href="https://docs.manhattanreasoning.com/examples/sat-solver/">
       
       
-        <link rel="prev" href="../../examples/hello-wishbone/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../api/rest/">
+        <link rel="next" href="../bert-ffn/">
       
       
       <link rel="icon" href="../../assets/turnstile.svg">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Architecture - Manhattan Reasoning Docs</title>
+        <title>SAT solver - Manhattan Reasoning Docs</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#sat-solver" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture
+              SAT solver
             
           </span>
         </div>
@@ -404,8 +404,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -415,11 +417,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -433,7 +435,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -447,7 +449,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -465,10 +467,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/sat-solver/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    SAT solver
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -477,6 +499,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run it
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solve-your-own-formula" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solve your own formula
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#going-bigger-a-30-variable-variant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Going bigger: a 30-variable variant
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#without-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      Without hardware
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -489,7 +585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/bert-ffn/" class="md-nav__link">
+      <a href="../bert-ffn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -510,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hello-wishbone/" class="md-nav__link">
+      <a href="../hello-wishbone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -535,8 +631,6 @@
       
   
   
-    
-  
   
   
     
@@ -548,11 +642,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -566,7 +660,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Concepts
@@ -577,30 +671,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Architecture
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -609,62 +683,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fpga-state-machine" class="md-nav__link">
-    <span class="md-ellipsis">
-      FPGA state machine
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sessions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sessions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jobs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      Putting it together
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -793,36 +811,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fpga-state-machine" class="md-nav__link">
+  <a href="#run-it" class="md-nav__link">
     <span class="md-ellipsis">
-      FPGA state machine
+      Run it
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sessions" class="md-nav__link">
+  <a href="#solve-your-own-formula" class="md-nav__link">
     <span class="md-ellipsis">
-      Sessions
+      Solve your own formula
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#jobs" class="md-nav__link">
+  <a href="#limits" class="md-nav__link">
     <span class="md-ellipsis">
-      Jobs
+      Limits
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#register-map" class="md-nav__link">
     <span class="md-ellipsis">
-      Putting it together
+      Register map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#going-bigger-a-30-variable-variant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Going bigger: a 30-variable variant
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#without-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      Without hardware
     </span>
   </a>
   
@@ -843,124 +879,148 @@
                   
 
 
-<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
-<p>The orchestrator manages a fixed pool of <strong>10 FPGA nodes</strong> (<code>fpga_id</code> <code>0</code>–<code>9</code>).
-Every interaction flows through three core concepts: the <strong>FPGA state machine</strong>,
-<strong>sessions</strong>, and <strong>jobs</strong>.</p>
-<h2 id="fpga-state-machine">FPGA state machine<a class="headerlink" href="#fpga-state-machine" title="Permanent link">&para;</a></h2>
-<p>Each FPGA is always in exactly one state. Operations are only valid from
-certain states, which keeps two users from clobbering the same board.</p>
-<pre class="mermaid"><code>stateDiagram-v2
-    [*] --&gt; idle
-    idle --&gt; queued: submit
-    queued --&gt; building: worker picks up
-    queued --&gt; idle: cancel
-    building --&gt; programming: build ok
-    building --&gt; idle: build failed
-    programming --&gt; reserved: programmed
-    programming --&gt; error: program failed
-    reserved --&gt; reserved: run
-    reserved --&gt; idle: reset / release
-    reserved --&gt; error
-    error --&gt; idle: reset</code></pre>
+<h1 id="sat-solver">SAT solver<a class="headerlink" href="#sat-solver" title="Permanent link">&para;</a></h1>
+<p>The flagship workload: a <strong>brute-force boolean satisfiability solver</strong> in
+hardware. Every clock cycle it evaluates all clauses combinationally in parallel
+against the current candidate assignment, while a binary counter sweeps the
+assignment space. Worst case is <code>2^n_vars</code> cycles — ≈20 µs for 10 variables at
+50 MHz.</p>
+<p>It's deliberately the naive baseline: a fast, verifiable reward signal that an
+agent is meant to <em>improve on</em> (toward DPLL/CDCL-style reasoning).</p>
+<p>Source: <code>examples/sat_solver/</code> in the
+<a href="https://github.com/Barnard-PL-Labs/Cloud_FPGA"><code>Cloud_FPGA</code></a> repo.</p>
+<h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/client_sdk.py
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[cloud-fpga] programming &#39;sat_solver&#39; onto FPGA 0 ...
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>[cloud-fpga] done.
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>solving ...
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>SAT  (8 cycles)  model={&#39;x1&#39;: True, &#39;x2&#39;: True, &#39;x3&#39;: True}
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>solving (x1) ∧ (¬x1) ...
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>UNSAT  (3 cycles)
+</code></pre></div>
+<p><code>client_sdk.py</code> solves a built-in SAT formula and a built-in UNSAT formula.</p>
+<h2 id="solve-your-own-formula">Solve your own formula<a class="headerlink" href="#solve-your-own-formula" title="Permanent link">&para;</a></h2>
+<p>A generalized runner (<code>solve.py</code>) accepts a
+<a href="https://www.cs.utexas.edu/~marijn/sat/">DIMACS</a> formula — variables are 1-based,
+a negative number means negated, <code>0</code> ends a clause:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># inline DIMACS</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nv">SAT_FORMULA</span><span class="o">=</span><span class="s2">&quot;1 2 3 0 -1 2 0 -2 3 0 1 -3 0&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/solve.py
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># from a .cnf file</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nv">SAT_CNF</span><span class="o">=</span>myproblem.cnf<span class="w"> </span>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/solve.py
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># pick a different board</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nv">FPGA_ID</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">SAT_CNF</span><span class="o">=</span>myproblem.cnf<span class="w"> </span>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/solve.py
+</code></pre></div>
+<h2 id="limits">Limits<a class="headerlink" href="#limits" title="Permanent link">&para;</a></h2>
+<p>The default design is sized at synthesis time:</p>
 <table>
 <thead>
 <tr>
-<th>State</th>
-<th>Meaning</th>
+<th>Parameter</th>
+<th>Max</th>
+<th>Constant</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>idle</code></td>
-<td>Free. Accepts a new <code>submit</code>.</td>
+<td>Variables</td>
+<td>10</td>
+<td><code>MAX_VARS</code></td>
 </tr>
 <tr>
-<td><code>queued</code></td>
-<td>A build-and-program job is waiting for a worker.</td>
+<td>Clauses</td>
+<td>20</td>
+<td><code>MAX_CLAUSES</code></td>
 </tr>
 <tr>
-<td><code>building</code></td>
-<td>The design is compiling in the build sandbox.</td>
-</tr>
-<tr>
-<td><code>programming</code></td>
-<td>The bitstream is being flashed onto the board.</td>
-</tr>
-<tr>
-<td><code>reserved</code></td>
-<td>Programmed and held for the submitter. Accepts <code>run</code> transactions.</td>
-</tr>
-<tr>
-<td><code>error</code></td>
-<td>A program/run step failed. Must be <code>reset</code> back to <code>idle</code>.</td>
+<td>Literals per clause</td>
+<td>10</td>
+<td><code>CLAUSE_LEN</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Permanent link">&para;</a></h2>
-<p>When a design is successfully programmed, the FPGA becomes <code>reserved</code> and a
-<strong>session</strong> is created for the submitter. The session ties a board to its owner
-and carries a TTL (<code>expires_at</code>). While reserved, only the session holder may
-run transactions or reset the board.</p>
-<p>Releasing a session (<code>POST /fpga/{id}/session/release</code>) enqueues a reset job
-that returns the FPGA to <code>idle</code> once it completes.</p>
-<div class="admonition warning">
-<p class="admonition-title">Reset is unreliable in the prototype</p>
-<p>The reset job reflashes the base LiteX SoC, which currently fails and can
-leave the board in <code>error</code> instead of <code>idle</code>. See
-<a href="../../guides/troubleshooting/#fpga-stuck-in-error">Troubleshooting</a> for the
-recovery procedure.</p>
-</div>
-<h2 id="jobs">Jobs<a class="headerlink" href="#jobs" title="Permanent link">&para;</a></h2>
-<p>All work is asynchronous. An endpoint that changes hardware state returns
-<strong><code>202 Accepted</code></strong> with a <code>job_id</code>; you poll the job to follow its progress.</p>
-<p>There are three job <strong>types</strong>:</p>
+<p>The variable index is packed into a 4-bit field, so <strong>16 variables</strong> is the
+ceiling without changing the literal encoding. Beyond that, brute force itself is
+the wall: the search is <code>2^n</code>, so it gets impractical around 25–30 variables.</p>
+<h2 id="register-map">Register map<a class="headerlink" href="#register-map" title="Permanent link">&para;</a></h2>
+<p>32-bit registers; byte offset = 4 × word offset, relative to the design's
+Wishbone region.</p>
 <table>
 <thead>
 <tr>
-<th>Type</th>
-<th>Triggered by</th>
-<th>Does</th>
+<th>Word</th>
+<th>Byte</th>
+<th>Access</th>
+<th>Contents</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>build_and_program</code></td>
-<td><code>POST /fpga/{id}/submit</code></td>
-<td>Compiles the HDL and flashes the bitstream.</td>
+<td>0</td>
+<td><code>0x000</code></td>
+<td>W</td>
+<td>bit 0 = start (auto-clears)</td>
 </tr>
 <tr>
-<td><code>run</code></td>
-<td><code>POST /fpga/{id}/run</code></td>
-<td>Executes a Wishbone read/write transaction.</td>
+<td>0</td>
+<td><code>0x000</code></td>
+<td>R</td>
+<td>bit 0 = done, bit 1 = sat</td>
 </tr>
 <tr>
-<td><code>reset</code></td>
-<td><code>reset</code> / <code>session/release</code></td>
-<td>Reflashes the base LiteX SoC, returns to idle.</td>
+<td>1</td>
+<td><code>0x004</code></td>
+<td>W</td>
+<td><code>n_vars</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>0x008</code></td>
+<td>W</td>
+<td><code>n_clauses</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>0x00C</code></td>
+<td>R</td>
+<td>model — bit <em>i</em> = value of variable <em>i+1</em> (valid when sat)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>0x010</code></td>
+<td>R</td>
+<td>cycles taken (diagnostic)</td>
+</tr>
+<tr>
+<td>8 + c·10 + l</td>
+<td><code>0x020 + …</code></td>
+<td>W</td>
+<td>literal for clause <em>c</em>, slot <em>l</em>: bits[3:0]=variable (0-based), bit 4=negated, bit 5=used</td>
 </tr>
 </tbody>
 </table>
-<p>And five job <strong>statuses</strong>: <code>queued</code> → <code>running</code> → <code>complete</code>, or <code>failed</code>, or
-<code>cancelled</code> (only a <code>queued</code> job can be cancelled).</p>
-<p>Poll a job with <a href="../../api/rest/#jobs"><code>GET /fpga/{id}/jobs/{job_id}</code></a>; fetch its
-build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <code>/result</code>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>sequenceDiagram
-    participant C as Client
-    participant O as Orchestrator
-    participant W as Worker / FPGA
-    C-&gt;&gt;O: POST /fpga/3/submit (design.py)
-    O--&gt;&gt;C: 202 { job_id, status: queued }
-    O-&gt;&gt;W: build_and_program
-    W--&gt;&gt;O: programmed → reserved
-    C-&gt;&gt;O: GET /fpga/3/jobs/{job_id} (poll)
-    O--&gt;&gt;C: { status: complete }
-    C-&gt;&gt;O: POST /fpga/3/run { op, address, data }
-    O--&gt;&gt;C: 202 { job_id }
-    C-&gt;&gt;O: GET /fpga/3/jobs/{job_id}/result
-    O--&gt;&gt;C: { ok: true, data: [...] }
-    C-&gt;&gt;O: POST /fpga/3/session/release</code></pre>
+<p>Solve sequence: write the literal block → write <code>n_vars</code>/<code>n_clauses</code> → write
+start → poll word 0 until <code>done</code> → if <code>sat</code>, read the model from word 3.</p>
+<h2 id="going-bigger-a-30-variable-variant">Going bigger: a 30-variable variant<a class="headerlink" href="#going-bigger-a-30-variable-variant" title="Permanent link">&para;</a></h2>
+<p>To watch brute force stretch its legs, a wide variant widens the literal field to
+5 bits (so up to 30 variables) and the cycle counter to 32 bits (so it doesn't
+overflow past 2²⁰). A full 2³⁰ sweep runs in real time on the FPGA:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># (x30) ∧ (¬x30): UNSAT, but references x30 so it sweeps all 2^30 assignments</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">SAT_FORMULA</span><span class="o">=</span><span class="s2">&quot;30 0 -30 0&quot;</span><span class="w"> </span>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/solve_wide.py
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>formula: 30 vars, 2 clauses  (search space = 2^30)
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>solving on the FPGA ...
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>UNSAT  (1,073,741,824 cycles, 21.47s on-chip @50MHz, 22.1s wall)
+</code></pre></div>
+<p>Exactly 2³⁰ cycles at 50 MHz ≈ 21.5 s of pure hardware search, with the network
+adding well under a second.</p>
+<h2 id="without-hardware">Without hardware<a class="headerlink" href="#without-hardware" title="Permanent link">&para;</a></h2>
+<p>The example also has pure-Python and Amaranth simulation tests, plus a reference
+client (<code>client.py</code>) that speaks the wire protocol directly to a board on your
+LAN. See <code>examples/sat_solver/README.md</code>.</p>
 
 
 
@@ -996,7 +1056,7 @@ build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <cod
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../examples/hello-wishbone/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hello Wishbone">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1006,20 +1066,20 @@ build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <cod
                 Previous
               </span>
               <div class="md-ellipsis">
-                Hello Wishbone
+                Overview
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../api/rest/" class="md-footer__link md-footer__link--next" aria-label="Next: REST API">
+          <a href="../bert-ffn/" class="md-footer__link md-footer__link--next" aria-label="Next: BERT feed-forward">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                REST API
+                BERT feed-forward
               </div>
             </div>
             <div class="md-footer__button md-icon">
