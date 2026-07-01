@@ -5,7 +5,7 @@ The minimal smoke test — the "hello world" of the platform. The design exposes
 back, confirming the full path (build → program → write → read) works end to end.
 
 Source: `examples/hello_wishbone/` in the
-[`Cloud_FPGA`](https://github.com/Barnard-PL-Labs/Cloud_FPGA) repo.
+[`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud) repo.
 
 ## Run it
 

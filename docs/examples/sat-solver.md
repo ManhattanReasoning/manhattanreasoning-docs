@@ -10,7 +10,7 @@ It's deliberately the naive baseline: a fast, verifiable reward signal that an
 agent is meant to *improve on* (toward DPLL/CDCL-style reasoning).
 
 Source: `examples/sat_solver/` in the
-[`Cloud_FPGA`](https://github.com/Barnard-PL-Labs/Cloud_FPGA) repo.
+[`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud) repo.
 
 ## Run it
 

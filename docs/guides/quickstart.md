@@ -8,7 +8,7 @@ Install the SDK, program an FPGA, and run a real workload — the brute-force
       on Homebrew, so `python -m venv` fails — use 3.12/3.13.)
     - A `CLOUD_FPGA_API_KEY`. Auth is **not enforced** in the prototype, so any
       non-empty value works for now, but the variable must be set.
-    - A clone of the [`Cloud_FPGA`](https://github.com/Barnard-PL-Labs/Cloud_FPGA)
+    - A clone of the [`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud)
       repo (for the SDK and the example designs).
 
 ## 1. Install the SDK

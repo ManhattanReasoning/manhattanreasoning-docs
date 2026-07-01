@@ -1,6 +1,6 @@
 # Examples
 
-Runnable apps that ship in the [`Cloud_FPGA`](https://github.com/Barnard-PL-Labs/Cloud_FPGA)
+Runnable apps that ship in the [`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud)
 repo under `examples/`. Each is a complete [`cloud_fpga.App`](../guides/sdk.md)
 you launch with `cloud-fpga run`.
 

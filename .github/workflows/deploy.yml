@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   # Allow the private code repo to trigger a rebuild when the API changes:
-  #   gh api repos/Barnard-PL-Labs/manhattanreasoning-docs/dispatches \
+  #   gh api repos/ManhattanReasoning/manhattanreasoning-docs/dispatches \
   #     -f event_type=code-updated
   repository_dispatch:
     types: [code-updated]
@@ -21,11 +21,11 @@ jobs:
         uses: actions/checkout@v4
 
       # mkdocstrings reads the Python API reference from the private code repo.
-      # CODE_DEPLOY_KEY is a read-only deploy key registered on Cloud_FPGA.
+      # CODE_DEPLOY_KEY is a read-only deploy key registered on Manhattan-Reasoning-Cloud.
       - name: Checkout private code (orchestrator source)
         uses: actions/checkout@v4
         with:
-          repository: Barnard-PL-Labs/Cloud_FPGA
+          repository: ManhattanReasoning/Manhattan-Reasoning-Cloud
           path: _code
           ssh-key: ${{ secrets.CODE_DEPLOY_KEY }}
 

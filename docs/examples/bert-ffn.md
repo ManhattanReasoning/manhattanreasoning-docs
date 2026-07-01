@@ -14,7 +14,7 @@ FPGA** using an int8 4×4 matmul core. Everything else (attention, GELU,
 LayerNorm, softmax) runs in float NumPy on the host.
 
 Source: `examples/bert_ffn/` in the
-[`Cloud_FPGA`](https://github.com/Barnard-PL-Labs/Cloud_FPGA) repo.
+[`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud) repo.
 
 ## How the FFN reaches the FPGA
 
