@@ -1075,6 +1075,15 @@ automatically.</p>
 </code></pre></div>
 <p>Creating an <code>App</code> registers it so the CLI can discover it — you don't export
 anything. If you define several in one file, <code>cloud-fpga run</code> uses the last one.</p>
+<div class="admonition info">
+<p class="admonition-title">Build clock and timing target</p>
+<p>A cloud build runs the SoC at <strong>50 MHz</strong> by default. To run at a different
+clock, or to grade timing closure against a separate target ("does this close
+at 90 MHz?"), set the submit request's
+<a href="../../api/rest/#post-fpgafpga_idsubmit"><code>sys_clk_freq</code> and <code>timing_target_mhz</code></a>
+form fields — see
+<a href="../../concepts/architecture/#clocking-sys-clock-vs-timing-target">Clocking vs. grading</a>.</p>
+</div>
 <h3 id="appreadaddr-count1"><code>app.read(addr, count=1)</code><a class="headerlink" href="#appreadaddr-count1" title="Permanent link">&para;</a></h3>
 <p>Read <code>count</code> 32-bit words starting at byte address <code>addr</code>. Returns a single
 <code>int</code> when <code>count == 1</code>, otherwise a <code>list[int]</code>. Programs the FPGA first if it

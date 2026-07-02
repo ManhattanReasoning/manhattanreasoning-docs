@@ -951,6 +951,13 @@ calls its <a href="../sdk/#applocal_entrypoint"><code>@local_entrypoint</code></
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cloud-fpga<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/client_sdk.py
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cloud-fpga<span class="w"> </span>run<span class="w"> </span>my_design.py<span class="w"> </span>--fpga-id<span class="w"> </span><span class="m">3</span>
 </code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Build clock and timing target</p>
+<p><code>run</code> builds at the default <strong>50 MHz</strong> sys clock. Choosing a different sys
+clock, or grading timing against a separate target, is a submit-time option
+on the <a href="../../api/rest/#post-fpgafpga_idsubmit">REST endpoint</a> — see
+<a href="../../concepts/architecture/#clocking-sys-clock-vs-timing-target">Clocking vs. grading</a>.</p>
+</div>
 <h2 id="status-show-fpga-states"><code>status</code> — show FPGA states<a class="headerlink" href="#status-show-fpga-states" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cloud-fpga<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>fpga_id<span class="o">]</span>
 </code></pre></div>

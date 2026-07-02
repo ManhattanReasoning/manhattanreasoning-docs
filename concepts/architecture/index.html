@@ -653,6 +653,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#clocking-sys-clock-vs-timing-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clocking: sys clock vs. timing target
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#putting-it-together" class="md-nav__link">
     <span class="md-ellipsis">
       Putting it together
@@ -820,6 +829,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#clocking-sys-clock-vs-timing-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clocking: sys clock vs. timing target
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#putting-it-together" class="md-nav__link">
     <span class="md-ellipsis">
       Putting it together
@@ -945,6 +963,24 @@ recovery procedure.</p>
 <code>cancelled</code> (only a <code>queued</code> job can be cancelled).</p>
 <p>Poll a job with <a href="../../api/rest/#jobs"><code>GET /fpga/{id}/jobs/{job_id}</code></a>; fetch its
 build log at <code>/logs</code> and, for <code>run</code> jobs, its data at <code>/result</code>.</p>
+<h2 id="clocking-sys-clock-vs-timing-target">Clocking: sys clock vs. timing target<a class="headerlink" href="#clocking-sys-clock-vs-timing-target" title="Permanent link">&para;</a></h2>
+<p>A <code>build_and_program</code> job carries two independent frequencies:</p>
+<ul>
+<li><strong>Sys clock</strong> — the frequency the SoC actually runs at, produced by the ECP5
+  PLL from a fixed 12 MHz input oscillator. This is your design's real clock; the
+  default is <strong>50 MHz</strong>. Because the PLL divides that fixed input, only certain
+  output frequencies are realizable.</li>
+<li><strong>Timing target</strong> — the frequency place-and-route is <em>constrained</em> to hit
+  (<code>nextpnr --freq</code>) and the build is <em>graded</em> against (a report's <code>timing_met</code>).
+  It carries no PLL restriction, so it can be any value. It defaults to the sys
+  clock.</li>
+</ul>
+<p>Keeping them separate lets you ask a timing question the PLL can't answer
+directly — "can this design close at 90 MHz?" without re-clocking the SoC — and
+grade against thresholds the PLL can't synthesize exactly (e.g. 87.3 MHz). Set
+both at submit time with the
+<a href="../../api/rest/#post-fpgafpga_idsubmit"><code>sys_clk_freq</code> and <code>timing_target_mhz</code></a>
+form fields.</p>
 <h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
     participant C as Client

@@ -1161,14 +1161,52 @@ validation error.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">&quot;fpga_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;idle&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;session&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;current_job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="post-fpgafpga_idsubmit"><code>POST /fpga/{fpga_id}/submit</code><a class="headerlink" href="#post-fpgafpga_idsubmit" title="Permanent link">&para;</a></h3>
-<p>Upload an HDL source file (multipart form field <code>file</code>) and enqueue a
-<code>build_and_program</code> job. The FPGA <strong>must be <code>idle</code></strong>.</p>
+<p>Upload an HDL source file and enqueue a <code>build_and_program</code> job. The FPGA
+<strong>must be <code>idle</code></strong>. The body is <code>multipart/form-data</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td>file</td>
+<td>The Amaranth HDL source to build. <strong>Required.</strong></td>
+</tr>
+<tr>
+<td><code>sys_clk_freq</code></td>
+<td>int</td>
+<td><strong>Sys clock</strong> in <strong>Hz</strong> — the frequency the SoC actually runs at (ECP5 PLL output). Optional; defaults to 50 MHz. Bounded to <code>10_000_000</code>–<code>200_000_000</code> (10–200 MHz).</td>
+</tr>
+<tr>
+<td><code>timing_target_mhz</code></td>
+<td>float</td>
+<td><strong>Timing target</strong> in <strong>MHz</strong> — the frequency the build is constrained to (<code>nextpnr --freq</code>) and graded against (<code>timing_met</code>). Optional; defaults to the sys clock. Requires a current server/image; older servers ignore it.</td>
+</tr>
+</tbody>
+</table>
 <ul>
 <li><strong>Success:</strong> <code>202</code> → <code>{ "job_id", "fpga_id", "status": "queued" }</code>; FPGA → <code>queued</code>.</li>
 <li><strong><code>409 fpga_not_idle</code></strong> if the board is not idle.</li>
+<li><strong><code>422 invalid_sys_clk_freq</code></strong> if <code>sys_clk_freq</code> is outside the 10–200 MHz range.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$BASE</span>/fpga/3/submit<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-API-Key: </span><span class="nv">$KEY</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@design.py&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Default 50 MHz build</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$BASE</span>/fpga/3/submit<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-API-Key: </span><span class="nv">$KEY</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@design.py&quot;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Run the SoC at 75 MHz, but constrain and grade timing against 90 MHz</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$BASE</span>/fpga/3/submit<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-API-Key: </span><span class="nv">$KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@design.py&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;sys_clk_freq=75000000&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;timing_target_mhz=90&quot;</span>
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Two clocks, on purpose</p>
+<p><code>sys_clk_freq</code> re-clocks the SoC; <code>timing_target_mhz</code> only changes what
+place-and-route optimizes for and what the build is graded against — see
+<a href="../../concepts/architecture/#clocking-sys-clock-vs-timing-target">Clocking vs. grading</a>.</p>
+</div>
 <h3 id="post-fpgafpga_idrun"><code>POST /fpga/{fpga_id}/run</code><a class="headerlink" href="#post-fpgafpga_idrun" title="Permanent link">&para;</a></h3>
 <p>Enqueue a Wishbone transaction. The FPGA <strong>must be <code>reserved</code></strong>.</p>
 <p>Request body (<code>RunRequest</code>):</p>
