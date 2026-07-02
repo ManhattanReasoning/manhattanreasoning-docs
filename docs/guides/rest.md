@@ -47,6 +47,27 @@ curl -X POST $BASE/fpga/3/submit \
 { "job_id": "a1b2c3d4-...", "fpga_id": 3, "status": "queued" }
 ```
 
+The build runs the SoC at **50 MHz** by default. Two optional form fields change
+that — `sys_clk_freq` (Hz) re-clocks the SoC, and `timing_target_mhz` (MHz) sets
+the frequency place-and-route is constrained and graded against:
+
+```bash
+# Run the SoC at 75 MHz, but grade timing closure against 90 MHz
+curl -X POST $BASE/fpga/3/submit \
+  -H "X-API-Key: $API_KEY" \
+  -F "file=@design.py" \
+  -F "sys_clk_freq=75000000" \
+  -F "timing_target_mhz=90"
+```
+
+See [Clocking vs. grading](../concepts/architecture.md#clocking-sys-clock-vs-timing-target)
+for why the two are separate, and the
+[submit reference](../api/rest.md#post-fpgafpga_idsubmit) for their bounds.
+
+!!! note "`timing_target_mhz` needs a current server"
+    The timing-target field requires an up-to-date orchestrator and build image;
+    older servers ignore the extra field and grade against the sys clock.
+
 ## 3. Poll the job
 
 The board moves `queued → building → programming → reserved`. Poll the job until

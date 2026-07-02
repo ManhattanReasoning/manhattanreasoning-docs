@@ -69,6 +69,26 @@ And five job **statuses**: `queued` → `running` → `complete`, or `failed`, o
 Poll a job with [`GET /fpga/{id}/jobs/{job_id}`](../api/rest.md#jobs); fetch its
 build log at `/logs` and, for `run` jobs, its data at `/result`.
 
+## Clocking: sys clock vs. timing target
+
+A `build_and_program` job carries two independent frequencies:
+
+- **Sys clock** — the frequency the SoC actually runs at, produced by the ECP5
+  PLL from a fixed 12 MHz input oscillator. This is your design's real clock; the
+  default is **50 MHz**. Because the PLL divides that fixed input, only certain
+  output frequencies are realizable.
+- **Timing target** — the frequency place-and-route is *constrained* to hit
+  (`nextpnr --freq`) and the build is *graded* against (a report's `timing_met`).
+  It carries no PLL restriction, so it can be any value. It defaults to the sys
+  clock.
+
+Keeping them separate lets you ask a timing question the PLL can't answer
+directly — "can this design close at 90 MHz?" without re-clocking the SoC — and
+grade against thresholds the PLL can't synthesize exactly (e.g. 87.3 MHz). Set
+both at submit time with the
+[`sys_clk_freq` and `timing_target_mhz`](../api/rest.md#post-fpgafpga_idsubmit)
+form fields.
+
 ## Putting it together
 
 ```mermaid

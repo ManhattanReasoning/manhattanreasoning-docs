@@ -51,15 +51,32 @@ validation error.
 
 ### `POST /fpga/{fpga_id}/submit`
 
-Upload an HDL source file (multipart form field `file`) and enqueue a
-`build_and_program` job. The FPGA **must be `idle`**.
+Upload an HDL source file and enqueue a `build_and_program` job. The FPGA
+**must be `idle`**. The body is `multipart/form-data`:
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `file` | file | The Amaranth HDL source to build. **Required.** |
+| `sys_clk_freq` | int | **Sys clock** in **Hz** — the frequency the SoC actually runs at (ECP5 PLL output). Optional; defaults to 50 MHz. Bounded to `10_000_000`–`200_000_000` (10–200 MHz). |
+| `timing_target_mhz` | float | **Timing target** in **MHz** — the frequency the build is constrained to (`nextpnr --freq`) and graded against (`timing_met`). Optional; defaults to the sys clock. Requires a current server/image; older servers ignore it. |
 
 - **Success:** `202` → `{ "job_id", "fpga_id", "status": "queued" }`; FPGA → `queued`.
 - **`409 fpga_not_idle`** if the board is not idle.
+- **`422 invalid_sys_clk_freq`** if `sys_clk_freq` is outside the 10–200 MHz range.
 
 ```bash
+# Default 50 MHz build
 curl -X POST $BASE/fpga/3/submit -H "X-API-Key: $KEY" -F "file=@design.py"
+
+# Run the SoC at 75 MHz, but constrain and grade timing against 90 MHz
+curl -X POST $BASE/fpga/3/submit -H "X-API-Key: $KEY" \
+  -F "file=@design.py" -F "sys_clk_freq=75000000" -F "timing_target_mhz=90"
 ```
+
+!!! note "Two clocks, on purpose"
+    `sys_clk_freq` re-clocks the SoC; `timing_target_mhz` only changes what
+    place-and-route optimizes for and what the build is graded against — see
+    [Clocking vs. grading](../concepts/architecture.md#clocking-sys-clock-vs-timing-target).
 
 ### `POST /fpga/{fpga_id}/run`
 
