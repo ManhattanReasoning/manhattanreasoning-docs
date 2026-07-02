@@ -854,7 +854,7 @@ the 4× hidden expansion — and <strong>its two matrix multiplications execute 
 FPGA</strong> using an int8 4×4 matmul core. Everything else (attention, GELU,
 LayerNorm, softmax) runs in float NumPy on the host.</p>
 <p>Source: <code>examples/bert_ffn/</code> in the
-<a href="https://github.com/Barnard-PL-Labs/Cloud_FPGA"><code>Cloud_FPGA</code></a> repo.</p>
+<a href="https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud"><code>Cloud_FPGA</code></a> repo.</p>
 <h2 id="how-the-ffn-reaches-the-fpga">How the FFN reaches the FPGA<a class="headerlink" href="#how-the-ffn-reaches-the-fpga" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Quantize</strong> activations <code>x</code> and weights <code>W</code> to per-tensor int8 (symmetric).</li>
