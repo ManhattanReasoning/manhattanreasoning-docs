@@ -73,6 +73,14 @@ cloud_fpga.App(
 Creating an `App` registers it so the CLI can discover it — you don't export
 anything. If you define several in one file, `cloud-fpga run` uses the last one.
 
+!!! info "Build clock and timing target"
+    A cloud build runs the SoC at **50 MHz** by default. To run at a different
+    clock, or to grade timing closure against a separate target ("does this close
+    at 90 MHz?"), set the submit request's
+    [`sys_clk_freq` and `timing_target_mhz`](../api/rest.md#post-fpgafpga_idsubmit)
+    form fields — see
+    [Clocking vs. grading](../concepts/architecture.md#clocking-sys-clock-vs-timing-target).
+
 ### `app.read(addr, count=1)`
 
 Read `count` 32-bit words starting at byte address `addr`. Returns a single

@@ -34,6 +34,12 @@ cloud-fpga run examples/sat_solver/client_sdk.py
 cloud-fpga run my_design.py --fpga-id 3
 ```
 
+!!! info "Build clock and timing target"
+    `run` builds at the default **50 MHz** sys clock. Choosing a different sys
+    clock, or grading timing against a separate target, is a submit-time option
+    on the [REST endpoint](../api/rest.md#post-fpgafpga_idsubmit) — see
+    [Clocking vs. grading](../concepts/architecture.md#clocking-sys-clock-vs-timing-target).
+
 ## `status` — show FPGA states
 
 ```bash
