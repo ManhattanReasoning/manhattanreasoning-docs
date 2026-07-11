@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+      <meta name="description" content="Program real FPGAs from Python. The manhattan-reasoning-gym SDK and CLI: quickstart, SDK usage, CLI usage, examples, and API reference.">
+    
+    <link rel="canonical" href="https://docs.manhattanreasoning.com/examples/ffn-accel/">
+    
+      <link rel="icon" href="../../assets/turnstile.svg">
+    
+
+    <title>FFN accelerator · Docs</title>
+
+    <link rel="stylesheet" href="../../css/pygments.css">
+    <link rel="stylesheet" href="../../css/docs.css">
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+  </head>
+
+  <body class="is-doc"
+        data-md-color-scheme="slate">
+
+    <header class="site-header" id="site-header">
+  <div class="site-header__inner">
+
+    <a href="../.." class="brand" aria-label="Docs">
+      <span class="logo" aria-hidden="true">
+        <span class="logo-l1">Manhattan <span class="op">&rarr;</span> Reasoning,</span>
+        <span class="logo-l2">Manhattan <span class="op">&#8866;</span> Reasoning <span class="logo-docs">Docs</span></span>
+      </span>
+    </a>
+
+    <nav class="top-tabs" aria-label="Sections">
+          <a class="top-tab"
+             href="../../guides/quickstart/">Guide</a>
+          <a class="top-tab active"
+             href="../">Examples</a>
+          <a class="top-tab"
+             href="../../reference/">Reference</a>
+          <a class="top-tab"
+             href="../../changelog/">Changelog</a>
+      <a class="top-tab top-tab--ext" href="https://manhattanreasoning.com" rel="external">Manhattan Reasoning &#8599;</a>
+    </nav>
+
+    <div class="header-actions">
+        <button type="button" class="search-open" aria-label="Search" data-search-open>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="search-open__hint">Search the docs</span>
+          <kbd class="search-open__kbd">/</kbd>
+        </button>
+      <button type="button" class="drawer-toggle" aria-label="Toggle navigation" data-drawer-toggle>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+    
+      <div class="doc-shell">
+        <aside class="doc-sidebar" aria-label="Section navigation">
+          
+
+
+    
+
+<div class="nav-scroll">
+    <p class="nav-section-title">Examples</p>
+    
+  <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../">Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../hello-wishbone/">Hello Wishbone</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../sat-solver/">SAT solver</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../bert-ffn/">BERT feed-forward</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active"
+             href="./">FFN accelerator</a>
+        </li>
+  </ul>
+
+</div>
+        </aside>
+
+        <main class="doc-content" role="main">
+          
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <span>Examples</span><span class="sep">/</span>
+              <span class="current">FFN accelerator</span>
+            </nav>
+          
+
+          <article class="md-content">
+            <h1 id="ffn-accelerator">FFN accelerator<a class="headerlink" href="#ffn-accelerator" title="Permanent link">&para;</a></h1>
+<p>A <strong>streaming, tiled, quantized FFN engine</strong> in Amaranth that runs the BERT
+feed-forward sublayer, <code>requant2(GELU(requant1(x·W1))·W2)</code>, entirely in
+silicon. This engine owns the whole computation: it tiles, accumulates over
+K, requantizes, and applies GELU on-chip, through the existing 2 KB Wishbone
+MMIO window, no SoC changes.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a> x (int8) ─▶ MatMul-1 ─▶ Requant ─▶ GELU LUT ─▶ MatMul-2 ─▶ Requant ─▶ y (int8)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>             x·W1        int32→int8   int8→int8   ·W2         int32→int8
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>             └─ tiled output-stationary MAC grid (tile×tile INT8 MACs) ─┘
+</code></pre></div>
+<p>Source: <a href="https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/ffn_accel"><code>examples/ffn_accel/</code></a> in the <code>manhattan-reasoning-gym</code> repo. The
+<a href="../bert-ffn/">BERT feed-forward example</a> is a real application built on top
+of this same design.</p>
+<h2 id="whats-real-about-it">What's real about it<a class="headerlink" href="#whats-real-about-it" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Parallel MAC grid</strong></td>
+<td><code>tile×tile</code> output-stationary INT8→INT32 MACs, one DSP each</td>
+</tr>
+<tr>
+<td><strong>Hardware tiling</strong></td>
+<td>An FSM sweeps M×N output tiles, accumulating over K from packed BRAM</td>
+</tr>
+<tr>
+<td><strong>Proper quantization</strong></td>
+<td>Per-tensor int8 + gemmlowp-style fixed-point requant: <code>(acc·mult + bias) &gt;&gt; shift</code></td>
+</tr>
+<tr>
+<td><strong>GELU</strong></td>
+<td>Exact int8→int8 lookup ROM, runtime-loadable per model</td>
+</tr>
+<tr>
+<td><strong>Native chaining</strong></td>
+<td>Each engine emits results in the layout the next consumes, GELU is a 1-pass streaming copy, no transpose</td>
+</tr>
+<tr>
+<td><strong>Pipelined</strong></td>
+<td>Address-ahead-of-data K-loop, 1-cycle requant/GELU stages</td>
+</tr>
+</tbody>
+</table>
+<p>The design is one self-contained file (the orchestrator uploads only that),
+and it's <strong>bit-exact</strong> against a NumPy golden model, the golden model
+performs the identical integer ops, so a passing simulation test <em>is</em> a proof
+of correctness, not an approximation.</p>
+<h2 id="ecp5-85-fit-real-yosys-synth_ecp5">ECP5-85 fit (real <code>yosys synth_ecp5</code>)<a class="headerlink" href="#ecp5-85-fit-real-yosys-synth_ecp5" title="Permanent link">&para;</a></h2>
+<p>The whole dual-engine slave at <code>tile=4</code>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LUT4</th>
+<th>carry (CCU2C)</th>
+<th>DSP (MULT18X18)</th>
+<th>BRAM (DP16KD)</th>
+<th>FF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FFNSlave</td>
+<td>3,437</td>
+<td>840</td>
+<td>40</td>
+<td>6</td>
+<td>1,505</td>
+</tr>
+<tr>
+<td><strong>Budget (LFE5UM5G-85F)</strong></td>
+<td>84k</td>
+<td>–</td>
+<td><strong>156</strong></td>
+<td>208</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<p>Fits with huge headroom next to the VexRiscv+LiteEth SoC. The parallel MAC
+grid scales as <code>tile²</code> DSPs, 12×12 (144 MACs) is the max all-DSP fit; 16×16
+(256 MACs) needs on-fabric multipliers.</p>
+<h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mrg<span class="w"> </span>login<span class="w">                                   </span><span class="c1"># or set MRG_API_KEY</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>mrg<span class="w"> </span>run<span class="w"> </span>examples/ffn_accel/client_sdk.py<span class="w">    </span><span class="c1"># builds the bitstream, programs a board, runs</span>
+</code></pre></div>
+<p>The client builds a quantization plan host-side, streams the int8 operands +
+requant constants + GELU table through the MMIO window, runs the pipeline,
+reads the int8 output back, and asserts it's bit-exact against the golden
+model.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>examples/ffn_accel<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-q<span class="w">   </span><span class="c1"># 9 sim tests, no hardware</span>
+</code></pre></div>
+<p>Covers the MAC grid, requant, the tiling engine, the full FFN, and the
+complete Wishbone MMIO data path, each bit-exact against the golden model.</p>
+<h2 id="the-honest-limitation-why-the-demo-dims-are-small">The honest limitation (why the demo dims are small)<a class="headerlink" href="#the-honest-limitation-why-the-demo-dims-are-small" title="Permanent link">&para;</a></h2>
+<p>A <em>full</em> BERT-base FFN has 4.7 MB of weights, 10× the ECP5-85's 468 KB of
+BRAM, so a real deployment must <em>stream</em> weights from off-chip, and on this
+board the only host link is 100 Mbit Ethernet through a softcore, which caps
+a full layer at roughly half a second of weight transfer (I/O-bound, not
+compute-bound). The engine is architected for that streaming model (operands
+flow in tile by tile); the on-board demo keeps dimensions small (<code>8→32→8</code>)
+because operands load through the 2 KB MMIO window one word at a time. The
+<em>silicon</em> is the real thing; feeding it at full BERT scale is a data-path
+project (DMA + a faster link), not a compute one.</p>
+          </article>
+
+          
+            <nav class="page-nav" aria-label="Page navigation">
+              
+                <a class="page-nav__prev" href="../bert-ffn/">
+                  <span class="page-nav__dir">Previous</span>
+                  <span class="page-nav__title">BERT feed-forward</span>
+                </a>
+              
+              
+                <a class="page-nav__next" href="../../reference/">
+                  <span class="page-nav__dir">Next</span>
+                  <span class="page-nav__title">Overview</span>
+                </a>
+              
+            </nav>
+          
+        </main>
+
+        <aside class="doc-toc" aria-label="On this page">
+          
+            <div class="doc-toc__inner">
+              <p class="doc-toc__label">On this page</p>
+              
+
+<ul class="toc-list toc-list--root">
+    <li class="toc-item toc-item--l1">
+      <a class="toc-link" href="#ffn-accelerator">FFN accelerator</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#whats-real-about-it">What's real about it</a>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#ecp5-85-fit-real-yosys-synth_ecp5">ECP5-85 fit (real yosys synth_ecp5)</a>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#run-it">Run it</a>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#the-honest-limitation-why-the-demo-dims-are-small">The honest limitation (why the demo dims are small)</a>
+    </li>
+
+        </ul>
+    </li>
+
+</ul>
+            </div>
+          
+        </aside>
+      </div>
+    
+
+    <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img src="../../assets/turnstile.svg" alt="" width="20" height="20">
+      <span>© Manhattan Reasoning</span>
+    </div>
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href="https://github.com/ManhattanReasoning" rel="external">GitHub</a>
+      <a href="https://manhattanreasoning.com" rel="external">Main site</a>
+      <a href="mailto:hello@manhattanreasoning.com">hello@manhattanreasoning.com</a>
+    </nav>
+  </div>
+</footer>
+    <div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-modal" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-modal__field">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="mkdocs-search-query" placeholder="Search the docs&hellip;"
+             autocomplete="off" spellcheck="false" aria-label="Search">
+      <button type="button" class="search-modal__close" data-search-close aria-label="Close">Esc</button>
+    </div>
+    <div class="search-modal__results" id="mkdocs-search-results" data-no-results-text="No results found"></div>
+  </div>
+</div>
+
+    <script>var base_url = "../..";</script>
+    <script src="../../js/docs.js"></script>
+    
+      <script src="../../javascripts/routing-viz.js"></script>
+    
+      <script src="../../search/main.js"></script>
+    
+    
+  </body>
+</html>

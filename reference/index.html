@@ -7,7 +7,7 @@
     
       <meta name="description" content="Program real FPGAs from Python. The manhattan-reasoning-gym SDK and CLI: quickstart, SDK usage, CLI usage, examples, and API reference.">
     
-    <link rel="canonical" href="https://docs.manhattanreasoning.com/examples/">
+    <link rel="canonical" href="https://docs.manhattanreasoning.com/reference/">
     
       <link rel="icon" href="../assets/turnstile.svg">
     
@@ -38,10 +38,10 @@
     <nav class="top-tabs" aria-label="Sections">
           <a class="top-tab"
              href="../guides/quickstart/">Guide</a>
-          <a class="top-tab active"
-             href="./">Examples</a>
           <a class="top-tab"
-             href="../reference/">Reference</a>
+             href="../examples/">Examples</a>
+          <a class="top-tab active"
+             href="./">Reference</a>
           <a class="top-tab"
              href="../changelog/">Changelog</a>
       <a class="top-tab top-tab--ext" href="https://manhattanreasoning.com" rel="external">Manhattan Reasoning &#8599;</a>
@@ -69,7 +69,7 @@
     
 
 <div class="nav-scroll">
-    <p class="nav-section-title">Examples</p>
+    <p class="nav-section-title">Reference</p>
     
   <ul class="nav-list">
         <li class="nav-item">
@@ -78,19 +78,19 @@
         </li>
         <li class="nav-item">
           <a class="nav-link"
-             href="hello-wishbone/">Hello Wishbone</a>
+             href="cloud/">mrg.cloud</a>
         </li>
         <li class="nav-item">
           <a class="nav-link"
-             href="sat-solver/">SAT solver</a>
+             href="build/">mrg.build</a>
         </li>
         <li class="nav-item">
           <a class="nav-link"
-             href="bert-ffn/">BERT feed-forward</a>
+             href="sandbox/">mrg.sandbox</a>
         </li>
         <li class="nav-item">
           <a class="nav-link"
-             href="ffn-accel/">FFN accelerator</a>
+             href="bench/">mrg.bench</a>
         </li>
   </ul>
 
@@ -100,58 +100,56 @@
         <main class="doc-content" role="main">
           
             <nav class="breadcrumbs" aria-label="Breadcrumb">
-              <span>Examples</span><span class="sep">/</span>
+              <span>Reference</span><span class="sep">/</span>
               <span class="current">Overview</span>
             </nav>
           
 
           <article class="md-content">
-            <h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
-<p>Runnable apps from the <a href="https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples"><code>manhattan-reasoning-gym</code></a>
-repo. Each is a complete <code>mrg.cloud.App</code> you launch with <code>mrg run</code>.</p>
-<div class="grid cards">
-<ul>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23 17c0 3.31-2.69 6-6 6v-1.5c2.5 0 4.5-2 4.5-4.5zM1 7c0-3.31 2.69-6 6-6v1.5c-2.5 0-4.5 2-4.5 4.5zm7-2.68-4.59 4.6c-3.22 3.22-3.22 8.45 0 11.67s8.45 3.22 11.67 0l7.07-7.09c.49-.47.49-1.26 0-1.75a1.25 1.25 0 0 0-1.77 0l-4.42 4.42-.71-.71 6.54-6.54c.49-.49.49-1.28 0-1.77s-1.29-.49-1.79 0L14.19 13l-.69-.73 6.87-6.89c.49-.49.49-1.28 0-1.77s-1.28-.49-1.77 0l-6.89 6.89-.71-.7 5.5-5.48c.5-.49.5-1.28 0-1.77s-1.28-.49-1.77 0l-7.62 7.62a4 4 0 0 1-.33 5.28l-.71-.71a3 3 0 0 0 0-4.24l-.35-.35 4.07-4.07c.49-.49.49-1.28 0-1.77-.5-.48-1.29-.48-1.79.01"/></svg></span> <strong><a href="hello-wishbone/">Hello Wishbone</a></strong></p>
-<p>The minimal smoke test, write a pattern to an echo RAM and read it back.
-Start here to verify the interface contract.</p>
-</li>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m23 12-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68zm-13 5-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9z"/></svg></span> <strong><a href="sat-solver/">SAT solver</a></strong></p>
-<p>A brute-force boolean satisfiability solver in hardware. Includes a
-generalized DIMACS runner and a 30-variable variant.</p>
-</li>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg></span> <strong><a href="bert-ffn/">BERT feed-forward</a></strong></p>
-<p>A real transformer encoder block whose feed-forward matmuls run on the
-FPGA via a tiled int8 matmul core.</p>
-</li>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 4h12v1h3v2h-3v2h3v2h-3v2h3v2h-3v2h3v2h-3v1H6v-1H3v-2h3v-2H3v-2h3v-2H3V9h3V7H3V5h3zm5 11v3h1v-3zm2 0v3h1v-3zm2 0v3h1v-3z"/></svg></span> <strong><a href="ffn-accel/">FFN accelerator</a></strong></p>
-<p>A real streaming INT8 transformer feed-forward engine, entirely in
-silicon, parallel MAC grid, on-chip requantization, and GELU.</p>
-</li>
-</ul>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Before you run</p>
-<p><code>pip install manhattan-reasoning-gym</code>, <code>mrg login</code>, and confirm a board is
-<code>idle</code> (<code>mrg status</code>). See the <a href="../guides/quickstart/">Quickstart</a>.</p>
-</div>
+            <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<p>Generated from <code>manhattan-reasoning-gym</code>'s public docstrings. For a narrative
+walkthrough of these same surfaces, see the <a href="../guides/sdk/">SDK guide</a>.</p>
+<p>The SDK is organized by role into four namespaces:</p>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="cloud/"><code>mrg.cloud</code></a></td>
+<td>Direct cloud silicon for a key-holding user or agent (<code>App</code>, <code>run</code>).</td>
+</tr>
+<tr>
+<td><a href="build/"><code>mrg.build</code></a></td>
+<td>Local synthesis and place-and-route, no cloud (<code>synth</code>, <code>pnr</code>).</td>
+</tr>
+<tr>
+<td><a href="sandbox/"><code>mrg.sandbox</code></a></td>
+<td>Brokered promotes for a sandboxed agent that holds no key (<code>promote</code>).</td>
+</tr>
+<tr>
+<td><a href="bench/"><code>mrg.bench</code></a></td>
+<td>The RL-gym harness (<code>Sandbox</code>, <code>run_sandbox</code>, <code>SandboxProfile</code>).</td>
+</tr>
+</tbody>
+</table>
           </article>
 
           
             <nav class="page-nav" aria-label="Page navigation">
               
-                <a class="page-nav__prev" href="../guides/cli/">
+                <a class="page-nav__prev" href="../examples/ffn-accel/">
                   <span class="page-nav__dir">Previous</span>
-                  <span class="page-nav__title">CLI Usage</span>
+                  <span class="page-nav__title">FFN accelerator</span>
                 </a>
               
               
-                <a class="page-nav__next" href="hello-wishbone/">
+                <a class="page-nav__next" href="cloud/">
                   <span class="page-nav__dir">Next</span>
-                  <span class="page-nav__title">Hello Wishbone</span>
+                  <span class="page-nav__title">mrg.cloud</span>
                 </a>
               
             </nav>
@@ -166,7 +164,7 @@ silicon, parallel MAC grid, on-chip requantization, and GELU.</p>
 
 <ul class="toc-list toc-list--root">
     <li class="toc-item toc-item--l1">
-      <a class="toc-link" href="#examples">Examples</a>
+      <a class="toc-link" href="#api-reference">API Reference</a>
     </li>
 
 </ul>

@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+      <meta name="description" content="Program real FPGAs from Python. The manhattan-reasoning-gym SDK and CLI: quickstart, SDK usage, CLI usage, examples, and API reference.">
+    
+    <link rel="canonical" href="https://docs.manhattanreasoning.com/reference/bench/">
+    
+      <link rel="icon" href="../../assets/turnstile.svg">
+    
+
+    <title>mrg.bench · Docs</title>
+
+    <link rel="stylesheet" href="../../css/pygments.css">
+    <link rel="stylesheet" href="../../css/docs.css">
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+  </head>
+
+  <body class="is-doc"
+        data-md-color-scheme="slate">
+
+    <header class="site-header" id="site-header">
+  <div class="site-header__inner">
+
+    <a href="../.." class="brand" aria-label="Docs">
+      <span class="logo" aria-hidden="true">
+        <span class="logo-l1">Manhattan <span class="op">&rarr;</span> Reasoning,</span>
+        <span class="logo-l2">Manhattan <span class="op">&#8866;</span> Reasoning <span class="logo-docs">Docs</span></span>
+      </span>
+    </a>
+
+    <nav class="top-tabs" aria-label="Sections">
+          <a class="top-tab"
+             href="../../guides/quickstart/">Guide</a>
+          <a class="top-tab"
+             href="../../examples/">Examples</a>
+          <a class="top-tab active"
+             href="../">Reference</a>
+          <a class="top-tab"
+             href="../../changelog/">Changelog</a>
+      <a class="top-tab top-tab--ext" href="https://manhattanreasoning.com" rel="external">Manhattan Reasoning &#8599;</a>
+    </nav>
+
+    <div class="header-actions">
+        <button type="button" class="search-open" aria-label="Search" data-search-open>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="search-open__hint">Search the docs</span>
+          <kbd class="search-open__kbd">/</kbd>
+        </button>
+      <button type="button" class="drawer-toggle" aria-label="Toggle navigation" data-drawer-toggle>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+    
+      <div class="doc-shell">
+        <aside class="doc-sidebar" aria-label="Section navigation">
+          
+
+
+    
+
+<div class="nav-scroll">
+    <p class="nav-section-title">Reference</p>
+    
+  <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../">Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../cloud/">mrg.cloud</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../build/">mrg.build</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             href="../sandbox/">mrg.sandbox</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active"
+             href="./">mrg.bench</a>
+        </li>
+  </ul>
+
+</div>
+        </aside>
+
+        <main class="doc-content" role="main">
+          
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <span>Reference</span><span class="sep">/</span>
+              <span class="current">mrg.bench</span>
+            </nav>
+          
+
+          <article class="md-content">
+            <h1 id="mrgbench">mrg.bench<a class="headerlink" href="#mrgbench" title="Permanent link">&para;</a></h1>
+<p>The RL-gym harness: declare a <code>Sandbox</code>, run a sandboxed agent, and let promotes
+be brokered to silicon internally. Promotes are ungated unless you pass a
+<code>guard=</code>.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="manhattan_reasoning_gym.bench" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">manhattan_reasoning_gym.bench</span>
+
+
+<a href="#manhattan_reasoning_gym.bench" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Trusted-side harness for running sandboxed agents against silicon (step 4).</p>
+<p>This package runs OUTSIDE the sandbox container. You declare a :class:<code>Sandbox</code>
+with your isolation + silicon params and call <code>.run()</code>; it launches the
+untrusted container under a locked-down profile and brokers the agent's
+promote-to-silicon requests internally. Nothing here runs untrusted agent code.</p>
+<p>No promote gating is imposed by default — the agent decides what to promote, and
+an operator can pass <code>guard=</code> if they want a check.</p>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="manhattan_reasoning_gym.bench.Sandbox" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Sandbox</span>
+
+
+<a href="#manhattan_reasoning_gym.bench.Sandbox" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A locked-down place to run a sandboxed agent, with a wired-up silicon path.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>files</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Sequence">Sequence</span>[<span title="str">str</span> | <span title="pathlib.Path">Path</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>files copied into the container's <code>/work</code> (your <code>design.py</code>,
+the agent entrypoint, any helpers).</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>isolation</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <a class="autorefs autorefs-internal" title="manhattan_reasoning_gym.bench.launcher.SandboxProfile" href="#manhattan_reasoning_gym.bench.SandboxProfile">SandboxProfile</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>"locked"</code> (default; untrusted, no net/key/ro-root),
+<code>"dev"</code> (trusted local poking), or a :class:<code>SandboxProfile</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;locked&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>silicon</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="manhattan_reasoning_gym.bench.sandbox.SiliconFn">SiliconFn</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>"auto"</code> (default: real cloud if a key is set, else a no-op),
+<code>"cloud"</code>, <code>"mock"</code>, or your own <code>SiliconFn</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;auto&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>api_key</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>passed to the cloud silicon backend. Stays in this trusted
+process — never in the container.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>api_url</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>passed to the cloud silicon backend.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sys_clk_freq</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>passed to the cloud silicon backend.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>guard</code>
+            </td>
+            <td>
+                  <code><span title="manhattan_reasoning_gym.bench.sandbox.Guard">Guard</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>optional <code>(design_bytes, report) -&gt; reject-reason | None</code> to vet
+promotes. Default <code>None</code> = every promote goes straight through.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>image</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>override the sandbox docker image.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/sandbox.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-155">155</a></span>
+<span class="normal"><a href="#__codelineno-0-156">156</a></span>
+<span class="normal"><a href="#__codelineno-0-157">157</a></span>
+<span class="normal"><a href="#__codelineno-0-158">158</a></span>
+<span class="normal"><a href="#__codelineno-0-159">159</a></span>
+<span class="normal"><a href="#__codelineno-0-160">160</a></span>
+<span class="normal"><a href="#__codelineno-0-161">161</a></span>
+<span class="normal"><a href="#__codelineno-0-162">162</a></span>
+<span class="normal"><a href="#__codelineno-0-163">163</a></span>
+<span class="normal"><a href="#__codelineno-0-164">164</a></span>
+<span class="normal"><a href="#__codelineno-0-165">165</a></span>
+<span class="normal"><a href="#__codelineno-0-166">166</a></span>
+<span class="normal"><a href="#__codelineno-0-167">167</a></span>
+<span class="normal"><a href="#__codelineno-0-168">168</a></span>
+<span class="normal"><a href="#__codelineno-0-169">169</a></span>
+<span class="normal"><a href="#__codelineno-0-170">170</a></span>
+<span class="normal"><a href="#__codelineno-0-171">171</a></span>
+<span class="normal"><a href="#__codelineno-0-172">172</a></span>
+<span class="normal"><a href="#__codelineno-0-173">173</a></span>
+<span class="normal"><a href="#__codelineno-0-174">174</a></span>
+<span class="normal"><a href="#__codelineno-0-175">175</a></span>
+<span class="normal"><a href="#__codelineno-0-176">176</a></span>
+<span class="normal"><a href="#__codelineno-0-177">177</a></span>
+<span class="normal"><a href="#__codelineno-0-178">178</a></span>
+<span class="normal"><a href="#__codelineno-0-179">179</a></span>
+<span class="normal"><a href="#__codelineno-0-180">180</a></span>
+<span class="normal"><a href="#__codelineno-0-181">181</a></span>
+<span class="normal"><a href="#__codelineno-0-182">182</a></span>
+<span class="normal"><a href="#__codelineno-0-183">183</a></span>
+<span class="normal"><a href="#__codelineno-0-184">184</a></span>
+<span class="normal"><a href="#__codelineno-0-185">185</a></span>
+<span class="normal"><a href="#__codelineno-0-186">186</a></span>
+<span class="normal"><a href="#__codelineno-0-187">187</a></span>
+<span class="normal"><a href="#__codelineno-0-188">188</a></span>
+<span class="normal"><a href="#__codelineno-0-189">189</a></span>
+<span class="normal"><a href="#__codelineno-0-190">190</a></span>
+<span class="normal"><a href="#__codelineno-0-191">191</a></span>
+<span class="normal"><a href="#__codelineno-0-192">192</a></span>
+<span class="normal"><a href="#__codelineno-0-193">193</a></span>
+<span class="normal"><a href="#__codelineno-0-194">194</a></span>
+<span class="normal"><a href="#__codelineno-0-195">195</a></span>
+<span class="normal"><a href="#__codelineno-0-196">196</a></span>
+<span class="normal"><a href="#__codelineno-0-197">197</a></span>
+<span class="normal"><a href="#__codelineno-0-198">198</a></span>
+<span class="normal"><a href="#__codelineno-0-199">199</a></span>
+<span class="normal"><a href="#__codelineno-0-200">200</a></span>
+<span class="normal"><a href="#__codelineno-0-201">201</a></span>
+<span class="normal"><a href="#__codelineno-0-202">202</a></span>
+<span class="normal"><a href="#__codelineno-0-203">203</a></span>
+<span class="normal"><a href="#__codelineno-0-204">204</a></span>
+<span class="normal"><a href="#__codelineno-0-205">205</a></span>
+<span class="normal"><a href="#__codelineno-0-206">206</a></span>
+<span class="normal"><a href="#__codelineno-0-207">207</a></span>
+<span class="normal"><a href="#__codelineno-0-208">208</a></span>
+<span class="normal"><a href="#__codelineno-0-209">209</a></span>
+<span class="normal"><a href="#__codelineno-0-210">210</a></span>
+<span class="normal"><a href="#__codelineno-0-211">211</a></span>
+<span class="normal"><a href="#__codelineno-0-212">212</a></span>
+<span class="normal"><a href="#__codelineno-0-213">213</a></span>
+<span class="normal"><a href="#__codelineno-0-214">214</a></span>
+<span class="normal"><a href="#__codelineno-0-215">215</a></span>
+<span class="normal"><a href="#__codelineno-0-216">216</a></span>
+<span class="normal"><a href="#__codelineno-0-217">217</a></span>
+<span class="normal"><a href="#__codelineno-0-218">218</a></span>
+<span class="normal"><a href="#__codelineno-0-219">219</a></span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span>
+<span class="normal"><a href="#__codelineno-0-221">221</a></span>
+<span class="normal"><a href="#__codelineno-0-222">222</a></span>
+<span class="normal"><a href="#__codelineno-0-223">223</a></span>
+<span class="normal"><a href="#__codelineno-0-224">224</a></span>
+<span class="normal"><a href="#__codelineno-0-225">225</a></span>
+<span class="normal"><a href="#__codelineno-0-226">226</a></span>
+<span class="normal"><a href="#__codelineno-0-227">227</a></span>
+<span class="normal"><a href="#__codelineno-0-228">228</a></span>
+<span class="normal"><a href="#__codelineno-0-229">229</a></span>
+<span class="normal"><a href="#__codelineno-0-230">230</a></span>
+<span class="normal"><a href="#__codelineno-0-231">231</a></span>
+<span class="normal"><a href="#__codelineno-0-232">232</a></span>
+<span class="normal"><a href="#__codelineno-0-233">233</a></span>
+<span class="normal"><a href="#__codelineno-0-234">234</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="k">class</span><span class="w"> </span><span class="nc">Sandbox</span><span class="p">:</span>
+<a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A locked-down place to run a sandboxed agent, with a wired-up silicon path.</span>
+<a id="__codelineno-0-157" name="__codelineno-0-157"></a>
+<a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">        files: files copied into the container&#39;s ``/work`` (your ``design.py``,</span>
+<a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="sd">            the agent entrypoint, any helpers).</span>
+<a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="sd">        isolation: ``&quot;locked&quot;`` (default; untrusted, no net/key/ro-root),</span>
+<a id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="sd">            ``&quot;dev&quot;`` (trusted local poking), or a :class:`SandboxProfile`.</span>
+<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="sd">        silicon: ``&quot;auto&quot;`` (default: real cloud if a key is set, else a no-op),</span>
+<a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="sd">            ``&quot;cloud&quot;``, ``&quot;mock&quot;``, or your own ``SiliconFn``.</span>
+<a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="sd">        api_key: passed to the cloud silicon backend. Stays in this trusted</span>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="sd">            process — never in the container.</span>
+<a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="sd">        api_url: passed to the cloud silicon backend.</span>
+<a id="__codelineno-0-168" name="__codelineno-0-168"></a><span class="sd">        sys_clk_freq: passed to the cloud silicon backend.</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a><span class="sd">        guard: optional ``(design_bytes, report) -&gt; reject-reason | None`` to vet</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a><span class="sd">            promotes. Default ``None`` = every promote goes straight through.</span>
+<a id="__codelineno-0-171" name="__codelineno-0-171"></a><span class="sd">        image: override the sandbox docker image.</span>
+<a id="__codelineno-0-172" name="__codelineno-0-172"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-173" name="__codelineno-0-173"></a>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">isolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SandboxProfile</span> <span class="o">=</span> <span class="s2">&quot;locked&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="n">silicon</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SiliconFn</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>        <span class="n">sys_clk_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="n">guard</span><span class="p">:</span> <span class="n">Guard</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="n">image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">_resolve_profile</span><span class="p">(</span><span class="n">isolation</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+<a id="__codelineno-0-189" name="__codelineno-0-189"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span> <span class="o">=</span> <span class="n">_PromoteBroker</span><span class="p">(</span>
+<a id="__codelineno-0-190" name="__codelineno-0-190"></a>            <span class="n">_resolve_silicon</span><span class="p">(</span><span class="n">silicon</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_url</span><span class="p">,</span> <span class="n">sys_clk_freq</span><span class="p">),</span> <span class="n">guard</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a>        <span class="p">)</span>
+<a id="__codelineno-0-192" name="__codelineno-0-192"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">poll_interval</span> <span class="o">=</span> <span class="n">poll_interval</span>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a>
+<a id="__codelineno-0-194" name="__codelineno-0-194"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxResult</span><span class="p">:</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Launch the agent in the container and broker its promotes to silicon.</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="sd">        Creates a throwaway workspace, copies :attr:`files` in, runs</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">        ``python /work/&lt;entrypoint&gt;`` under the isolation profile while an</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="sd">        internal loop answers promotes, then tears the workspace down.</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a>        <span class="n">workspace</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;mrg_sandbox_&quot;</span><span class="p">))</span>
+<a id="__codelineno-0-202" name="__codelineno-0-202"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-203" name="__codelineno-0-203"></a>            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a>                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">workspace</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>            <span class="n">entry</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>            <span class="n">promotions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a>            <span class="n">stop</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>            <span class="k">def</span><span class="w"> </span><span class="nf">poll_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>                <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+<a id="__codelineno-0-212" name="__codelineno-0-212"></a>                    <span class="n">promotions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">poll_once</span><span class="p">(</span><span class="n">workspace</span><span class="p">))</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a>                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">)</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a>            <span class="n">poller</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">poll_loop</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a>            <span class="n">poller</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>            <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a>                <span class="n">proc</span> <span class="o">=</span> <span class="n">run_sandbox</span><span class="p">(</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>                    <span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/work/</span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>                    <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+<a id="__codelineno-0-221" name="__codelineno-0-221"></a>                    <span class="n">profile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+<a id="__codelineno-0-222" name="__codelineno-0-222"></a>                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+<a id="__codelineno-0-223" name="__codelineno-0-223"></a>                <span class="p">)</span>
+<a id="__codelineno-0-224" name="__codelineno-0-224"></a>            <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a>                <span class="n">stop</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+<a id="__codelineno-0-226" name="__codelineno-0-226"></a>                <span class="n">poller</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-0-227" name="__codelineno-0-227"></a>            <span class="c1"># Drain any promote that landed in the final tick.</span>
+<a id="__codelineno-0-228" name="__codelineno-0-228"></a>            <span class="n">promotions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">poll_once</span><span class="p">(</span><span class="n">workspace</span><span class="p">))</span>
+<a id="__codelineno-0-229" name="__codelineno-0-229"></a>
+<a id="__codelineno-0-230" name="__codelineno-0-230"></a>            <span class="k">return</span> <span class="n">SandboxResult</span><span class="p">(</span>
+<a id="__codelineno-0-231" name="__codelineno-0-231"></a>                <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">promotions</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a>            <span class="p">)</span>
+<a id="__codelineno-0-233" name="__codelineno-0-233"></a>        <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-0-234" name="__codelineno-0-234"></a>            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="manhattan_reasoning_gym.bench.Sandbox.run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">run</span>
+
+
+<a href="#manhattan_reasoning_gym.bench.Sandbox.run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxResult</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Launch the agent in the container and broker its promotes to silicon.</p>
+<p>Creates a throwaway workspace, copies :attr:<code>files</code> in, runs
+<code>python /work/&lt;entrypoint&gt;</code> under the isolation profile while an
+internal loop answers promotes, then tears the workspace down.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/sandbox.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-194">194</a></span>
+<span class="normal"><a href="#__codelineno-0-195">195</a></span>
+<span class="normal"><a href="#__codelineno-0-196">196</a></span>
+<span class="normal"><a href="#__codelineno-0-197">197</a></span>
+<span class="normal"><a href="#__codelineno-0-198">198</a></span>
+<span class="normal"><a href="#__codelineno-0-199">199</a></span>
+<span class="normal"><a href="#__codelineno-0-200">200</a></span>
+<span class="normal"><a href="#__codelineno-0-201">201</a></span>
+<span class="normal"><a href="#__codelineno-0-202">202</a></span>
+<span class="normal"><a href="#__codelineno-0-203">203</a></span>
+<span class="normal"><a href="#__codelineno-0-204">204</a></span>
+<span class="normal"><a href="#__codelineno-0-205">205</a></span>
+<span class="normal"><a href="#__codelineno-0-206">206</a></span>
+<span class="normal"><a href="#__codelineno-0-207">207</a></span>
+<span class="normal"><a href="#__codelineno-0-208">208</a></span>
+<span class="normal"><a href="#__codelineno-0-209">209</a></span>
+<span class="normal"><a href="#__codelineno-0-210">210</a></span>
+<span class="normal"><a href="#__codelineno-0-211">211</a></span>
+<span class="normal"><a href="#__codelineno-0-212">212</a></span>
+<span class="normal"><a href="#__codelineno-0-213">213</a></span>
+<span class="normal"><a href="#__codelineno-0-214">214</a></span>
+<span class="normal"><a href="#__codelineno-0-215">215</a></span>
+<span class="normal"><a href="#__codelineno-0-216">216</a></span>
+<span class="normal"><a href="#__codelineno-0-217">217</a></span>
+<span class="normal"><a href="#__codelineno-0-218">218</a></span>
+<span class="normal"><a href="#__codelineno-0-219">219</a></span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span>
+<span class="normal"><a href="#__codelineno-0-221">221</a></span>
+<span class="normal"><a href="#__codelineno-0-222">222</a></span>
+<span class="normal"><a href="#__codelineno-0-223">223</a></span>
+<span class="normal"><a href="#__codelineno-0-224">224</a></span>
+<span class="normal"><a href="#__codelineno-0-225">225</a></span>
+<span class="normal"><a href="#__codelineno-0-226">226</a></span>
+<span class="normal"><a href="#__codelineno-0-227">227</a></span>
+<span class="normal"><a href="#__codelineno-0-228">228</a></span>
+<span class="normal"><a href="#__codelineno-0-229">229</a></span>
+<span class="normal"><a href="#__codelineno-0-230">230</a></span>
+<span class="normal"><a href="#__codelineno-0-231">231</a></span>
+<span class="normal"><a href="#__codelineno-0-232">232</a></span>
+<span class="normal"><a href="#__codelineno-0-233">233</a></span>
+<span class="normal"><a href="#__codelineno-0-234">234</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxResult</span><span class="p">:</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Launch the agent in the container and broker its promotes to silicon.</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="sd">    Creates a throwaway workspace, copies :attr:`files` in, runs</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">    ``python /work/&lt;entrypoint&gt;`` under the isolation profile while an</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="sd">    internal loop answers promotes, then tears the workspace down.</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;mrg_sandbox_&quot;</span><span class="p">))</span>
+<a id="__codelineno-0-202" name="__codelineno-0-202"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-203" name="__codelineno-0-203"></a>        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a>            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">workspace</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>        <span class="n">entry</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>        <span class="n">promotions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a>        <span class="n">stop</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">poll_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>            <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+<a id="__codelineno-0-212" name="__codelineno-0-212"></a>                <span class="n">promotions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">poll_once</span><span class="p">(</span><span class="n">workspace</span><span class="p">))</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">)</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a>        <span class="n">poller</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">poll_loop</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="n">poller</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="n">proc</span> <span class="o">=</span> <span class="n">run_sandbox</span><span class="p">(</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>                <span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/work/</span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>                <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+<a id="__codelineno-0-221" name="__codelineno-0-221"></a>                <span class="n">profile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+<a id="__codelineno-0-222" name="__codelineno-0-222"></a>                <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+<a id="__codelineno-0-223" name="__codelineno-0-223"></a>            <span class="p">)</span>
+<a id="__codelineno-0-224" name="__codelineno-0-224"></a>        <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a>            <span class="n">stop</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+<a id="__codelineno-0-226" name="__codelineno-0-226"></a>            <span class="n">poller</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-0-227" name="__codelineno-0-227"></a>        <span class="c1"># Drain any promote that landed in the final tick.</span>
+<a id="__codelineno-0-228" name="__codelineno-0-228"></a>        <span class="n">promotions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">poll_once</span><span class="p">(</span><span class="n">workspace</span><span class="p">))</span>
+<a id="__codelineno-0-229" name="__codelineno-0-229"></a>
+<a id="__codelineno-0-230" name="__codelineno-0-230"></a>        <span class="k">return</span> <span class="n">SandboxResult</span><span class="p">(</span>
+<a id="__codelineno-0-231" name="__codelineno-0-231"></a>            <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">promotions</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a>        <span class="p">)</span>
+<a id="__codelineno-0-233" name="__codelineno-0-233"></a>    <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-0-234" name="__codelineno-0-234"></a>        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="manhattan_reasoning_gym.bench.SandboxResult" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">SandboxResult</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#manhattan_reasoning_gym.bench.SandboxResult" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Outcome of a :meth:<code>Sandbox.run</code>.</p>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/sandbox.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-56">56</a></span>
+<span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span>
+<span class="normal"><a href="#__codelineno-0-62">62</a></span>
+<span class="normal"><a href="#__codelineno-0-63">63</a></span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="k">class</span><span class="w"> </span><span class="nc">SandboxResult</span><span class="p">:</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Outcome of a :meth:`Sandbox.run`.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="n">returncode</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a>    <span class="n">stdout</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="n">stderr</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="n">promotions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>    <span class="nd">@property</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="manhattan_reasoning_gym.bench.SandboxProfile" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">SandboxProfile</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#manhattan_reasoning_gym.bench.SandboxProfile" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The docker run constraints applied to the container.</p>
+<p>Defaults are the locked-down profile: no egress, dropped capabilities,
+read-only root, bounded memory/cpu/pids. Only the workspace mount and tmpfs
+are writable. Use <code>.locked()</code> / <code>.dev()</code> for the named presets.</p>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/launcher.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-27"> 27</a></span>
+<span class="normal"><a href="#__codelineno-0-28"> 28</a></span>
+<span class="normal"><a href="#__codelineno-0-29"> 29</a></span>
+<span class="normal"><a href="#__codelineno-0-30"> 30</a></span>
+<span class="normal"><a href="#__codelineno-0-31"> 31</a></span>
+<span class="normal"><a href="#__codelineno-0-32"> 32</a></span>
+<span class="normal"><a href="#__codelineno-0-33"> 33</a></span>
+<span class="normal"><a href="#__codelineno-0-34"> 34</a></span>
+<span class="normal"><a href="#__codelineno-0-35"> 35</a></span>
+<span class="normal"><a href="#__codelineno-0-36"> 36</a></span>
+<span class="normal"><a href="#__codelineno-0-37"> 37</a></span>
+<span class="normal"><a href="#__codelineno-0-38"> 38</a></span>
+<span class="normal"><a href="#__codelineno-0-39"> 39</a></span>
+<span class="normal"><a href="#__codelineno-0-40"> 40</a></span>
+<span class="normal"><a href="#__codelineno-0-41"> 41</a></span>
+<span class="normal"><a href="#__codelineno-0-42"> 42</a></span>
+<span class="normal"><a href="#__codelineno-0-43"> 43</a></span>
+<span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
+<span class="normal"><a href="#__codelineno-0-45"> 45</a></span>
+<span class="normal"><a href="#__codelineno-0-46"> 46</a></span>
+<span class="normal"><a href="#__codelineno-0-47"> 47</a></span>
+<span class="normal"><a href="#__codelineno-0-48"> 48</a></span>
+<span class="normal"><a href="#__codelineno-0-49"> 49</a></span>
+<span class="normal"><a href="#__codelineno-0-50"> 50</a></span>
+<span class="normal"><a href="#__codelineno-0-51"> 51</a></span>
+<span class="normal"><a href="#__codelineno-0-52"> 52</a></span>
+<span class="normal"><a href="#__codelineno-0-53"> 53</a></span>
+<span class="normal"><a href="#__codelineno-0-54"> 54</a></span>
+<span class="normal"><a href="#__codelineno-0-55"> 55</a></span>
+<span class="normal"><a href="#__codelineno-0-56"> 56</a></span>
+<span class="normal"><a href="#__codelineno-0-57"> 57</a></span>
+<span class="normal"><a href="#__codelineno-0-58"> 58</a></span>
+<span class="normal"><a href="#__codelineno-0-59"> 59</a></span>
+<span class="normal"><a href="#__codelineno-0-60"> 60</a></span>
+<span class="normal"><a href="#__codelineno-0-61"> 61</a></span>
+<span class="normal"><a href="#__codelineno-0-62"> 62</a></span>
+<span class="normal"><a href="#__codelineno-0-63"> 63</a></span>
+<span class="normal"><a href="#__codelineno-0-64"> 64</a></span>
+<span class="normal"><a href="#__codelineno-0-65"> 65</a></span>
+<span class="normal"><a href="#__codelineno-0-66"> 66</a></span>
+<span class="normal"><a href="#__codelineno-0-67"> 67</a></span>
+<span class="normal"><a href="#__codelineno-0-68"> 68</a></span>
+<span class="normal"><a href="#__codelineno-0-69"> 69</a></span>
+<span class="normal"><a href="#__codelineno-0-70"> 70</a></span>
+<span class="normal"><a href="#__codelineno-0-71"> 71</a></span>
+<span class="normal"><a href="#__codelineno-0-72"> 72</a></span>
+<span class="normal"><a href="#__codelineno-0-73"> 73</a></span>
+<span class="normal"><a href="#__codelineno-0-74"> 74</a></span>
+<span class="normal"><a href="#__codelineno-0-75"> 75</a></span>
+<span class="normal"><a href="#__codelineno-0-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-0-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-0-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#__codelineno-0-115">115</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">class</span><span class="w"> </span><span class="nc">SandboxProfile</span><span class="p">:</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The docker run constraints applied to the container.</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    Defaults are the locked-down profile: no egress, dropped capabilities,</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    read-only root, bounded memory/cpu/pids. Only the workspace mount and tmpfs</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    are writable. Use ``.locked()`` / ``.dev()`` for the named presets.</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="n">image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="n">network</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>  <span class="c1"># no egress for untrusted builds</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">memory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;8g&quot;</span>  <span class="c1"># nextpnr is the memory hog</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="n">cpus</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;4&quot;</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="n">pids_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">read_only_root</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># e.g. &quot;1000:1000&quot;; None = image default</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="c1"># Writable scratch on the read-only rootfs. mrg_build builds in /tmp by</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="c1"># default, and HOME is pointed here so tool caches don&#39;t hit the ro root.</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">tmpfs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;/tmp:size=4g&quot;</span><span class="p">,)</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">home</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/tmp&quot;</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="c1"># Extra env vars passed into the container. EMPTY in the locked profile</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="c1"># (never inject a key into untrusted code); dev() forwards MRG_API_KEY here.</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="n">env</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">argv</span><span class="p">(</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>        <span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a>        <span class="n">workspace</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="n">mounts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the full ``docker run`` argv for one invocation.</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        ``workspace`` (if given) is mounted read-write at /work. ``mounts`` are</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">        extra (src, dst, mode) bind mounts.</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>        <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a>            <span class="s2">&quot;docker&quot;</span><span class="p">,</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="s2">&quot;--rm&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>            <span class="sa">f</span><span class="s2">&quot;--network=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>            <span class="sa">f</span><span class="s2">&quot;--memory=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--memory-swap=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a>            <span class="sa">f</span><span class="s2">&quot;--cpus=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cpus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--pids-limit=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pids_limit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>            <span class="s2">&quot;--cap-drop=ALL&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>            <span class="s2">&quot;--security-opt&quot;</span><span class="p">,</span> <span class="s2">&quot;no-new-privileges&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>            <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;HOME=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">home</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>        <span class="p">]</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>            <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_only_root</span><span class="p">:</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>            <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--read-only&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpfs</span><span class="p">:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>            <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--tmpfs&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>            <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--user&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">]</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="k">if</span> <span class="n">workspace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>            <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">:/work&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>        <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">mounts</span><span class="p">:</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>            <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">command</span><span class="p">]</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>        <span class="k">return</span> <span class="n">argv</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">locked</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span><span class="p">:</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The default profile — for UNTRUSTED agent code and benchmark eval.</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">        No network, no credentials, read-only root, dropped caps. Reproducible</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">        and benchmark-valid. ``overrides`` tweak individual fields if needed.</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dev</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">forward_api_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span><span class="p">:</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;TRUSTED experimentation only — relaxed, WITH internet.</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">        For a developer (or your own agent) poking around on your machine with</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="sd">        your own key: network on, writable root, and your host ``MRG_API_KEY``</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="sd">        forwarded in so ``mrg.cloud`` works directly.</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">        Do NOT run untrusted agent code in this profile, and do NOT treat its</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="sd">        results as benchmark scores — internet access makes them non-reproducible</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sd">        by definition.</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-108" name="__codelineno-0-108"></a>        <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">overrides</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109"></a>        <span class="k">if</span> <span class="n">forward_api_key</span><span class="p">:</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>            <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MRG_API_KEY&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a>            <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+<a id="__codelineno-0-112" name="__codelineno-0-112"></a>                <span class="n">env</span><span class="p">[</span><span class="s2">&quot;MRG_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a>        <span class="n">overrides</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;network&quot;</span><span class="p">,</span> <span class="s2">&quot;bridge&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a>        <span class="n">overrides</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;read_only_root&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="manhattan_reasoning_gym.bench.SandboxProfile.argv" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">argv</span>
+
+
+<a href="#manhattan_reasoning_gym.bench.SandboxProfile.argv" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">argv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">workspace</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mounts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Build the full <code>docker run</code> argv for one invocation.</p>
+<p><code>workspace</code> (if given) is mounted read-write at /work. <code>mounts</code> are
+extra (src, dst, mode) bind mounts.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/launcher.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span>
+<span class="normal"><a href="#__codelineno-0-55">55</a></span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span>
+<span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span>
+<span class="normal"><a href="#__codelineno-0-62">62</a></span>
+<span class="normal"><a href="#__codelineno-0-63">63</a></span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span>
+<span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span>
+<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+<span class="normal"><a href="#__codelineno-0-85">85</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="k">def</span><span class="w"> </span><span class="nf">argv</span><span class="p">(</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a>    <span class="n">workspace</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="n">mounts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the full ``docker run`` argv for one invocation.</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    ``workspace`` (if given) is mounted read-write at /work. ``mounts`` are</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    extra (src, dst, mode) bind mounts.</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="s2">&quot;docker&quot;</span><span class="p">,</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="s2">&quot;--rm&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="sa">f</span><span class="s2">&quot;--network=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>        <span class="sa">f</span><span class="s2">&quot;--memory=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--memory-swap=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a>        <span class="sa">f</span><span class="s2">&quot;--cpus=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cpus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--pids-limit=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pids_limit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>        <span class="s2">&quot;--cap-drop=ALL&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>        <span class="s2">&quot;--security-opt&quot;</span><span class="p">,</span> <span class="s2">&quot;no-new-privileges&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;HOME=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">home</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="p">]</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_only_root</span><span class="p">:</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>        <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--read-only&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpfs</span><span class="p">:</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--tmpfs&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--user&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">]</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>    <span class="k">if</span> <span class="n">workspace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">:/work&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>    <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">mounts</span><span class="p">:</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>        <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">command</span><span class="p">]</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>    <span class="k">return</span> <span class="n">argv</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="manhattan_reasoning_gym.bench.SandboxProfile.locked" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">locked</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#manhattan_reasoning_gym.bench.SandboxProfile.locked" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">locked</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The default profile — for UNTRUSTED agent code and benchmark eval.</p>
+<p>No network, no credentials, read-only root, dropped caps. Reproducible
+and benchmark-valid. <code>overrides</code> tweak individual fields if needed.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/launcher.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-87">87</a></span>
+<span class="normal"><a href="#__codelineno-0-88">88</a></span>
+<span class="normal"><a href="#__codelineno-0-89">89</a></span>
+<span class="normal"><a href="#__codelineno-0-90">90</a></span>
+<span class="normal"><a href="#__codelineno-0-91">91</a></span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="nd">@classmethod</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="k">def</span><span class="w"> </span><span class="nf">locked</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span><span class="p">:</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The default profile — for UNTRUSTED agent code and benchmark eval.</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">    No network, no credentials, read-only root, dropped caps. Reproducible</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">    and benchmark-valid. ``overrides`` tweak individual fields if needed.</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="manhattan_reasoning_gym.bench.SandboxProfile.dev" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">dev</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#manhattan_reasoning_gym.bench.SandboxProfile.dev" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">dev</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">forward_api_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>TRUSTED experimentation only — relaxed, WITH internet.</p>
+<p>For a developer (or your own agent) poking around on your machine with
+your own key: network on, writable root, and your host <code>MRG_API_KEY</code>
+forwarded in so <code>mrg.cloud</code> works directly.</p>
+<p>Do NOT run untrusted agent code in this profile, and do NOT treat its
+results as benchmark scores — internet access makes them non-reproducible
+by definition.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/launcher.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#__codelineno-0-115">115</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="nd">@classmethod</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="k">def</span><span class="w"> </span><span class="nf">dev</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">forward_api_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProfile</span><span class="p">:</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;TRUSTED experimentation only — relaxed, WITH internet.</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">    For a developer (or your own agent) poking around on your machine with</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="sd">    your own key: network on, writable root, and your host ``MRG_API_KEY``</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="sd">    forwarded in so ``mrg.cloud`` works directly.</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    Do NOT run untrusted agent code in this profile, and do NOT treat its</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="sd">    results as benchmark scores — internet access makes them non-reproducible</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sd">    by definition.</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-108" name="__codelineno-0-108"></a>    <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">overrides</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="k">if</span> <span class="n">forward_api_key</span><span class="p">:</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>        <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MRG_API_KEY&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a>        <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+<a id="__codelineno-0-112" name="__codelineno-0-112"></a>            <span class="n">env</span><span class="p">[</span><span class="s2">&quot;MRG_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="n">overrides</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;network&quot;</span><span class="p">,</span> <span class="s2">&quot;bridge&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a>    <span class="n">overrides</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;read_only_root&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="manhattan_reasoning_gym.bench.run_sandbox" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">run_sandbox</span>
+
+
+<a href="#manhattan_reasoning_gym.bench.run_sandbox" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run_sandbox</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">workspace</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">SandboxProfile</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mounts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CompletedProcess</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Run <code>command</code> in the sandbox container (locked profile by default).</p>
+
+            <details class="quote">
+              <summary>Source code in <code>_code/src/manhattan_reasoning_gym/bench/launcher.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-118" name="__codelineno-0-118"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_sandbox</span><span class="p">(</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a>    <span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a>    <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a>    <span class="n">workspace</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="n">profile</span><span class="p">:</span> <span class="n">SandboxProfile</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a>    <span class="n">mounts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">,</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CompletedProcess</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run ``command`` in the sandbox container (locked profile by default).&quot;&quot;&quot;</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>    <span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span> <span class="ow">or</span> <span class="n">SandboxProfile</span><span class="o">.</span><span class="n">locked</span><span class="p">()</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>    <span class="n">argv</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">argv</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="n">command</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="n">mounts</span><span class="o">=</span><span class="n">mounts</span><span class="p">)</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>    <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+          </article>
+
+          
+            <nav class="page-nav" aria-label="Page navigation">
+              
+                <a class="page-nav__prev" href="../sandbox/">
+                  <span class="page-nav__dir">Previous</span>
+                  <span class="page-nav__title">mrg.sandbox</span>
+                </a>
+              
+              
+                <a class="page-nav__next" href="../../changelog/">
+                  <span class="page-nav__dir">Next</span>
+                  <span class="page-nav__title">Changelog</span>
+                </a>
+              
+            </nav>
+          
+        </main>
+
+        <aside class="doc-toc" aria-label="On this page">
+          
+            <div class="doc-toc__inner">
+              <p class="doc-toc__label">On this page</p>
+              
+
+<ul class="toc-list toc-list--root">
+    <li class="toc-item toc-item--l1">
+      <a class="toc-link" href="#mrgbench">mrg.bench</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#manhattan_reasoning_gym.bench">bench</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#manhattan_reasoning_gym.bench.Sandbox">Sandbox</a>
+        <ul class="toc-list">
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#manhattan_reasoning_gym.bench.SandboxResult">SandboxResult</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#manhattan_reasoning_gym.bench.SandboxProfile">SandboxProfile</a>
+        <ul class="toc-list">
+
+
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#manhattan_reasoning_gym.bench.run_sandbox">run_sandbox</a>
+    </li>
+
+        </ul>
+    </li>
+
+        </ul>
+    </li>
+
+</ul>
+            </div>
+          
+        </aside>
+      </div>
+    
+
+    <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img src="../../assets/turnstile.svg" alt="" width="20" height="20">
+      <span>© Manhattan Reasoning</span>
+    </div>
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href="https://github.com/ManhattanReasoning" rel="external">GitHub</a>
+      <a href="https://manhattanreasoning.com" rel="external">Main site</a>
+      <a href="mailto:hello@manhattanreasoning.com">hello@manhattanreasoning.com</a>
+    </nav>
+  </div>
+</footer>
+    <div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-modal" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-modal__field">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="mkdocs-search-query" placeholder="Search the docs&hellip;"
+             autocomplete="off" spellcheck="false" aria-label="Search">
+      <button type="button" class="search-modal__close" data-search-close aria-label="Close">Esc</button>
+    </div>
+    <div class="search-modal__results" id="mkdocs-search-results" data-no-results-text="No results found"></div>
+  </div>
+</div>
+
+    <script>var base_url = "../..";</script>
+    <script src="../../js/docs.js"></script>
+    
+      <script src="../../javascripts/routing-viz.js"></script>
+    
+      <script src="../../search/main.js"></script>
+    
+    
+  </body>
+</html>
