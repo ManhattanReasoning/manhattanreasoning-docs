@@ -346,6 +346,17 @@ a:hover { text-decoration: underline; }
 /* line-number gutter (anchor_linenums) */
 .highlight .linenos { color: var(--dim); user-select: none; }
 
+/* Mermaid diagrams (see docs/javascripts/mermaid-init.js for the matching
+   themeVariables). Framed like a code block so it reads as part of the same
+   content system, not a foreign embed. */
+.md-content pre.mermaid {
+  display: flex; justify-content: center;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 1.4rem; margin: 0 0 1.3rem;
+  overflow-x: auto;
+}
+.md-content pre.mermaid svg { max-width: 100%; }
+
 /* Tables */
 .md-content table {
   width: 100%; border-collapse: collapse; margin: 0 0 1.4rem;

@@ -1,7 +1,10 @@
 # API Reference
 
 Generated from `manhattan-reasoning-gym`'s public docstrings. For a narrative
-walkthrough of these same surfaces, see the [SDK guide](../guides/sdk.md).
+walkthrough of these same surfaces, see the [SDK guide](../guides/sdk.md). For
+what's physically on the other end of these calls, the board, the SoC, and
+the FPGA resource budget your design gets, see
+[Hardware & SoC architecture](hardware.md).
 
 The SDK is organized by role into four namespaces:
 

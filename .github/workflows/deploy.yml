@@ -3,6 +3,7 @@ name: deploy
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
   # Allow the gym repo to trigger a rebuild when its API changes:
   #   gh api repos/ManhattanReasoning/manhattanreasoning-docs/dispatches \
