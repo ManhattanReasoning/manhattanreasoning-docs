@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Allow the private code repo to trigger a rebuild when the API changes:
+  # Allow the gym repo to trigger a rebuild when its API changes:
   #   gh api repos/ManhattanReasoning/manhattanreasoning-docs/dispatches \
   #     -f event_type=code-updated
   repository_dispatch:
@@ -20,14 +20,13 @@ jobs:
       - name: Checkout docs
         uses: actions/checkout@v4
 
-      # mkdocstrings reads the Python API reference from the private code repo.
-      # CODE_DEPLOY_KEY is a read-only deploy key registered on Manhattan-Reasoning-Cloud.
-      - name: Checkout private code (orchestrator source)
+      # mkdocstrings reads the Python API reference from the public gym repo.
+      # It's public, so this is a plain checkout -- no deploy key needed.
+      - name: Checkout manhattan-reasoning-gym source
         uses: actions/checkout@v4
         with:
-          repository: ManhattanReasoning/Manhattan-Reasoning-Cloud
+          repository: ManhattanReasoning/manhattan-reasoning-gym
           path: _code
-          ssh-key: ${{ secrets.CODE_DEPLOY_KEY }}
 
       - uses: actions/setup-python@v5
         with:
@@ -46,8 +45,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./site
-          # Phase 2 cutover: uncomment once the docs.manhattanreasoning.com DNS
-          # CNAME record exists, then the next deploy attaches the custom domain.
           cname: docs.manhattanreasoning.com
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="{{ config.theme.locale | default('en') }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if page and page.meta and page.meta.description %}
+      <meta name="description" content="{{ page.meta.description }}">
+    {% elif config.site_description %}
+      <meta name="description" content="{{ config.site_description }}">
+    {% endif %}
+    {% if page and page.canonical_url %}<link rel="canonical" href="{{ page.canonical_url }}">{% endif %}
+    {% if config.site_favicon %}
+      <link rel="icon" href="{{ config.site_favicon | url }}">
+    {% else %}
+      <link rel="icon" href="{{ 'assets/turnstile.svg' | url }}">
+    {% endif %}
+
+    <title>{% if page and page.title and not page.is_homepage %}{{ page.title }} · {% endif %}{{ config.site_name }}</title>
+
+    <link rel="stylesheet" href="{{ 'css/pygments.css' | url }}">
+    <link rel="stylesheet" href="{{ 'css/docs.css' | url }}">
+    {% for path in config.extra_css %}
+      <link rel="stylesheet" href="{{ path | url }}">
+    {% endfor %}
+    {% block extrahead %}{% endblock %}
+  </head>
+
+  <body class="{% if page and page.is_homepage %}is-home{% else %}is-doc{% endif %}"
+        data-md-color-scheme="slate">
+
+    {% include "partials/header.html" %}
+
+    {% if page and page.is_homepage %}
+      {# Home: full-bleed, no docs chrome. Content owns the whole viewport. #}
+      <main class="home-main" role="main">
+        {% block content %}{{ page.content }}{% endblock %}
+      </main>
+    {% else %}
+      <div class="doc-shell">
+        <aside class="doc-sidebar" aria-label="Section navigation">
+          {% include "partials/nav.html" %}
+        </aside>
+
+        <main class="doc-content" role="main">
+          {% if page and page.ancestors %}
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              {% for a in page.ancestors | reverse %}<span>{{ a.title }}</span><span class="sep">/</span>{% endfor %}
+              <span class="current">{{ page.title }}</span>
+            </nav>
+          {% endif %}
+
+          <article class="md-content">
+            {% block doc_content %}{{ page.content }}{% endblock %}
+          </article>
+
+          {% if page and (page.previous_page or page.next_page) %}
+            <nav class="page-nav" aria-label="Page navigation">
+              {% if page.previous_page %}
+                <a class="page-nav__prev" href="{{ page.previous_page.url | url }}">
+                  <span class="page-nav__dir">Previous</span>
+                  <span class="page-nav__title">{{ page.previous_page.title }}</span>
+                </a>
+              {% else %}<span></span>{% endif %}
+              {% if page.next_page %}
+                <a class="page-nav__next" href="{{ page.next_page.url | url }}">
+                  <span class="page-nav__dir">Next</span>
+                  <span class="page-nav__title">{{ page.next_page.title }}</span>
+                </a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        </main>
+
+        <aside class="doc-toc" aria-label="On this page">
+          {% if page and page.toc | length %}
+            <div class="doc-toc__inner">
+              <p class="doc-toc__label">On this page</p>
+              {% include "partials/toc.html" %}
+            </div>
+          {% endif %}
+        </aside>
+      </div>
+    {% endif %}
+
+    {% include "partials/footer.html" %}
+    {% if 'search' in config.plugins %}{% include "partials/search.html" %}{% endif %}
+
+    <script>var base_url = {{ base_url | tojson }};</script>
+    <script src="{{ 'js/docs.js' | url }}"></script>
+    {% for script in config.extra_javascript %}
+      {{ script | script_tag }}
+    {% endfor %}
+    {% block extrascripts %}{% endblock %}
+  </body>
+</html>

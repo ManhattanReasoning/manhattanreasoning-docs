@@ -1,0 +1,14 @@
+{#- Site footer, mirroring the marketing site's minimal footer. -#}
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img src="{{ 'assets/turnstile.svg' | url }}" alt="" width="20" height="20">
+      <span>{{ config.copyright or '© Manhattan Reasoning' }}</span>
+    </div>
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href="https://github.com/ManhattanReasoning" rel="external">GitHub</a>
+      <a href="https://manhattanreasoning.com" rel="external">Main site</a>
+      <a href="mailto:hello@manhattanreasoning.com">hello@manhattanreasoning.com</a>
+    </nav>
+  </div>
+</footer>

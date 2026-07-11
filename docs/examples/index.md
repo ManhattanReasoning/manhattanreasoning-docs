@@ -1,32 +1,32 @@
 # Examples
 
-Runnable apps that ship in the [`Cloud_FPGA`](https://github.com/ManhattanReasoning/Manhattan-Reasoning-Cloud)
-repo under `examples/`. Each is a complete [`cloud_fpga.App`](../guides/sdk.md)
-you launch with `cloud-fpga run`.
+Runnable apps from the [`manhattan-reasoning-gym`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples)
+repo. Each is a complete `mrg.cloud.App` you launch with `mrg run`.
 
 <div class="grid cards" markdown>
 
+-   :material-hand-wave: **[Hello Wishbone](hello-wishbone.md)**
+
+    The minimal smoke test, write a pattern to an echo RAM and read it back.
+    Start here to verify the interface contract.
+
 -   :material-check-decagram: **[SAT solver](sat-solver.md)**
 
-    The flagship workload — a brute-force boolean satisfiability solver in
-    hardware. Includes a generalized DIMACS runner and a 30-variable variant.
+    A brute-force boolean satisfiability solver in hardware. Includes a
+    generalized DIMACS runner and a 30-variable variant.
 
 -   :material-brain: **[BERT feed-forward](bert-ffn.md)**
 
-    A real transformer encoder block whose feed-forward matmuls run on the FPGA
-    via an int8 4×4 matmul core.
+    A real transformer encoder block whose feed-forward matmuls run on the
+    FPGA via a tiled int8 matmul core.
 
--   :material-hand-wave: **[Hello Wishbone](hello-wishbone.md)**
+-   :material-chip: **[FFN accelerator](ffn-accel.md)**
 
-    The minimal smoke test — write a pattern to an echo RAM and read it back.
+    A real streaming INT8 transformer feed-forward engine, entirely in
+    silicon, parallel MAC grid, on-chip requantization, and GELU.
 
 </div>
 
 !!! tip "Before you run"
-    Install the SDK, set `CLOUD_FPGA_API_KEY`, and confirm a board is `idle`
-    (`cloud-fpga status`). See the [Quickstart](../guides/quickstart.md).
-
-!!! warning "Boards land in `error` after a run"
-    These examples release their session on exit, which currently strands the
-    board in `error`. Recover with the Redis flush in
-    [Troubleshooting](../guides/troubleshooting.md#fpga-stuck-in-error).
+    `pip install manhattan-reasoning-gym`, `mrg login`, and confirm a board is
+    `idle` (`mrg status`). See the [Quickstart](../guides/quickstart.md).
