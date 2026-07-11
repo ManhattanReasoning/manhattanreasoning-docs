@@ -41,9 +41,11 @@ The whole dual-engine slave at `tile=4`:
 | FFNSlave | 3,437 | 840 | 40 | 6 | 1,505 |
 | **Budget (LFE5UM5G-85F)** | 84k | – | **156** | 208 | – |
 
-Fits with huge headroom next to the VexRiscv+LiteEth SoC. The parallel MAC
-grid scales as `tile²` DSPs, 12×12 (144 MACs) is the max all-DSP fit; 16×16
-(256 MACs) needs on-fabric multipliers.
+Fits with huge headroom next to the VexRiscv+LiteEth SoC (see
+[Hardware & SoC architecture](../reference/hardware.md) for what that SoC
+alone costs and how much of the chip is left over before this design is even
+added). The parallel MAC grid scales as `tile²` DSPs, 12×12 (144 MACs) is the
+max all-DSP fit; 16×16 (256 MACs) needs on-fabric multipliers.
 
 ## Run it
 

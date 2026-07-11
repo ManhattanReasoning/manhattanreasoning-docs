@@ -21,6 +21,11 @@ extra_javascript:
   # reads as a dark-mode version of the main site. Harmless on pages with no
   # such canvas.
   - javascripts/routing-viz.js
+  # Renders ```mermaid fences (see the superfences custom_fences entry below)
+  # with themeVariables matched to docs.css's palette. Harmless on pages with
+  # no .mermaid blocks.
+  - path: javascripts/mermaid-init.js
+    type: module
 
 markdown_extensions:
   - admonition
@@ -79,6 +84,7 @@ nav:
       - FFN accelerator: examples/ffn-accel.md
   - Reference:
       - Overview: reference/index.md
+      - Hardware & SoC: reference/hardware.md
       - mrg.cloud: reference/cloud.md
       - mrg.build: reference/build.md
       - mrg.sandbox: reference/sandbox.md
