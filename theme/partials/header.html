@@ -1,0 +1,41 @@
+{#-
+  Top nav: animated "Manhattan -> / |- Reasoning" wordmark + Docs badge on the
+  left (mirrors manhattanreasoning.com), top-level section tabs in the middle
+  (Guide / Examples / Reference / Changelog), search on the right.
+  Scroll-collapse of the wordmark is driven by .scrolled (js/docs.js).
+-#}
+<header class="site-header" id="site-header">
+  <div class="site-header__inner">
+
+    <a href="{{ nav.homepage.url | url if nav.homepage else base_url }}" class="brand" aria-label="{{ config.site_name }}">
+      <span class="logo" aria-hidden="true">
+        <span class="logo-l1">Manhattan <span class="op">&rarr;</span> Reasoning,</span>
+        <span class="logo-l2">Manhattan <span class="op">&#8866;</span> Reasoning <span class="logo-docs">Docs</span></span>
+      </span>
+    </a>
+
+    <nav class="top-tabs" aria-label="Sections">
+      {%- for nav_item in nav %}
+        {%- if not (nav_item.is_page and nav_item.is_homepage) %}
+          {%- set target = nav_item.url or (nav_item.children[0].url if nav_item.children else '#') %}
+          <a class="top-tab{% if nav_item.active %} active{% endif %}"
+             href="{{ target | url }}"{% if nav_item.is_link %} rel="external"{% endif %}>{{ nav_item.title }}</a>
+        {%- endif %}
+      {%- endfor %}
+      <a class="top-tab top-tab--ext" href="https://manhattanreasoning.com" rel="external">Manhattan Reasoning &#8599;</a>
+    </nav>
+
+    <div class="header-actions">
+      {%- if 'search' in config.plugins %}
+        <button type="button" class="search-open" aria-label="Search" data-search-open>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="search-open__hint">Search the docs</span>
+          <kbd class="search-open__kbd">/</kbd>
+        </button>
+      {%- endif %}
+      <button type="button" class="drawer-toggle" aria-label="Toggle navigation" data-drawer-toggle>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>

@@ -1,53 +1,26 @@
-site_name: Manhattan Reasoning Docs
+site_name: Docs
 site_description: >-
-  Cloud FPGA infrastructure for hardware-reasoning agents — guides, concepts,
-  and API reference for the Cloud FPGA Orchestrator.
+  Program real FPGAs from Python. The manhattan-reasoning-gym SDK and CLI:
+  quickstart, SDK usage, CLI usage, examples, and API reference.
 site_url: https://docs.manhattanreasoning.com/
 copyright: © Manhattan Reasoning
 
 docs_dir: docs
 site_dir: site
 
+# Custom theme (see theme/). We dropped mkdocs-material for full design
+# control while keeping MkDocs' search plugin + mkdocstrings. Favicon, logo,
+# fonts, and colours all live in theme/css/docs.css and the templates.
 theme:
-  name: material
-  logo: assets/turnstile.svg
-  favicon: assets/turnstile.svg
-  font:
-    text: Inter
-    code: JetBrains Mono
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
-  features:
-    - navigation.instant
-    - navigation.tracking
-    - navigation.sections
-    - navigation.top
-    - navigation.footer
-    - toc.follow
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-    - content.code.annotate
+  name: null
+  custom_dir: theme
 
-extra:
-  # Make the header logo/title link back to the main marketing site
-  homepage: https://manhattanreasoning.com
-
-extra_css:
-  - stylesheets/extra.css
+extra_javascript:
+  # The home hero's [data-routing-field] canvas (docs/index.md) is animated by
+  # the same routing visualiser as manhattanreasoning.com, so arriving here
+  # reads as a dark-mode version of the main site. Harmless on pages with no
+  # such canvas.
+  - javascripts/routing-viz.js
 
 markdown_extensions:
   - admonition
@@ -78,11 +51,11 @@ plugins:
       default_handler: python
       handlers:
         python:
-          # Static analysis of the source — no need to install the package
-          # or its runtime deps (fastapi, redis, ...) in the docs build.
-          # The private Cloud_FPGA repo is checked out into _code/ (CI) or
-          # cloned there locally via scripts/fetch-code.sh.
-          paths: [_code/orchestrator/src]
+          # Static analysis of the source -- no need to install the package or
+          # its deps. The public manhattan-reasoning-gym repo is checked out
+          # into _code/ (CI) or cloned there locally via scripts/fetch-code.sh.
+          # Public repo, so no deploy key needed anywhere.
+          paths: [_code/src]
           options:
             docstring_style: google
             show_root_heading: true
@@ -94,19 +67,20 @@ plugins:
 
 nav:
   - Home: index.md
-  - Guides:
+  - Guide:
       - Quickstart: guides/quickstart.md
-      - Python SDK: guides/sdk.md
-      - CLI: guides/cli.md
-      - Using the REST API: guides/rest.md
-      - Troubleshooting: guides/troubleshooting.md
+      - SDK Usage: guides/sdk.md
+      - CLI Usage: guides/cli.md
   - Examples:
       - Overview: examples/index.md
+      - Hello Wishbone: examples/hello-wishbone.md
       - SAT solver: examples/sat-solver.md
       - BERT feed-forward: examples/bert-ffn.md
-      - Hello Wishbone: examples/hello-wishbone.md
-  - Concepts:
-      - Architecture: concepts/architecture.md
-  - API Reference:
-      - REST API: api/rest.md
-      - Python package: reference/orchestrator.md
+      - FFN accelerator: examples/ffn-accel.md
+  - Reference:
+      - Overview: reference/index.md
+      - mrg.cloud: reference/cloud.md
+      - mrg.build: reference/build.md
+      - mrg.sandbox: reference/sandbox.md
+      - mrg.bench: reference/bench.md
+  - Changelog: changelog.md

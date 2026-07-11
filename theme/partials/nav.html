@@ -1,0 +1,39 @@
+{#-
+  Left sidebar: the sub-tree of the *active* top-level section (Modal-style).
+  Falls back to the item itself for single-page sections (e.g. Reference).
+-#}
+{% macro render_items(items) %}
+  <ul class="nav-list">
+    {%- for item in items %}
+      {%- if item.children %}
+        <li class="nav-group">
+          <p class="nav-group__label">{{ item.title }}</p>
+          {{ render_items(item.children) }}
+        </li>
+      {%- else %}
+        <li class="nav-item">
+          <a class="nav-link{% if item.active %} active{% endif %}"
+             href="{{ item.url | url }}"{% if item.is_link %} rel="external"{% endif %}>{{ item.title }}</a>
+        </li>
+      {%- endif %}
+    {%- endfor %}
+  </ul>
+{% endmacro %}
+
+{% set section = namespace(item=None) %}
+{%- for nav_item in nav %}
+  {%- if nav_item.active and not (nav_item.is_page and nav_item.is_homepage) %}
+    {% set section.item = nav_item %}
+  {%- endif %}
+{%- endfor %}
+
+<div class="nav-scroll">
+  {%- if section.item and section.item.children %}
+    <p class="nav-section-title">{{ section.item.title }}</p>
+    {{ render_items(section.item.children) }}
+  {%- elif section.item %}
+    {{ render_items([section.item]) }}
+  {%- else %}
+    {{ render_items(nav) }}
+  {%- endif %}
+</div>

@@ -1,0 +1,17 @@
+{#- Right-hand "On this page" table of contents. -#}
+{% set _toc_depth = config.theme.get('navigation_depth', 3) %}
+{% macro toc_item(item) %}
+  {%- if item.level <= _toc_depth %}
+    <li class="toc-item toc-item--l{{ item.level }}">
+      <a class="toc-link" href="{{ item.url }}">{{ item.title }}</a>
+      {%- if item.children %}
+        <ul class="toc-list">
+          {%- for child in item.children %}{{ toc_item(child) }}{%- endfor %}
+        </ul>
+      {%- endif %}
+    </li>
+  {%- endif %}
+{% endmacro %}
+<ul class="toc-list toc-list--root">
+  {%- for item in page.toc %}{{ toc_item(item) }}{%- endfor %}
+</ul>

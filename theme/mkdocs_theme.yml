@@ -1,0 +1,8 @@
+# Manhattan Reasoning docs, custom theme defaults.
+# Loaded because mkdocs.yml sets `theme: { name: null, custom_dir: theme }`.
+locale: en
+
+# Our own templates reference these; tweak here rather than in the HTML.
+navigation_depth: 3   # right-hand TOC depth
+include_search_page: false
+search_index_only: false

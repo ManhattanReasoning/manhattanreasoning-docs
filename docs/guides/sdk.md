@@ -1,184 +1,202 @@
 # The Python SDK
 
-The `cloud_fpga` package wraps the full FPGA lifecycle — build, program, register
-I/O, and release — behind a small [Modal](https://modal.com)-style decorator API.
-It is the recommended way to use the platform; the [REST API](../api/rest.md) is
-the lower-level contract underneath.
+`manhattan-reasoning-gym` (imported as `mrg`) has three surfaces, matching the
+three ways to use the platform:
 
-## Install
+| Surface | What it does | Needs |
+| --- | --- | --- |
+| [`mrg.build`](#mrgbuild-local-synth-pnr) | local synth / place-and-route reports, no board | Docker |
+| [`mrg.Sandbox`](#mrgsandbox-locked-agent-execution) | run an untrusted agent in a locked container that can promote to silicon | Docker |
+| [`mrg.cloud`](#mrgcloud-real-hardware) | program + drive a real ECP5 over the cloud | API key |
 
-```bash
-pip install -e ./sdk      # from a clone of the Cloud_FPGA repo
-```
+## `mrg.cloud`: real hardware
 
-Requires **Python 3.12 or 3.13**. Installs the `cloud_fpga` package and the
-[`cloud-fpga`](cli.md) CLI.
-
-## The mental model
-
-You describe an **application** with three things:
-
-1. a **design** — an Amaranth `.py` file whose top-level module is a Wishbone B4
-   slave (see [Architecture](../concepts/architecture.md));
-2. a **register map** — the byte offsets your design exposes;
-3. **API config** — which board (`fpga_id`) and your key.
-
-Then you read and write registers. The first access programs the FPGA
-automatically.
+You describe an **application** with three things: a **design** (an Amaranth
+`.py` file whose top-level module is a Wishbone B4 slave), an optional
+**register map** (the byte offsets your design exposes), and API config.
 
 ```python
-import cloud_fpga
+import manhattan_reasoning_gym as mrg
 
-class Regs(cloud_fpga.RegisterMap):
+class Regs(mrg.cloud.RegisterMap):
     CTRL     = 0x0000
     DATA_IN  = 0x0004
     DATA_OUT = 0x0008
 
-app = cloud_fpga.App(
+app = mrg.cloud.App(
     "my_design",
     design="design.py",
-    fpga_id=0,
     registers=Regs,
-    api_key=cloud_fpga.secret("CLOUD_FPGA_API_KEY"),
 )
 
 @app.local_entrypoint()
 def main():
-    with app:
-        app.write(Regs.DATA_IN, 0x1234)
-        app.write(Regs.CTRL, 1)            # kick off
-        print(hex(app.read(Regs.DATA_OUT)))
+    app.write(Regs.DATA_IN, 0x1234)
+    app.write(Regs.CTRL, 1)            # kick off
+    print(hex(app.read(Regs.DATA_OUT)))
 ```
 
-Run it with the CLI (which calls the entrypoint after programming):
+Run it with the CLI, which programs the FPGA then calls the entrypoint:
 
 ```bash
-cloud-fpga run my_design.py
+mrg run my_design.py
 ```
 
-## `App`
+### `App`
 
 ```python
-cloud_fpga.App(
+mrg.cloud.App(
     name,
     *,
-    design,                 # path to the Amaranth .py design
-    fpga_id,                # which board (0–9)
-    registers=None,         # a RegisterMap subclass (optional)
-    api_key=None,           # defaults to $CLOUD_FPGA_API_KEY
-    api_url="https://api.manhattanreasoning.com",
+    design,                    # path to the Amaranth .py design
+    fpga_id=None,               # pin a board, or let the SDK pick an idle one
+    registers=None,              # a RegisterMap subclass (optional)
+    api_key=None,                # explicit arg > $MRG_API_KEY > `mrg login`
+    api_url=DEFAULT_API_URL,
+    sys_clk_freq=None,            # SoC compute clock override (Hz)
+    timing_target_mhz=None,        # PnR/grading timing target (MHz)
 )
 ```
 
-Creating an `App` registers it so the CLI can discover it — you don't export
-anything. If you define several in one file, `cloud-fpga run` uses the last one.
+Creating an `App` registers it so the CLI can discover it, you don't export
+anything. If a file defines several, `mrg run` uses the last one.
 
-!!! info "Build clock and timing target"
-    A cloud build runs the SoC at **50 MHz** by default. To run at a different
-    clock, or to grade timing closure against a separate target ("does this close
-    at 90 MHz?"), set the submit request's
-    [`sys_clk_freq` and `timing_target_mhz`](../api/rest.md#post-fpgafpga_idsubmit)
-    form fields — see
-    [Clocking vs. grading](../concepts/architecture.md#clocking-sys-clock-vs-timing-target).
+!!! info "Sys clock vs. timing target"
+    A build carries two independent frequencies. **Sys clock** is what the SoC
+    actually runs at (produced by the ECP5 PLL from a fixed 12 MHz input,
+    default **50 MHz**), because the PLL divides that fixed input, only
+    certain output frequencies are realizable. **Timing target** is the
+    frequency place-and-route is *constrained* to hit and the build is
+    *graded* against; it carries no PLL restriction, so it can be any value,
+    and defaults to the sys clock. Keeping them separate lets you ask "can
+    this design close at 90 MHz?" without re-clocking the SoC, and grade
+    against thresholds the PLL can't synthesize exactly. Set both via
+    `App(sys_clk_freq=..., timing_target_mhz=...)` or the CLI's
+    `--sys-clk`/`--timing-target-mhz` flags.
 
-### `app.read(addr, count=1)`
+#### `app.read(addr, count=1)`
 
 Read `count` 32-bit words starting at byte address `addr`. Returns a single
-`int` when `count == 1`, otherwise a `list[int]`. Programs the FPGA first if it
-hasn't been programmed yet.
+`int` when `count == 1`, otherwise a `list[int]`. Programs the FPGA first if
+it hasn't been programmed yet.
 
-```python
-status = app.read(Regs.CTRL)            # one word -> int
-block  = app.read(0x0020, count=8)      # eight words -> list[int]
-```
-
-### `app.write(addr, value)`
+#### `app.write(addr, value)`
 
 Write one or more 32-bit words to byte address `addr`. `value` may be a single
-`int` or a `list[int]` for a burst write. Programs the FPGA first if needed.
+`int` or a `list[int]` for a burst write.
 
-```python
-app.write(Regs.DATA_IN, 0xDEADBEEF)     # single word
-app.write(0x0020, [0] * 200)            # burst (e.g. clear a region)
-```
-
-### `app.release()`
+#### `app.release()`
 
 Release the active session, returning the board to `idle`. Returns the reset
-`job_id`.
+`job_id`. `App` is also a context manager that calls this on exit.
+
+### `RegisterMap`
+
+A marker base class for your design's address map, subclass it and set
+integer class attributes for the byte offsets. Byte offset = 4 × word offset.
+Passing `registers=` to `App` is optional; it's for your own organization,
+`read`/`write` take raw addresses either way.
+
+### `@app.local_entrypoint()`
+
+Marks the function `mrg run` calls after programming. Not called on plain
+`import`/`python`, so the same file doubles as an importable module and a
+runnable app.
+
+### `secret(env_var)`
+
+Reads a required environment variable, raising immediately if it's unset,
+useful for API keys you want to fail loudly on rather than silently pass
+through as `None`.
+
+### Module-level session functions
 
 ```python
-app.release()
+mrg.cloud.get_session(fpga_id, api_key, api_url)      # current session info
+mrg.cloud.release_session(fpga_id, api_key, api_url)  # release, returns job_id
 ```
 
-### Context manager
+## `mrg.Sandbox`: locked agent execution
 
-`App` is a context manager that releases on exit — the idiomatic way to scope a
-session:
+For running an **untrusted agent**: the agent gets a locked-down container
+with no API key and no network. Having vetted a candidate locally with
+`mrg.build`, it calls `mrg.sandbox.promote(...)`, a file handoff on the
+shared workspace, and your trusted process outside the container decides
+whether to run it on real silicon.
 
 ```python
-@app.local_entrypoint()
-def main():
-    with app:
-        app.write(Regs.DATA_IN, 42)
-        result = app.read(Regs.DATA_OUT)
-    # session released here
+import manhattan_reasoning_gym as mrg
+
+sb = mrg.Sandbox(files=["design.py", "agent.py"])  # mock silicon unless a key is set
+result = sb.run("agent.py")
+for promotion in result.promotions:
+    print(promotion)
 ```
-
-!!! warning "Releasing currently strands the board in `error`"
-    Releasing reflashes the base SoC, which currently fails and leaves the FPGA
-    in `error`. Until that's fixed, recover with the Redis flush in
-    [Troubleshooting](troubleshooting.md#fpga-stuck-in-error). You can also skip
-    the auto-release by not using `with app:` and resetting manually later.
-
-## `RegisterMap`
-
-A marker base class for your design's address map. Subclass it and set integer
-class attributes for the **byte** offsets:
 
 ```python
-class Regs(cloud_fpga.RegisterMap):
-    CTRL     = 0x0000      # word 0
-    N_VARS   = 0x0004      # word 1
-    MODEL    = 0x000C      # word 3
+mrg.Sandbox(
+    files=(),
+    *,
+    isolation="locked",       # or "dev", or a custom SandboxProfile
+    silicon="auto",           # "auto" | "cloud" | "mock" | a callable
+    api_key=None,
+    api_url=None,
+    sys_clk_freq=None,
+    guard=None,               # optional (design_bytes, report) -> reject reason | None
+    image=None,
+    poll_interval=0.2,
+)
 ```
 
-Byte offset = 4 × word offset. Passing `registers=Regs` to `App` is optional
-(it's just for your own organization — `read`/`write` take raw addresses).
+`sb.run(entrypoint, *, timeout=1800)` launches `entrypoint` in the container
+and brokers its promotes to silicon, returning a `SandboxResult(returncode,
+stdout, stderr, promotions)`.
 
-## `@app.local_entrypoint()`
+**No gating by default**: the framework doesn't decide whether a promote is
+"good enough"; the agent gates itself, and you only get a promote check if you
+pass `guard=`. **The trust boundary is fixed**: the container has no key and
+no network; promote is a file handoff on the shared workspace; only the
+trusted process outside the container holds the key and touches silicon.
 
-Marks the function the CLI runs after programming. It is **not** called when you
-`import` or `python` the file — only by `cloud-fpga run`. This lets the same file
-double as an importable module and a runnable app.
+### Inside the container: `mrg.sandbox.promote`
 
-## `secret(env_var)`
-
-Reads a required environment variable, raising `ValueError` immediately (at
-import time) if it's unset — so a missing key fails loudly before any work
-starts.
+The only function available to a sandboxed agent, it never holds a key or
+calls the orchestrator directly:
 
 ```python
-api_key = cloud_fpga.secret("CLOUD_FPGA_API_KEY")
+report = mrg.build.pnr("design.py")
+if report.fits and report.timing_met:
+    mrg.sandbox.promote("design.py", report, agent="demo-agent")
 ```
 
-## Module-level functions
+## `mrg.build`: local synth / PnR
 
-For session management outside an `App`:
+Fast, no-cloud, no-board build feedback. The same call works everywhere: run
+inside the sandbox image (toolchain present) executes in-process; run on a
+plain host transparently runs the pinned Docker image and parses its JSON
+report. Either way you get a `BuildReport` back.
 
 ```python
-cloud_fpga.get_session(fpga_id, api_key, api_url)      # current session info
-cloud_fpga.release_session(fpga_id, api_key, api_url)  # release, returns job_id
+mrg.build.synth(design, *, work=None) -> BuildReport
+mrg.build.pnr(
+    design, *,
+    target_mhz=None,        # legacy alias, sets both knobs below
+    sys_clk_mhz=None,
+    timing_target_mhz=None,
+    seed=1,
+    work=None,
+) -> BuildReport
 ```
 
-## A complete example
+- `synth`: resource utilization only, fast, no timing analysis.
+- `pnr`: full-SoC place-and-route (Fmax, `timing_met`, SoC-wide utilization).
 
-The [SAT solver](../examples/sat-solver.md) example is a good template — a
-`RegisterMap`, helper encoders, an `App`, and a `@local_entrypoint` that writes a
-formula, starts the solve, polls for completion, and reads back the model.
+`BuildReport` fields: `mode`, `ok`, `scope`, `fits`, `fmax_mhz`, `sys_clk_mhz`,
+`target_mhz`, `timing_met`, `clock`, `util`, `synth_cells`, `warnings`,
+`design_hash`, `toolchain`, `log_tail`, plus `.to_json()`/`.to_dict()`.
 
 ## See also
 
-- [CLI reference](cli.md) — driving apps from the terminal.
-- [Examples](../examples/index.md) — runnable apps.
-- [REST API](../api/rest.md) — what the SDK calls under the hood.
+- [CLI reference](cli.md), driving all three surfaces from the terminal.
+- [Examples](../examples/index.md), complete, runnable apps.
+- [API Reference](../reference/index.md), the full generated docstring reference.
