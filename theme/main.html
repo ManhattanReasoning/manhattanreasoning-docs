@@ -32,7 +32,13 @@
     {% include "partials/header.html" %}
 
     {% if page and page.is_homepage %}
-      {# Home: full-bleed, no docs chrome. Content owns the whole viewport. #}
+      {# Home: full-bleed, no docs chrome. Content owns the whole viewport.
+         The sidebar below is desktop-hidden (.is-home .doc-sidebar); it only
+         surfaces as the mobile drawer-toggle's menu, since .top-tabs is
+         hidden at that width and needs somewhere to go. #}
+      <aside class="doc-sidebar" aria-label="Section navigation">
+        {% include "partials/nav.html" %}
+      </aside>
       <main class="home-main" role="main">
         {% block content %}{{ page.content }}{% endblock %}
       </main>

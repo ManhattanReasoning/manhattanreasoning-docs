@@ -195,6 +195,11 @@ a:hover { text-decoration: underline; }
   border-right: 1px solid var(--line-soft);
   padding: 1.6rem 1rem 3rem 1.4rem;
 }
+/* Home has no three-pane doc shell, so its sidebar only exists to give the
+   mobile drawer-toggle a menu (.top-tabs is hidden below 820px). Hide it on
+   desktop; the 820px breakpoint below turns it into the same slide-in drawer
+   used on doc pages. */
+.is-home .doc-sidebar { display: none; }
 .nav-section-title {
   font-size: .95rem; font-weight: 800; letter-spacing: -0.01em;
   color: var(--ink-strong); margin-bottom: .8rem;
@@ -398,6 +403,9 @@ a:hover { text-decoration: underline; }
   width: 1.35em; height: 1.35em; fill: currentColor; vertical-align: -0.28em;
   margin-right: .15rem;
 }
+/* Title link ("**[The CLI](cli.md)**") would otherwise inherit the global
+   blue `a` color; match the homepage cards' white-bold title instead. */
+.md-content .grid.cards > ul > li strong > a { color: var(--ink-strong); }
 
 /* ============================================================
    Footer
@@ -566,7 +574,6 @@ a:hover { text-decoration: underline; }
   font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em;
   color: var(--ink-strong); margin-bottom: .5rem;
 }
-.tile__label { color: var(--link); }
 .feature-card__body, .tile__desc {
   font-size: .92rem; line-height: 1.55; color: var(--muted);
 }
@@ -595,12 +602,14 @@ a:hover { text-decoration: underline; }
   .search-open__hint, .search-open__kbd { display: none; }
   .search-open { min-width: 0; padding: 0 9px; }
   .drawer-toggle { display: inline-flex; }
-  /* tighten the header so the wordmark + Docs never collide with the actions */
-  .site-header__inner { gap: 10px; padding: 0 16px; }
+  /* tighten the header so the wordmark + Docs never collide with the actions;
+     a bit more left inset than right so the logo isn't flush to the edge */
+  .site-header__inner { gap: 10px; padding: 0 16px 0 22px; }
   .header-actions { margin-left: auto; flex: none; }
   .brand { min-width: 0; }
   .logo { width: 12.6em; font-size: 14px; }
   .doc-shell { grid-template-columns: minmax(0, 1fr); }
+  .is-home .doc-sidebar { display: block; }
   .doc-sidebar {
     position: fixed; top: var(--header-h); left: 0; z-index: 40;
     width: min(80vw, var(--sidebar-w)); background: var(--bg);
