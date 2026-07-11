@@ -190,9 +190,11 @@ of correctness, not an approximation.</p>
 </tr>
 </tbody>
 </table>
-<p>Fits with huge headroom next to the VexRiscv+LiteEth SoC. The parallel MAC
-grid scales as <code>tile²</code> DSPs, 12×12 (144 MACs) is the max all-DSP fit; 16×16
-(256 MACs) needs on-fabric multipliers.</p>
+<p>Fits with huge headroom next to the VexRiscv+LiteEth SoC (see
+<a href="../../reference/hardware/">Hardware &amp; SoC architecture</a> for what that SoC
+alone costs and how much of the chip is left over before this design is even
+added). The parallel MAC grid scales as <code>tile²</code> DSPs, 12×12 (144 MACs) is the
+max all-DSP fit; 16×16 (256 MACs) needs on-fabric multipliers.</p>
 <h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mrg<span class="w"> </span>login<span class="w">                                   </span><span class="c1"># or set MRG_API_KEY</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>mrg<span class="w"> </span>run<span class="w"> </span>examples/ffn_accel/client_sdk.py<span class="w">    </span><span class="c1"># builds the bitstream, programs a board, runs</span>
@@ -300,6 +302,8 @@ project (DMA + a faster link), not a compute one.</p>
     <script src="../../js/docs.js"></script>
     
       <script src="../../javascripts/routing-viz.js"></script>
+    
+      <script src="../../javascripts/mermaid-init.js" type="module"></script>
     
       <script src="../../search/main.js"></script>
     
