@@ -87,6 +87,21 @@
             <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Notable changes to the <code>manhattan-reasoning-gym</code> SDK and CLI. The project is in
 private beta, so surfaces may still change between <code>0.1.x</code> releases.</p>
+<h2 id="015-private-beta">0.1.5 (private beta)<a class="headerlink" href="#015-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>App.write(addr, value, fixed_address=True)</code>: repeats <code>addr</code> for every word
+  in a burst instead of incrementing it, for a FIFO or push-register port
+  where a design keeps its own internal write index (a common streaming-load
+  pattern — writing a sequence of words one at a time to a single register,
+  with the RTL auto-advancing into the next clause/slot).</li>
+<li><code>App.stream()</code>: a persistent, low-latency session for many small
+  <code>read</code>/<code>write</code> ops. Unlike <code>App.write()</code>/<code>App.read()</code>, which each dispatch
+  their own job against the cloud API and poll for completion every 0.5s, a
+  <code>Stream</code> holds one WebSocket connection open for the life of a <code>with</code>
+  block — useful for tight loops like loading a CNF instance one literal per
+  write, or an RL reward loop grading many episodes per training step.</li>
+</ul>
 <h2 id="014-private-beta">0.1.4 (private beta)<a class="headerlink" href="#014-private-beta" title="Permanent link">&para;</a></h2>
 <p>The current beta surface:</p>
 <ul>
@@ -138,6 +153,16 @@ Add new releases above this line, newest first. Suggested format:
     <li class="toc-item toc-item--l1">
       <a class="toc-link" href="#changelog">Changelog</a>
         <ul class="toc-list">
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#015-private-beta">0.1.5 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#added">Added</a>
+    </li>
+
+        </ul>
+    </li>
+
     <li class="toc-item toc-item--l2">
       <a class="toc-link" href="#014-private-beta">0.1.4 (private beta)</a>
     </li>
