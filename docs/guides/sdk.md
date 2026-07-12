@@ -80,10 +80,47 @@ Read `count` 32-bit words starting at byte address `addr`. Returns a single
 `int` when `count == 1`, otherwise a `list[int]`. Programs the FPGA first if
 it hasn't been programmed yet.
 
-#### `app.write(addr, value)`
+#### `app.write(addr, value, fixed_address=False)`
 
 Write one or more 32-bit words to byte address `addr`. `value` may be a single
-`int` or a `list[int]` for a burst write.
+`int` or a `list[int]` for a burst write, which increments the address by 4
+per word (loading a register array, like a RAM). Pass `fixed_address=True` to
+instead repeat `addr` for every word in the burst -- for a FIFO or
+push-register port where your design keeps its own internal write index
+(a common streaming-load pattern: writing a sequence of words one at a time to
+a single register, with the RTL auto-advancing into the next clause/slot). A
+plain burst would scatter those words across whatever registers happen to sit
+at `addr+4`, `addr+8`, ... instead of pushing them all through the one port.
+
+#### `app.stream()`
+
+```python
+with app:
+    with app.stream() as s:
+        for word in words:
+            s.write(LITERAL_IN, word, fixed_address=True)
+        s.write(REG_CTRL, 1)
+        while not (s.read(REG_CTRL) & 1):
+            pass
+```
+
+Opens a persistent, low-latency session for many small `read`/`write` ops. It
+is a context manager exposing the same `write(addr, value, fixed_address=False)`
+and `read(addr, count=1)` methods as `App`, but skips the per-call job queue:
+every op on `app.write()`/`app.read()` directly dispatches its own job against
+the cloud API and then polls for completion every 0.5s, so each individual
+call costs roughly that much wall-clock time no matter how small the payload
+is. That's fine for a handful of calls, but it dominates for a tight loop --
+loading a CNF instance one literal per write, or an RL reward loop that needs
+to load and grade many episodes per training step. A `Stream` instead holds
+one WebSocket open for the whole `with` block, relayed straight through to the
+FPGA's Wishbone bus, and pays that connection cost once instead of once per
+operation.
+
+A stream and `app.write()`/`app.read()` (or a second stream) can't be used on
+the same FPGA at the same time -- the bridge firmware only safely serves one
+open connection per board, so opening a stream holds an exclusive lock on the
+FPGA's link for the life of the `with` block.
 
 #### `app.release()`
 
