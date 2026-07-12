@@ -122,6 +122,14 @@ the same FPGA at the same time -- the bridge firmware only safely serves one
 open connection per board, so opening a stream holds an exclusive lock on the
 FPGA's link for the life of the `with` block.
 
+**Per-write payload limit:** a burst `write(addr, value, ...)` is capped at
+roughly **2KB (~500 32-bit words)**. Going over it closes the connection,
+raised client-side as `websockets.exceptions.ConnectionClosedError` with the
+reason `"FPGA is busy with a run job"` -- ignore that text, it's a payload
+size limit, not a concurrency/session issue. If you need to send more than
+that, split `value` into chunks under ~500 words and call `write()` once per
+chunk; `fixed_address=True` composes fine across chunked calls.
+
 #### `app.release()`
 
 Release the active session, returning the board to `idle`. Returns the reset
