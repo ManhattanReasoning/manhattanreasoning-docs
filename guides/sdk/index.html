@@ -158,7 +158,7 @@ three ways to use the platform:</p>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">name</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="o">*</span><span class="p">,</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">design</span><span class="p">,</span>                    <span class="c1"># path to the Amaranth .py design</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># pin a board, or let the SDK pick an idle one</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># for --no-program reconnect only, see below</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">registers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># a RegisterMap subclass (optional)</span>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># explicit arg &gt; $MRG_API_KEY &gt; `mrg login`</span>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
@@ -168,6 +168,16 @@ three ways to use the platform:</p>
 </code></pre></div>
 <p>Creating an <code>App</code> registers it so the CLI can discover it, you don't export
 anything. If a file defines several, <code>mrg run</code> uses the last one.</p>
+<p><strong><code>fpga_id</code> is normally left unset.</strong> A fresh build never picks a board
+itself — the server claims a build slot (a network identity baked into the
+bitstream, independent of any physical board) and dispatches the build
+immediately; whichever board frees up first claims the finished bitstream and
+flashes it. <code>app.fpga_id</code> is filled in from that completed job once
+<a href="#apprelease"><code>_program()</code></a> finishes, not chosen up front. Pass <code>fpga_id</code>
+explicitly only to reconnect to a board you already have a live session on
+without rebuilding (<code>mrg run --no-program --fpga-id N</code> / <code>App(...,
+fpga_id=N)</code> with programming skipped) — on any run that does build, whatever
+you pass here is overwritten with the real assigned board.</p>
 <div class="admonition info">
 <p class="admonition-title">Sys clock vs. timing target</p>
 <p>A build carries two independent frequencies. <strong>Sys clock</strong> is what the SoC

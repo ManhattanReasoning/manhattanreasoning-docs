@@ -145,48 +145,66 @@ Docker image.</p>
 <h2 id="run-program-and-run-an-app"><code>run</code>: program and run an app<a class="headerlink" href="#run-program-and-run-an-app" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span>
 </code></pre></div>
-<p>Loads the <a href="../sdk/#app"><code>mrg.cloud.App</code></a> from <code>file.py</code>, programs the FPGA
-(picking an idle board automatically unless <code>--fpga-id</code> or the app pins one),
-then calls its <a href="../sdk/#applocal_entrypoint"><code>@local_entrypoint</code></a>.</p>
+<p>Loads the <a href="../sdk/#app"><code>mrg.cloud.App</code></a> from <code>file.py</code>, submits the design and
+blocks until it's built and flashed, then calls its
+<a href="../sdk/#applocal_entrypoint"><code>@local_entrypoint</code></a>. No board is chosen up
+front: the server claims a build slot (a network identity baked into the
+bitstream, decoupled from any physical board) and dispatches the build
+immediately, and whichever board frees up first claims the finished bitstream
+and flashes it — <code>app.fpga_id</code> is filled in from that completed job, not
+picked by the CLI or the app. <code>--fpga-id</code> overrides <code>App(fpga_id=...)</code>, which
+only matters for the <code>--no-program</code> reconnect case below; it is not a way to
+request a specific board for a fresh build.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>examples/app.py
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mrg<span class="w"> </span>run<span class="w"> </span>my_design.py<span class="w"> </span>--fpga-id<span class="w"> </span><span class="m">3</span><span class="w"> </span>--sys-clk<span class="w"> </span>90e6
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mrg<span class="w"> </span>run<span class="w"> </span>my_design.py<span class="w"> </span>--fpga-id<span class="w"> </span><span class="m">3</span><span class="w"> </span>--no-program<span class="w">   </span><span class="c1"># reconnect, skip rebuilding</span>
 </code></pre></div>
-<h2 id="status-job-logs-read-only-no-login-required"><code>status</code>, <code>job</code>, <code>logs</code>: read-only, no login required<a class="headerlink" href="#status-job-logs-read-only-no-login-required" title="Permanent link">&para;</a></h2>
+<h2 id="status-jobs-job-logs-read-only-no-login-required"><code>status</code>, <code>jobs</code>, <code>job</code>, <code>logs</code>: read-only, no login required<a class="headerlink" href="#status-jobs-job-logs-read-only-no-login-required" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mrg<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>fpga_id<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mrg<span class="w"> </span>job<span class="w">    </span>&lt;fpga_id&gt;<span class="w"> </span><span class="o">[</span>job_id<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mrg<span class="w"> </span>logs<span class="w">   </span>&lt;fpga_id&gt;<span class="w"> </span><span class="o">[</span>job_id<span class="o">]</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mrg<span class="w"> </span><span class="nb">jobs</span><span class="w">   </span><span class="o">[</span>--status<span class="w"> </span>STATUS<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mrg<span class="w"> </span>job<span class="w">    </span>&lt;job_id&gt;<span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>mrg<span class="w"> </span>logs<span class="w">   </span>&lt;job_id&gt;
 </code></pre></div>
 <p><code>status</code> with no argument prints the full board table; with an <code>fpga_id</code>,
-that board's detail (state, owner, current job). <code>job_id</code> is optional on
-<code>job</code>/<code>logs</code>, omit it and the CLI resolves whatever job is currently running
-on that board.</p>
+that board's detail (state, owner, current job). <code>jobs</code> lists every job the
+caller's API key has submitted, newest first — the only way to find a
+build's <code>job_id</code> while it's still in flight, since a board-less build has no
+board to look it up by. <code>job</code>/<code>logs</code> take a <code>job_id</code> directly (jobs are
+looked up by their own id now, not scoped under a board).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>  ID  STATE           OWNER         CURRENT JOB
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  ─────────────────────────────────────────────
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>   0  idle            -             -
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>   3  reserved        alice         a1b2c3d4…
 </code></pre></div>
-<p>States: <code>idle</code>, <code>queued</code>, <code>building</code>, <code>programming</code>, <code>reserved</code>, <code>error</code>.</p>
-<p>When a build fails, <code>mrg logs &lt;fpga_id&gt;</code> prints the toolchain output (Yosys /
+<p>States: <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>error</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>  JOB_ID      TYPE                STATUS      FPGA   CREATED
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  ──────────────────────────────────────────────────────────
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  8bf0de40…   reset               complete    2      2026-07-15T12:48:23Z
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  a4c92b62…   run                 failed      2      2026-07-15T12:48:19Z
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  8d4fa7d8…   build_and_program   complete    2      2026-07-15T12:45:27Z
+</code></pre></div>
+<p><code>FPGA</code> is blank until a board claims the job (still building, or waiting to
+flash) — poll <code>mrg jobs</code>/<code>mrg job &lt;job_id&gt;</code> rather than assuming a board is
+assigned right after submit.</p>
+<p>When a build fails, <code>mrg logs &lt;job_id&gt;</code> prints the toolchain output (Yosys /
 nextpnr) so you can see what was rejected.</p>
 <h2 id="cancel-stop-a-job"><code>cancel</code>: stop a job<a class="headerlink" href="#cancel-stop-a-job" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mrg<span class="w"> </span>cancel<span class="w"> </span>&lt;fpga_id&gt;<span class="w"> </span><span class="o">[</span>job_id<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mrg<span class="w"> </span>cancel<span class="w"> </span>&lt;job_id&gt;
 </code></pre></div>
-<p>Cancels a queued job, or stops an in-flight build. <code>job_id</code> is optional here
-too, omit it to cancel whatever's currently running on that board. Requires
-a real, board-owning API key.</p>
+<p>Cancels a queued job, or stops an in-flight build. Requires a real API key
+(the caller must be the job's owner).</p>
 <h2 id="reset-return-a-board-to-idle"><code>reset</code>: return a board to idle<a class="headerlink" href="#reset-return-a-board-to-idle" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mrg<span class="w"> </span>reset<span class="w"> </span>&lt;fpga_id&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mrg<span class="w"> </span>reset<span class="w"> </span>&lt;fpga_id&gt;
 </code></pre></div>
 <p>Reflashes the base image and returns the board to <code>idle</code>. Async, poll
 <code>mrg status &lt;fpga_id&gt;</code> rather than expecting it to complete instantly.</p>
 <h2 id="read-write-poke-registers-directly"><code>read</code> / <code>write</code>: poke registers directly<a class="headerlink" href="#read-write-poke-registers-directly" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w">  </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span><span class="o">[</span>--count<span class="w"> </span>N<span class="o">]</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mrg<span class="w"> </span>write<span class="w"> </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span>&lt;value&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w">  </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span><span class="o">[</span>--count<span class="w"> </span>N<span class="o">]</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mrg<span class="w"> </span>write<span class="w"> </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span>&lt;value&gt;
 </code></pre></div>
 <p><code>address</code>/<code>value</code> accept hex or decimal; <code>address</code> is a <strong>byte</strong> address.
 Works against a live (<code>reserved</code>) board.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>0x10<span class="w">            </span><span class="c1">#   0x10: 0x00000005</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mrg<span class="w"> </span>write<span class="w"> </span><span class="m">0</span><span class="w"> </span>0x04<span class="w"> </span><span class="m">3</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>0x10<span class="w">            </span><span class="c1">#   0x10: 0x00000005</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mrg<span class="w"> </span>write<span class="w"> </span><span class="m">0</span><span class="w"> </span>0x04<span class="w"> </span><span class="m">3</span>
 </code></pre></div>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
@@ -236,7 +254,7 @@ Works against a live (<code>reserved</code>) board.</p>
     </li>
 
     <li class="toc-item toc-item--l2">
-      <a class="toc-link" href="#status-job-logs-read-only-no-login-required">status, job, logs: read-only, no login required</a>
+      <a class="toc-link" href="#status-jobs-job-logs-read-only-no-login-required">status, jobs, job, logs: read-only, no login required</a>
     </li>
 
     <li class="toc-item toc-item--l2">

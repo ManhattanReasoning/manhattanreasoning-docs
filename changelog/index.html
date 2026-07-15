@@ -87,8 +87,36 @@
             <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Notable changes to the <code>manhattan-reasoning-gym</code> SDK and CLI. The project is in
 private beta, so surfaces may still change between <code>0.1.x</code> releases.</p>
-<h2 id="015-private-beta">0.1.5 (private beta)<a class="headerlink" href="#015-private-beta" title="Permanent link">&para;</a></h2>
+<h2 id="016-private-beta">0.1.6 (private beta)<a class="headerlink" href="#016-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Board-less submit.</strong> <code>App</code>/<code>mrg run</code> no longer picks a board before
+  building — the server claims a build slot (a network identity baked into
+  the bitstream, decoupled from any physical board) and dispatches the build
+  immediately, so many builds now run concurrently regardless of how many
+  physical boards are live. <code>app.fpga_id</code> is filled in once some board's
+  worker claims the finished bitstream and flashes it, not chosen up front.
+  <code>App(fpga_id=...)</code> / <code>mrg run --fpga-id</code> now only matter for the
+  <code>--no-program</code> reconnect case (skip rebuilding, talk to a board you already
+  have a live session on).</li>
+<li><code>mrg job</code>, <code>mrg logs</code>, and <code>mrg cancel</code> now take a <code>job_id</code> directly instead
+  of <code>&lt;fpga_id&gt; [job_id]</code> — jobs are looked up by their own id, not scoped
+  under a board, since a job with no board assigned yet has no board to look
+  it up by.</li>
+<li>FPGA states are now <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>error</code> — <code>queued</code>
+  and <code>building</code> were board states describing a build in progress on that
+  board; a build never touches a board anymore, so those states no longer
+  apply to one.</li>
+</ul>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>mrg jobs [--status STATUS]</code>: list every job the caller's API key has
+  submitted, newest first — the only way to find a board-less build's
+  <code>job_id</code> while it's still in flight, since it has no board to check
+  instead.</li>
+</ul>
+<h2 id="015-private-beta">0.1.5 (private beta)<a class="headerlink" href="#015-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>App.write(addr, value, fixed_address=True)</code>: repeats <code>addr</code> for every word
   in a burst instead of incrementing it, for a FIFO or push-register port
@@ -154,10 +182,24 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#changelog">Changelog</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#016-private-beta">0.1.6 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#changed">Changed</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#added">Added</a>
+    </li>
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l2">
       <a class="toc-link" href="#015-private-beta">0.1.5 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added">Added</a>
+      <a class="toc-link" href="#added_1">Added</a>
     </li>
 
         </ul>
