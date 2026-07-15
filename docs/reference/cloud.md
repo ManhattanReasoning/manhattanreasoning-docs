@@ -8,7 +8,7 @@ a real board, and drive it over MMIO.
       members:
         - App
         - RegisterMap
+        - Stream
         - get_session
         - release_session
-        - NoFPGAAvailableError
         - secret

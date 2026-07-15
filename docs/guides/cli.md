@@ -45,27 +45,37 @@ Docker image.
 mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ]
 ```
 
-Loads the [`mrg.cloud.App`](sdk.md#app) from `file.py`, programs the FPGA
-(picking an idle board automatically unless `--fpga-id` or the app pins one),
-then calls its [`@local_entrypoint`](sdk.md#applocal_entrypoint).
+Loads the [`mrg.cloud.App`](sdk.md#app) from `file.py`, submits the design and
+blocks until it's built and flashed, then calls its
+[`@local_entrypoint`](sdk.md#applocal_entrypoint). No board is chosen up
+front: the server claims a build slot (a network identity baked into the
+bitstream, decoupled from any physical board) and dispatches the build
+immediately, and whichever board frees up first claims the finished bitstream
+and flashes it — `app.fpga_id` is filled in from that completed job, not
+picked by the CLI or the app. `--fpga-id` overrides `App(fpga_id=...)`, which
+only matters for the `--no-program` reconnect case below; it is not a way to
+request a specific board for a fresh build.
 
 ```bash
 mrg run examples/app.py
-mrg run my_design.py --fpga-id 3 --sys-clk 90e6
+mrg run my_design.py --fpga-id 3 --no-program   # reconnect, skip rebuilding
 ```
 
-## `status`, `job`, `logs`: read-only, no login required
+## `status`, `jobs`, `job`, `logs`: read-only, no login required
 
 ```bash
 mrg status [fpga_id] [--json]
-mrg job    <fpga_id> [job_id] [--json]
-mrg logs   <fpga_id> [job_id]
+mrg jobs   [--status STATUS] [--json]
+mrg job    <job_id> [--json]
+mrg logs   <job_id>
 ```
 
 `status` with no argument prints the full board table; with an `fpga_id`,
-that board's detail (state, owner, current job). `job_id` is optional on
-`job`/`logs`, omit it and the CLI resolves whatever job is currently running
-on that board.
+that board's detail (state, owner, current job). `jobs` lists every job the
+caller's API key has submitted, newest first — the only way to find a
+build's `job_id` while it's still in flight, since a board-less build has no
+board to look it up by. `job`/`logs` take a `job_id` directly (jobs are
+looked up by their own id now, not scoped under a board).
 
 ```text
   ID  STATE           OWNER         CURRENT JOB
@@ -74,20 +84,31 @@ on that board.
    3  reserved        alice         a1b2c3d4…
 ```
 
-States: `idle`, `queued`, `building`, `programming`, `reserved`, `error`.
+States: `idle`, `programming`, `reserved`, `error`.
 
-When a build fails, `mrg logs <fpga_id>` prints the toolchain output (Yosys /
+```text
+  JOB_ID      TYPE                STATUS      FPGA   CREATED
+  ──────────────────────────────────────────────────────────
+  8bf0de40…   reset               complete    2      2026-07-15T12:48:23Z
+  a4c92b62…   run                 failed      2      2026-07-15T12:48:19Z
+  8d4fa7d8…   build_and_program   complete    2      2026-07-15T12:45:27Z
+```
+
+`FPGA` is blank until a board claims the job (still building, or waiting to
+flash) — poll `mrg jobs`/`mrg job <job_id>` rather than assuming a board is
+assigned right after submit.
+
+When a build fails, `mrg logs <job_id>` prints the toolchain output (Yosys /
 nextpnr) so you can see what was rejected.
 
 ## `cancel`: stop a job
 
 ```bash
-mrg cancel <fpga_id> [job_id]
+mrg cancel <job_id>
 ```
 
-Cancels a queued job, or stops an in-flight build. `job_id` is optional here
-too, omit it to cancel whatever's currently running on that board. Requires
-a real, board-owning API key.
+Cancels a queued job, or stops an in-flight build. Requires a real API key
+(the caller must be the job's owner).
 
 ## `reset`: return a board to idle
 

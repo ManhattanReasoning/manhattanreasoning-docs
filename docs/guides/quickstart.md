@@ -60,10 +60,12 @@ mrg run examples/app.py
    0  idle            -             -
 ```
 
-`mrg run` picks an idle board automatically (unless the app pins one), builds
-and programs it (~2-3 min the first time), then runs the app's entrypoint. The
-board stays reserved to you afterward, reuse it with `mrg run --no-program`,
-or free it for someone else:
+`mrg run` submits the design, builds it (~2-3 min the first time), and flashes
+whichever board frees up first — no board is chosen up front, so which one
+you land on isn't known until the build finishes. The board stays reserved to
+you afterward; if the build is still in flight and you want to check on it
+from elsewhere, `mrg jobs` lists your jobs (a build with no board yet has
+nowhere else to be found). Free the board for someone else with:
 
 ```bash
 mrg reset 0
