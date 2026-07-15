@@ -49,7 +49,7 @@ mrg.cloud.App(
     name,
     *,
     design,                    # path to the Amaranth .py design
-    fpga_id=None,               # pin a board, or let the SDK pick an idle one
+    fpga_id=None,               # for --no-program reconnect only, see below
     registers=None,              # a RegisterMap subclass (optional)
     api_key=None,                # explicit arg > $MRG_API_KEY > `mrg login`
     api_url=DEFAULT_API_URL,
@@ -60,6 +60,17 @@ mrg.cloud.App(
 
 Creating an `App` registers it so the CLI can discover it, you don't export
 anything. If a file defines several, `mrg run` uses the last one.
+
+**`fpga_id` is normally left unset.** A fresh build never picks a board
+itself — the server claims a build slot (a network identity baked into the
+bitstream, independent of any physical board) and dispatches the build
+immediately; whichever board frees up first claims the finished bitstream and
+flashes it. `app.fpga_id` is filled in from that completed job once
+[`_program()`](#apprelease) finishes, not chosen up front. Pass `fpga_id`
+explicitly only to reconnect to a board you already have a live session on
+without rebuilding (`mrg run --no-program --fpga-id N` / `App(...,
+fpga_id=N)` with programming skipped) — on any run that does build, whatever
+you pass here is overwritten with the real assigned board.
 
 !!! info "Sys clock vs. timing target"
     A build carries two independent frequencies. **Sys clock** is what the SoC

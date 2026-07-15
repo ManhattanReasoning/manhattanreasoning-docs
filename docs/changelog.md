@@ -7,6 +7,33 @@ description: Release notes for the manhattan-reasoning-gym SDK and CLI.
 Notable changes to the `manhattan-reasoning-gym` SDK and CLI. The project is in
 private beta, so surfaces may still change between `0.1.x` releases.
 
+## 0.1.6 (private beta)
+
+### Changed
+- **Board-less submit.** `App`/`mrg run` no longer picks a board before
+  building — the server claims a build slot (a network identity baked into
+  the bitstream, decoupled from any physical board) and dispatches the build
+  immediately, so many builds now run concurrently regardless of how many
+  physical boards are live. `app.fpga_id` is filled in once some board's
+  worker claims the finished bitstream and flashes it, not chosen up front.
+  `App(fpga_id=...)` / `mrg run --fpga-id` now only matter for the
+  `--no-program` reconnect case (skip rebuilding, talk to a board you already
+  have a live session on).
+- `mrg job`, `mrg logs`, and `mrg cancel` now take a `job_id` directly instead
+  of `<fpga_id> [job_id]` — jobs are looked up by their own id, not scoped
+  under a board, since a job with no board assigned yet has no board to look
+  it up by.
+- FPGA states are now `idle`, `programming`, `reserved`, `error` — `queued`
+  and `building` were board states describing a build in progress on that
+  board; a build never touches a board anymore, so those states no longer
+  apply to one.
+
+### Added
+- `mrg jobs [--status STATUS]`: list every job the caller's API key has
+  submitted, newest first — the only way to find a board-less build's
+  `job_id` while it's still in flight, since it has no board to check
+  instead.
+
 ## 0.1.5 (private beta)
 
 ### Added
