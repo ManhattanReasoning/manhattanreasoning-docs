@@ -87,6 +87,34 @@
             <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Notable changes to the <code>manhattan-reasoning-gym</code> SDK and CLI. The project is in
 private beta, so surfaces may still change between <code>0.1.x</code> releases.</p>
+<h2 id="018-private-beta">0.1.8 (private beta)<a class="headerlink" href="#018-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Plain Verilog designs.</strong> <code>design=</code> on <code>App</code>, and the <code>design</code> argument to
+  <code>mrg.build.synth</code>/<code>pnr</code> and <code>mrg synth</code>/<code>mrg pnr</code>, now also accept a <code>.v</code>
+  file, not just an Amaranth <code>.py</code> module — the extension picks the language
+  server-side. A Verilog file's top module is found by scanning for the one
+  module whose port list matches the fixed Wishbone contract (<code>clk</code>, <code>rst</code>,
+  <code>wb_cyc</code>, <code>wb_stb</code>, <code>wb_we</code>, <code>wb_adr</code>, <code>wb_dat_w</code>, <code>wb_sel</code>, <code>wb_dat_r</code>,
+  <code>wb_ack</code>, exact widths and directions) by name; if a file exposes more than
+  one matching module, pass <code>--top &lt;name&gt;</code> (CLI) or <code>top="&lt;name&gt;"</code>
+  (<code>App(...)</code>/<code>mrg.build.synth</code>/<code>pnr</code>) to disambiguate. See the new
+  <a href="../examples/verilog-hello/">Verilog Hello</a> example.</li>
+<li><code>mrg synth</code>/<code>mrg pnr</code> and <code>mrg run</code> gained a <code>--top</code> flag; <code>App</code>,
+  <code>mrg.build.synth</code>, and <code>mrg.build.pnr</code> gained a matching <code>top=</code> keyword
+  argument. All are ignored for an Amaranth design.</li>
+</ul>
+<h2 id="017-private-beta">0.1.7 (private beta)<a class="headerlink" href="#017-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>mrg.bench.CloudSilicon</code> still called the pre-0.1.6 client API
+  (<code>find_idle_fpga</code>/<code>NoFPGAAvailableError</code>, and <code>submit(fpga_id, ...)</code>), left
+  over from the 0.1.6 board-less submit change. It now submits without an
+  <code>fpga_id</code>, treats a full build-slot pool as a <code>503</code> (surfaced as
+  <code>no_board</code>) instead of a pre-flight idle-board check, and reads the
+  assigned <code>fpga_id</code> off the completed job record instead of raising on
+  success.</li>
+</ul>
 <h2 id="016-private-beta">0.1.6 (private beta)<a class="headerlink" href="#016-private-beta" title="Permanent link">&para;</a></h2>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
 <ul>
@@ -108,7 +136,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   board; a build never touches a board anymore, so those states no longer
   apply to one.</li>
 </ul>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>mrg jobs [--status STATUS]</code>: list every job the caller's API key has
   submitted, newest first — the only way to find a board-less build's
@@ -116,7 +144,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   instead.</li>
 </ul>
 <h2 id="015-private-beta">0.1.5 (private beta)<a class="headerlink" href="#015-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>App.write(addr, value, fixed_address=True)</code>: repeats <code>addr</code> for every word
   in a burst instead of incrementing it, for a FIFO or push-register port
@@ -182,6 +210,26 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#changelog">Changelog</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#018-private-beta">0.1.8 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#added">Added</a>
+    </li>
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#017-private-beta">0.1.7 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#fixed">Fixed</a>
+    </li>
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l2">
       <a class="toc-link" href="#016-private-beta">0.1.6 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
@@ -189,7 +237,7 @@ Add new releases above this line, newest first. Suggested format:
     </li>
 
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added">Added</a>
+      <a class="toc-link" href="#added_1">Added</a>
     </li>
 
         </ul>
@@ -199,7 +247,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#015-private-beta">0.1.5 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added_1">Added</a>
+      <a class="toc-link" href="#added_2">Added</a>
     </li>
 
         </ul>

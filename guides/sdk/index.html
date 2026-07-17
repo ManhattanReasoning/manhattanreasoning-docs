@@ -129,8 +129,9 @@ three ways to use the platform:</p>
 </table>
 <h2 id="mrgcloud-real-hardware"><code>mrg.cloud</code>: real hardware<a class="headerlink" href="#mrgcloud-real-hardware" title="Permanent link">&para;</a></h2>
 <p>You describe an <strong>application</strong> with three things: a <strong>design</strong> (an Amaranth
-<code>.py</code> file whose top-level module is a Wishbone B4 slave), an optional
-<strong>register map</strong> (the byte offsets your design exposes), and API config.</p>
+<code>.py</code> file, or a plain Verilog <code>.v</code> file, whose top-level module is a
+Wishbone B4 slave), an optional <strong>register map</strong> (the byte offsets your
+design exposes), and API config.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">manhattan_reasoning_gym</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mrg</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Regs</span><span class="p">(</span><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">RegisterMap</span><span class="p">):</span>
@@ -157,17 +158,87 @@ three ways to use the platform:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">App</span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">name</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">design</span><span class="p">,</span>                    <span class="c1"># path to the Amaranth .py design</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># for --no-program reconnect only, see below</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">registers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># a RegisterMap subclass (optional)</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># explicit arg &gt; $MRG_API_KEY &gt; `mrg login`</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># SoC compute clock override (Hz)</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># PnR/grading timing target (MHz)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">design</span><span class="p">,</span>                    <span class="c1"># path to the Amaranth .py or plain Verilog .v design</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                   <span class="c1"># Verilog-only top-module disambiguator, see below</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># for --no-program reconnect only, see below</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">registers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># a RegisterMap subclass (optional)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># explicit arg &gt; $MRG_API_KEY &gt; `mrg login`</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># SoC compute clock override (Hz)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># PnR/grading timing target (MHz)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">)</span>
 </code></pre></div>
 <p>Creating an <code>App</code> registers it so the CLI can discover it, you don't export
 anything. If a file defines several, <code>mrg run</code> uses the last one.</p>
+<p><strong>Verilog designs.</strong> <code>design=</code> also accepts a plain Verilog <code>.v</code> file — the
+extension picks the language server-side, nothing else about <code>App</code> changes.
+Since a <code>.v</code> file has no <code>Elaboratable</code> to scan for, its top module is found
+by matching the one module whose port list has this Wishbone contract by
+name, width, and direction:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Width</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clk</code></td>
+<td>1</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>rst</code></td>
+<td>1</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_cyc</code></td>
+<td>1</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_stb</code></td>
+<td>1</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_we</code></td>
+<td>1</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_adr</code></td>
+<td>9</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_dat_w</code></td>
+<td>32</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_sel</code></td>
+<td>4</td>
+<td>input</td>
+</tr>
+<tr>
+<td><code>wb_dat_r</code></td>
+<td>32</td>
+<td>output</td>
+</tr>
+<tr>
+<td><code>wb_ack</code></td>
+<td>1</td>
+<td>output</td>
+</tr>
+</tbody>
+</table>
+<p>If a file has more than one module matching this contract, pass <code>top="..."</code>
+(ignored for an Amaranth design) to disambiguate; with only one match it's
+auto-detected. See the <a href="../../examples/verilog-hello/">Verilog Hello</a> example.</p>
 <p><strong><code>fpga_id</code> is normally left unset.</strong> A fresh build never picks a board
 itself — the server claims a build slot (a network identity baked into the
 bitstream, independent of any physical board) and dispatches the build
@@ -304,19 +375,24 @@ calls the orchestrator directly:</p>
 inside the sandbox image (toolchain present) executes in-process; run on a
 plain host transparently runs the pinned Docker image and parses its JSON
 report. Either way you get a <code>BuildReport</code> back.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">synth</span><span class="p">(</span><span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">synth</span><span class="p">(</span><span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">pnr</span><span class="p">(</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># legacy alias, sets both knobs below</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">sys_clk_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Verilog-only top-module disambiguator</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># legacy alias, sets both knobs below</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">sys_clk_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
 </code></pre></div>
 <ul>
 <li><code>synth</code>: resource utilization only, fast, no timing analysis.</li>
 <li><code>pnr</code>: full-SoC place-and-route (Fmax, <code>timing_met</code>, SoC-wide utilization).</li>
+<li><code>design</code> accepts an Amaranth <code>.py</code> or plain Verilog <code>.v</code> file; <code>top</code> is the
+  same Verilog-only disambiguator as <code>App(top=...)</code> (ignored for Amaranth),
+  only needed when a <code>.v</code> file exposes more than one module matching the
+  Wishbone contract.</li>
 </ul>
 <p><code>BuildReport</code> fields: <code>mode</code>, <code>ok</code>, <code>scope</code>, <code>fits</code>, <code>fmax_mhz</code>, <code>sys_clk_mhz</code>,
 <code>target_mhz</code>, <code>timing_met</code>, <code>clock</code>, <code>util</code>, <code>synth_cells</code>, <code>warnings</code>,

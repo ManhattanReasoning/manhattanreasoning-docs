@@ -136,15 +136,23 @@ the resulting key so later commands don't need <code>--api-key</code>. Headless
 environments should pass <code>--github-token</code> (or set <code>$GITHUB_TOKEN</code>) with a
 no-scope personal access token, or just set <code>$MRG_API_KEY</code> directly.</p>
 <h2 id="local-builds-no-login-required">Local builds: no login required<a class="headerlink" href="#local-builds-no-login-required" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mrg<span class="w"> </span>synth<span class="w"> </span>&lt;design.py&gt;<span class="w">                                        </span><span class="c1"># resource util</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>mrg<span class="w"> </span>pnr<span class="w">   </span>&lt;design.py&gt;<span class="w"> </span><span class="o">[</span>--target-mhz<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk-mhz<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="o">]</span><span class="w">  </span><span class="c1"># Fmax + timing</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mrg<span class="w"> </span>synth<span class="w"> </span>&lt;design.py<span class="p">|</span>design.v&gt;<span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span><span class="w">                                      </span><span class="c1"># resource util</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>mrg<span class="w"> </span>pnr<span class="w">   </span>&lt;design.py<span class="p">|</span>design.v&gt;<span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>--target-mhz<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk-mhz<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="o">]</span><span class="w">  </span><span class="c1"># Fmax + timing</span>
 </code></pre></div>
 <p>Both print a JSON report on stdout and exit non-zero on a failed build. No
 API key, no cloud, these run against the local toolchain or the pinned
-Docker image.</p>
+Docker image. <code>design</code> may be an Amaranth <code>.py</code> module or a plain Verilog
+<code>.v</code> file — the extension picks the language. <code>--top</code> is a Verilog-only
+top-module disambiguator (ignored for Amaranth), only needed when a <code>.v</code>
+file exposes more than one module matching the Wishbone contract; otherwise
+the top module is auto-detected.</p>
 <h2 id="run-program-and-run-an-app"><code>run</code>: program and run an app<a class="headerlink" href="#run-program-and-run-an-app" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span>
 </code></pre></div>
+<p><code>--top</code> overrides <code>App(top=...)</code>; it's the Verilog-only top-module
+disambiguator described above (ignored when the <code>App</code>'s <code>design</code> is
+Amaranth), only needed if the app's <code>.v</code> file exposes more than one module
+matching the Wishbone contract.</p>
 <p>Loads the <a href="../sdk/#app"><code>mrg.cloud.App</code></a> from <code>file.py</code>, submits the design and
 blocks until it's built and flashed, then calls its
 <a href="../sdk/#applocal_entrypoint"><code>@local_entrypoint</code></a>. No board is chosen up
