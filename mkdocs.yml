@@ -79,6 +79,7 @@ nav:
   - Examples:
       - Overview: examples/index.md
       - Hello Wishbone: examples/hello-wishbone.md
+      - Verilog Hello: examples/verilog-hello.md
       - SAT solver: examples/sat-solver.md
       - BERT feed-forward: examples/bert-ffn.md
       - FFN accelerator: examples/ffn-accel.md

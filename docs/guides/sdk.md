@@ -12,8 +12,9 @@ three ways to use the platform:
 ## `mrg.cloud`: real hardware
 
 You describe an **application** with three things: a **design** (an Amaranth
-`.py` file whose top-level module is a Wishbone B4 slave), an optional
-**register map** (the byte offsets your design exposes), and API config.
+`.py` file, or a plain Verilog `.v` file, whose top-level module is a
+Wishbone B4 slave), an optional **register map** (the byte offsets your
+design exposes), and API config.
 
 ```python
 import manhattan_reasoning_gym as mrg
@@ -48,7 +49,8 @@ mrg run my_design.py
 mrg.cloud.App(
     name,
     *,
-    design,                    # path to the Amaranth .py design
+    design,                    # path to the Amaranth .py or plain Verilog .v design
+    top=None,                   # Verilog-only top-module disambiguator, see below
     fpga_id=None,               # for --no-program reconnect only, see below
     registers=None,              # a RegisterMap subclass (optional)
     api_key=None,                # explicit arg > $MRG_API_KEY > `mrg login`
@@ -60,6 +62,29 @@ mrg.cloud.App(
 
 Creating an `App` registers it so the CLI can discover it, you don't export
 anything. If a file defines several, `mrg run` uses the last one.
+
+**Verilog designs.** `design=` also accepts a plain Verilog `.v` file — the
+extension picks the language server-side, nothing else about `App` changes.
+Since a `.v` file has no `Elaboratable` to scan for, its top module is found
+by matching the one module whose port list has this Wishbone contract by
+name, width, and direction:
+
+| Port | Width | Direction |
+| --- | --- | --- |
+| `clk` | 1 | input |
+| `rst` | 1 | input |
+| `wb_cyc` | 1 | input |
+| `wb_stb` | 1 | input |
+| `wb_we` | 1 | input |
+| `wb_adr` | 9 | input |
+| `wb_dat_w` | 32 | input |
+| `wb_sel` | 4 | input |
+| `wb_dat_r` | 32 | output |
+| `wb_ack` | 1 | output |
+
+If a file has more than one module matching this contract, pass `top="..."`
+(ignored for an Amaranth design) to disambiguate; with only one match it's
+auto-detected. See the [Verilog Hello](../examples/verilog-hello.md) example.
 
 **`fpga_id` is normally left unset.** A fresh build never picks a board
 itself — the server claims a build slot (a network identity baked into the
@@ -233,9 +258,10 @@ plain host transparently runs the pinned Docker image and parses its JSON
 report. Either way you get a `BuildReport` back.
 
 ```python
-mrg.build.synth(design, *, work=None) -> BuildReport
+mrg.build.synth(design, *, top=None, work=None) -> BuildReport
 mrg.build.pnr(
     design, *,
+    top=None,                # Verilog-only top-module disambiguator
     target_mhz=None,        # legacy alias, sets both knobs below
     sys_clk_mhz=None,
     timing_target_mhz=None,
@@ -246,6 +272,10 @@ mrg.build.pnr(
 
 - `synth`: resource utilization only, fast, no timing analysis.
 - `pnr`: full-SoC place-and-route (Fmax, `timing_met`, SoC-wide utilization).
+- `design` accepts an Amaranth `.py` or plain Verilog `.v` file; `top` is the
+  same Verilog-only disambiguator as `App(top=...)` (ignored for Amaranth),
+  only needed when a `.v` file exposes more than one module matching the
+  Wishbone contract.
 
 `BuildReport` fields: `mode`, `ok`, `scope`, `fits`, `fmax_mhz`, `sys_clk_mhz`,
 `target_mhz`, `timing_met`, `clock`, `util`, `synth_cells`, `warnings`,

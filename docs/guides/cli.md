@@ -31,19 +31,28 @@ no-scope personal access token, or just set `$MRG_API_KEY` directly.
 ## Local builds: no login required
 
 ```bash
-mrg synth <design.py>                                        # resource util
-mrg pnr   <design.py> [--target-mhz] [--sys-clk-mhz] [--timing-target-mhz]  # Fmax + timing
+mrg synth <design.py|design.v> [--top NAME]                                      # resource util
+mrg pnr   <design.py|design.v> [--top NAME] [--target-mhz] [--sys-clk-mhz] [--timing-target-mhz]  # Fmax + timing
 ```
 
 Both print a JSON report on stdout and exit non-zero on a failed build. No
 API key, no cloud, these run against the local toolchain or the pinned
-Docker image.
+Docker image. `design` may be an Amaranth `.py` module or a plain Verilog
+`.v` file — the extension picks the language. `--top` is a Verilog-only
+top-module disambiguator (ignored for Amaranth), only needed when a `.v`
+file exposes more than one module matching the Wishbone contract; otherwise
+the top module is auto-detected.
 
 ## `run`: program and run an app
 
 ```bash
-mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ]
+mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ] [--top NAME]
 ```
+
+`--top` overrides `App(top=...)`; it's the Verilog-only top-module
+disambiguator described above (ignored when the `App`'s `design` is
+Amaranth), only needed if the app's `.v` file exposes more than one module
+matching the Wishbone contract.
 
 Loads the [`mrg.cloud.App`](sdk.md#app) from `file.py`, submits the design and
 blocks until it's built and flashed, then calls its

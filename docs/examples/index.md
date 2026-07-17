@@ -10,6 +10,11 @@ repo. Each is a complete `mrg.cloud.App` you launch with `mrg run`.
     The minimal smoke test, write a pattern to an echo RAM and read it back.
     Start here to verify the interface contract.
 
+-   :material-file-code: **[Verilog Hello](verilog-hello.md)**
+
+    The same echo RAM as Hello Wishbone, written as plain Verilog instead of
+    Amaranth, to demonstrate submitting a hand-written `.v` design directly.
+
 -   :material-check-decagram: **[SAT solver](sat-solver.md)**
 
     A brute-force boolean satisfiability solver in hardware. Includes a
