@@ -7,6 +7,45 @@ description: Release notes for the manhattan-reasoning-gym SDK and CLI.
 Notable changes to the `manhattan-reasoning-gym` SDK and CLI. The project is in
 private beta, so surfaces may still change between `0.1.x` releases.
 
+## 0.1.10 (private beta)
+
+### Added
+- `App(transport=...)`, `$MRG_TRANSPORT`, and `--transport` on `mrg run`,
+  `mrg read`, and `mrg write`: set `"http"` to send each call as its own HTTP
+  job instead, for networks that block WebSockets. Much slower, since every
+  call is queued and polled.
+
+### Changed
+- **`app.read()`/`app.write()` use a WebSocket by default.** The SDK opens one
+  socket on the first call, reuses it for every call after, and closes it
+  after 25 s without a call, so tight loops get WebSocket speed with no setup.
+  `mrg read`/`mrg write` use one too.
+- Connection problems raise `ConnectionError` with a message that says what
+  happened: the socket couldn't open (and how to switch to HTTP), the board is
+  in use by another connection, or the connection dropped mid-call and the
+  operation may or may not have run. The CLI prints these as a single
+  `error:` line.
+- Requires `websockets>=15`.
+
+### Removed
+- **`App.stream()` and `mrg.cloud.Stream` (breaking).** They're no longer
+  needed: replace a `with app.stream() as s:` block with plain `app.read()`
+  and `app.write()` calls.
+
+## 0.1.9 (private beta)
+
+### Fixed
+- **Long builds are no longer reported as failed.** The SDK stopped waiting
+  for a build after 40 minutes, but the server lets one run for up to about
+  3 hours, so builds that succeeded after 40 minutes looked like failures.
+  The SDK now waits up to 4 hours.
+- If the SDK does stop waiting, the `TimeoutError` now says the build was not
+  cancelled and may still complete, and points to `mrg jobs`.
+
+### Added
+- `App(poll_timeout=...)` and `$MRG_POLL_TIMEOUT`: how long, in seconds, the
+  SDK waits for a build.
+
 ## 0.1.8 (private beta)
 
 ### Added
