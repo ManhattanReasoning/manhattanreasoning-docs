@@ -6,7 +6,7 @@ pattern and reads it back, confirming the full path (build → program →
 write → read) works end to end. If this design works on a board, your bus
 wiring, firmware bridge, and client plumbing are all correct.
 
-Source: [`examples/hello_wishbone/`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/hello_wishbone) in the `manhattan-reasoning-gym` repo.
+Source: [`examples/hello_wishbone/`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/hello_wishbone) in the `manhattan-reasoning-sdk` repo.
 
 ## Run it
 

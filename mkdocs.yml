@@ -57,7 +57,7 @@ plugins:
       handlers:
         python:
           # Static analysis of the source -- no need to install the package or
-          # its deps. The public manhattan-reasoning-gym repo is checked out
+          # its deps. The public manhattan-reasoning-sdk repo is checked out
           # into _code/ (CI) or cloned there locally via scripts/fetch-code.sh.
           # Public repo, so no deploy key needed anywhere.
           paths: [_code/src]
