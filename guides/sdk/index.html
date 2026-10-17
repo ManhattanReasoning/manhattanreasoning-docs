@@ -166,7 +166,9 @@ design exposes), and API config.</p>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># SoC compute clock override (Hz)</span>
 <a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># PnR/grading timing target (MHz)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">poll_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>             <span class="c1"># how long to wait for a build (s), see below</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">transport</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># "websocket" (default) or "http", see below</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">)</span>
 </code></pre></div>
 <p>Creating an <code>App</code> registers it so the CLI can discover it, you don't export
 anything. If a file defines several, <code>mrg run</code> uses the last one.</p>
@@ -263,6 +265,23 @@ against thresholds the PLL can't synthesize exactly. Set both via
 <code>App(sys_clk_freq=..., timing_target_mhz=...)</code> or the CLI's
 <code>--sys-clk</code>/<code>--timing-target-mhz</code> flags.</p>
 </div>
+<p><strong><code>poll_timeout</code> is normally left unset.</strong> <code>mrg run</code> blocks while your design
+builds, and the SDK waits up to 4 hours for it -- longer than the server lets a
+build run -- so a slow build is never reported as failed while it's still
+going. If the wait does run out, the <code>TimeoutError</code> says so: the build is not
+cancelled and may still finish, so check <code>mrg jobs</code>. Pass <code>poll_timeout=</code> (in
+seconds) or set <code>$MRG_POLL_TIMEOUT</code> only to change that limit.</p>
+<p><strong><code>transport</code> is normally left unset.</strong> Every <code>app.read()</code>/<code>app.write()</code> goes
+over a single WebSocket to the orchestrator, relayed straight through to the
+FPGA's Wishbone bus. The SDK opens it on the first call, reuses it for every
+call after that, and closes it once it has gone 25 s without one (the next
+call reopens it), so a tight loop -- loading a CNF instance one literal per
+write, or an RL reward loop grading many episodes per training step -- pays
+the connection cost once rather than once per op. Pass <code>transport="http"</code> (or
+set <code>$MRG_TRANSPORT=http</code>, or <code>mrg run --transport http</code>) only if your network
+blocks WebSockets: each call then dispatches its own job against the cloud API
+and polls for completion every 0.5s, so it costs roughly that much wall-clock
+time no matter how small the payload is.</p>
 <h4 id="appreadaddr-count1"><code>app.read(addr, count=1)</code><a class="headerlink" href="#appreadaddr-count1" title="Permanent link">&para;</a></h4>
 <p>Read <code>count</code> 32-bit words starting at byte address <code>addr</code>. Returns a single
 <code>int</code> when <code>count == 1</code>, otherwise a <code>list[int]</code>. Programs the FPGA first if
@@ -277,41 +296,30 @@ push-register port where your design keeps its own internal write index
 a single register, with the RTL auto-advancing into the next clause/slot). A
 plain burst would scatter those words across whatever registers happen to sit
 at <code>addr+4</code>, <code>addr+8</code>, ... instead of pushing them all through the one port.</p>
-<h4 id="appstream"><code>app.stream()</code><a class="headerlink" href="#appstream" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">with</span> <span class="n">app</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>            <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">LITERAL_IN</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">fixed_address</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>            <span class="k">pass</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">LITERAL_IN</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">fixed_address</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">pass</span>
 </code></pre></div>
-<p>Opens a persistent, low-latency session for many small <code>read</code>/<code>write</code> ops. It
-is a context manager exposing the same <code>write(addr, value, fixed_address=False)</code>
-and <code>read(addr, count=1)</code> methods as <code>App</code>, but skips the per-call job queue:
-every op on <code>app.write()</code>/<code>app.read()</code> directly dispatches its own job against
-the cloud API and then polls for completion every 0.5s, so each individual
-call costs roughly that much wall-clock time no matter how small the payload
-is. That's fine for a handful of calls, but it dominates for a tight loop --
-loading a CNF instance one literal per write, or an RL reward loop that needs
-to load and grade many episodes per training step. A <code>Stream</code> instead holds
-one WebSocket open for the whole <code>with</code> block, relayed straight through to the
-FPGA's Wishbone bus, and pays that connection cost once instead of once per
-operation.</p>
-<p>A stream and <code>app.write()</code>/<code>app.read()</code> (or a second stream) can't be used on
-the same FPGA at the same time -- the bridge firmware only safely serves one
-open connection per board, so opening a stream holds an exclusive lock on the
-FPGA's link for the life of the <code>with</code> block.</p>
+<p>An open socket holds an exclusive lock on the board's link -- the bridge
+firmware only safely serves one connection at a time -- so
+<code>mrg read</code>/<code>mrg write</code> or a second script against the same board fails with a
+<code>ConnectionError</code> until the socket closes. The same error, saying the op may
+or may not have run, is what you get if the connection drops mid-call; the
+next call opens a fresh socket.</p>
 <p><strong>Per-write payload limit:</strong> a burst <code>write(addr, value, ...)</code> is capped at
 roughly <strong>2KB (~500 32-bit words)</strong>. Going over it closes the connection,
-raised client-side as <code>websockets.exceptions.ConnectionClosedError</code> with the
-reason <code>"FPGA is busy with a run job"</code> -- ignore that text, it's a payload
-size limit, not a concurrency/session issue. If you need to send more than
-that, split <code>value</code> into chunks under ~500 words and call <code>write()</code> once per
-chunk; <code>fixed_address=True</code> composes fine across chunked calls.</p>
+raised client-side as a <code>ConnectionError</code> that may say the board is in use or
+busy -- ignore that, it's a payload size limit, not another connection. If you
+need to send more than that, split <code>value</code> into chunks under ~500 words and
+call <code>write()</code> once per chunk; <code>fixed_address=True</code> composes fine across
+chunked calls.</p>
 <h4 id="apprelease"><code>app.release()</code><a class="headerlink" href="#apprelease" title="Permanent link">&para;</a></h4>
-<p>Release the active session, returning the board to <code>idle</code>. Returns the reset
-<code>job_id</code>. <code>App</code> is also a context manager that calls this on exit.</p>
+<p>Release the active session, returning the board to <code>idle</code>. Closes the app's
+WebSocket first, since an open socket holds the board's lock. Returns the
+reset <code>job_id</code>. <code>App</code> is also a context manager that calls this on exit.</p>
 <h3 id="registermap"><code>RegisterMap</code><a class="headerlink" href="#registermap" title="Permanent link">&para;</a></h3>
 <p>A marker base class for your design's address map, subclass it and set
 integer class attributes for the byte offsets. Byte offset = 4 × word offset.
@@ -439,7 +447,6 @@ report. Either way you get a <code>BuildReport</code> back.</p>
     <li class="toc-item toc-item--l3">
       <a class="toc-link" href="#app">App</a>
         <ul class="toc-list">
-
 
 
 

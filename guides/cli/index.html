@@ -147,12 +147,15 @@ top-module disambiguator (ignored for Amaranth), only needed when a <code>.v</co
 file exposes more than one module matching the Wishbone contract; otherwise
 the top module is auto-detected.</p>
 <h2 id="run-program-and-run-an-app"><code>run</code>: program and run an app<a class="headerlink" href="#run-program-and-run-an-app" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>websocket<span class="p">|</span>http<span class="o">]</span>
 </code></pre></div>
 <p><code>--top</code> overrides <code>App(top=...)</code>; it's the Verilog-only top-module
 disambiguator described above (ignored when the <code>App</code>'s <code>design</code> is
 Amaranth), only needed if the app's <code>.v</code> file exposes more than one module
 matching the Wishbone contract.</p>
+<p><code>--transport</code> overrides <code>App(transport=...)</code> and <code>$MRG_TRANSPORT</code>. Leave it
+unset to use a WebSocket; pass <code>http</code> on a network that blocks WebSockets
+(much slower, see <a href="../sdk/#app"><code>App</code></a>).</p>
 <p>Loads the <a href="../sdk/#app"><code>mrg.cloud.App</code></a> from <code>file.py</code>, submits the design and
 blocks until it's built and flashed, then calls its
 <a href="../sdk/#applocal_entrypoint"><code>@local_entrypoint</code></a>. No board is chosen up
@@ -206,11 +209,16 @@ nextpnr) so you can see what was rejected.</p>
 <p>Reflashes the base image and returns the board to <code>idle</code>. Async, poll
 <code>mrg status &lt;fpga_id&gt;</code> rather than expecting it to complete instantly.</p>
 <h2 id="read-write-poke-registers-directly"><code>read</code> / <code>write</code>: poke registers directly<a class="headerlink" href="#read-write-poke-registers-directly" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w">  </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span><span class="o">[</span>--count<span class="w"> </span>N<span class="o">]</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mrg<span class="w"> </span>write<span class="w"> </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span>&lt;value&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w">  </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span><span class="o">[</span>--count<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>websocket<span class="p">|</span>http<span class="o">]</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mrg<span class="w"> </span>write<span class="w"> </span>&lt;fpga_id&gt;<span class="w"> </span>&lt;address&gt;<span class="w"> </span>&lt;value&gt;<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>websocket<span class="p">|</span>http<span class="o">]</span>
 </code></pre></div>
 <p><code>address</code>/<code>value</code> accept hex or decimal; <code>address</code> is a <strong>byte</strong> address.
 Works against a live (<code>reserved</code>) board.</p>
+<p>Each command opens a WebSocket to the board, makes its one call, and closes
+it. Pass <code>--transport http</code> (or set <code>MRG_TRANSPORT=http</code>) on a network that
+blocks WebSockets. If the socket can't open, or another connection is using
+the board, the command prints a one-line <code>error:</code> message instead of a
+traceback.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mrg<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>0x10<span class="w">            </span><span class="c1">#   0x10: 0x00000005</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mrg<span class="w"> </span>write<span class="w"> </span><span class="m">0</span><span class="w"> </span>0x04<span class="w"> </span><span class="m">3</span>
 </code></pre></div>
