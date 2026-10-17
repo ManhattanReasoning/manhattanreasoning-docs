@@ -4,7 +4,7 @@ The same design as [Hello Wishbone](hello-wishbone.md), a 512 × 32-bit echo
 memory, but written as plain Verilog instead of Amaranth, to demonstrate
 submitting a hand-written `.v` design directly.
 
-Source: [`examples/verilog_hello/`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/verilog_hello) in the `manhattan-reasoning-gym` repo.
+Source: [`examples/verilog_hello/`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/verilog_hello) in the `manhattan-reasoning-sdk` repo.
 
 ## Run it
 

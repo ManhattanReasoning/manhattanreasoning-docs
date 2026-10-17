@@ -9,7 +9,7 @@ binary counter sweeps the assignment space. Worst case is `2^n_vars` cycles,
 It's deliberately the naive baseline: a fast, verifiable reward signal that an
 agent is meant to *improve on* (toward DPLL/CDCL-style reasoning).
 
-Source: [`examples/sat_solver/`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/sat_solver) in the `manhattan-reasoning-gym` repo.
+Source: [`examples/sat_solver/`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/sat_solver) in the `manhattan-reasoning-sdk` repo.
 
 ## Run it
 

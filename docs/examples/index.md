@@ -1,6 +1,6 @@
 # Examples
 
-Runnable apps from the [`manhattan-reasoning-gym`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples)
+Runnable apps from the [`manhattan-reasoning-sdk`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples)
 repo. Each is a complete `mrg.cloud.App` you launch with `mrg run`.
 
 <div class="grid cards" markdown>

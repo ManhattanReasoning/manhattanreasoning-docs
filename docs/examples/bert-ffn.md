@@ -14,7 +14,7 @@ call** using the [`ffn_accel`](ffn-accel.md) INT8 accelerator: both
 projections, the int8 requantization between them, and GELU all run on-chip.
 Everything else (attention, LayerNorm, softmax) runs in float NumPy on the host.
 
-Source: [`examples/bert_ffn/`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/bert_ffn) in the `manhattan-reasoning-gym` repo.
+Source: [`examples/bert_ffn/`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/bert_ffn) in the `manhattan-reasoning-sdk` repo.
 
 ## Why it's small
 

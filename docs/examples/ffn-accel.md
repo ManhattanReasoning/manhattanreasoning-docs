@@ -12,7 +12,7 @@ MMIO window, no SoC changes.
              └─ tiled output-stationary MAC grid (tile×tile INT8 MACs) ─┘
 ```
 
-Source: [`examples/ffn_accel/`](https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/ffn_accel) in the `manhattan-reasoning-gym` repo. The
+Source: [`examples/ffn_accel/`](https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/ffn_accel) in the `manhattan-reasoning-sdk` repo. The
 [BERT feed-forward example](bert-ffn.md) is a real application built on top
 of this same design.
 

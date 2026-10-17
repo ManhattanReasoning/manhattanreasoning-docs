@@ -23,10 +23,10 @@ jobs:
 
       # mkdocstrings reads the Python API reference from the public gym repo.
       # It's public, so this is a plain checkout -- no deploy key needed.
-      - name: Checkout manhattan-reasoning-gym source
+      - name: Checkout manhattan-reasoning-sdk source
         uses: actions/checkout@v4
         with:
-          repository: ManhattanReasoning/manhattan-reasoning-gym
+          repository: ManhattanReasoning/manhattan-reasoning-sdk
           path: _code
 
       - uses: actions/setup-python@v5
