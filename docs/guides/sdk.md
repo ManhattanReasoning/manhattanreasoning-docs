@@ -57,6 +57,8 @@ mrg.cloud.App(
     api_url=DEFAULT_API_URL,
     sys_clk_freq=None,            # SoC compute clock override (Hz)
     timing_target_mhz=None,        # PnR/grading timing target (MHz)
+    poll_timeout=None,             # how long to wait for a build (s), see below
+    transport=None,                # "websocket" (default) or "http", see below
 )
 ```
 
@@ -110,6 +112,25 @@ you pass here is overwritten with the real assigned board.
     `App(sys_clk_freq=..., timing_target_mhz=...)` or the CLI's
     `--sys-clk`/`--timing-target-mhz` flags.
 
+**`poll_timeout` is normally left unset.** `mrg run` blocks while your design
+builds, and the SDK waits up to 4 hours for it -- longer than the server lets a
+build run -- so a slow build is never reported as failed while it's still
+going. If the wait does run out, the `TimeoutError` says so: the build is not
+cancelled and may still finish, so check `mrg jobs`. Pass `poll_timeout=` (in
+seconds) or set `$MRG_POLL_TIMEOUT` only to change that limit.
+
+**`transport` is normally left unset.** Every `app.read()`/`app.write()` goes
+over a single WebSocket to the orchestrator, relayed straight through to the
+FPGA's Wishbone bus. The SDK opens it on the first call, reuses it for every
+call after that, and closes it once it has gone 25 s without one (the next
+call reopens it), so a tight loop -- loading a CNF instance one literal per
+write, or an RL reward loop grading many episodes per training step -- pays
+the connection cost once rather than once per op. Pass `transport="http"` (or
+set `$MRG_TRANSPORT=http`, or `mrg run --transport http`) only if your network
+blocks WebSockets: each call then dispatches its own job against the cloud API
+and polls for completion every 0.5s, so it costs roughly that much wall-clock
+time no matter how small the payload is.
+
 #### `app.read(addr, count=1)`
 
 Read `count` 32-bit words starting at byte address `addr`. Returns a single
@@ -128,48 +149,35 @@ a single register, with the RTL auto-advancing into the next clause/slot). A
 plain burst would scatter those words across whatever registers happen to sit
 at `addr+4`, `addr+8`, ... instead of pushing them all through the one port.
 
-#### `app.stream()`
-
 ```python
 with app:
-    with app.stream() as s:
-        for word in words:
-            s.write(LITERAL_IN, word, fixed_address=True)
-        s.write(REG_CTRL, 1)
-        while not (s.read(REG_CTRL) & 1):
-            pass
+    for word in words:
+        app.write(LITERAL_IN, word, fixed_address=True)
+    app.write(REG_CTRL, 1)
+    while not (app.read(REG_CTRL) & 1):
+        pass
 ```
 
-Opens a persistent, low-latency session for many small `read`/`write` ops. It
-is a context manager exposing the same `write(addr, value, fixed_address=False)`
-and `read(addr, count=1)` methods as `App`, but skips the per-call job queue:
-every op on `app.write()`/`app.read()` directly dispatches its own job against
-the cloud API and then polls for completion every 0.5s, so each individual
-call costs roughly that much wall-clock time no matter how small the payload
-is. That's fine for a handful of calls, but it dominates for a tight loop --
-loading a CNF instance one literal per write, or an RL reward loop that needs
-to load and grade many episodes per training step. A `Stream` instead holds
-one WebSocket open for the whole `with` block, relayed straight through to the
-FPGA's Wishbone bus, and pays that connection cost once instead of once per
-operation.
-
-A stream and `app.write()`/`app.read()` (or a second stream) can't be used on
-the same FPGA at the same time -- the bridge firmware only safely serves one
-open connection per board, so opening a stream holds an exclusive lock on the
-FPGA's link for the life of the `with` block.
+An open socket holds an exclusive lock on the board's link -- the bridge
+firmware only safely serves one connection at a time -- so
+`mrg read`/`mrg write` or a second script against the same board fails with a
+`ConnectionError` until the socket closes. The same error, saying the op may
+or may not have run, is what you get if the connection drops mid-call; the
+next call opens a fresh socket.
 
 **Per-write payload limit:** a burst `write(addr, value, ...)` is capped at
 roughly **2KB (~500 32-bit words)**. Going over it closes the connection,
-raised client-side as `websockets.exceptions.ConnectionClosedError` with the
-reason `"FPGA is busy with a run job"` -- ignore that text, it's a payload
-size limit, not a concurrency/session issue. If you need to send more than
-that, split `value` into chunks under ~500 words and call `write()` once per
-chunk; `fixed_address=True` composes fine across chunked calls.
+raised client-side as a `ConnectionError` that may say the board is in use or
+busy -- ignore that, it's a payload size limit, not another connection. If you
+need to send more than that, split `value` into chunks under ~500 words and
+call `write()` once per chunk; `fixed_address=True` composes fine across
+chunked calls.
 
 #### `app.release()`
 
-Release the active session, returning the board to `idle`. Returns the reset
-`job_id`. `App` is also a context manager that calls this on exit.
+Release the active session, returning the board to `idle`. Closes the app's
+WebSocket first, since an open socket holds the board's lock. Returns the
+reset `job_id`. `App` is also a context manager that calls this on exit.
 
 ### `RegisterMap`
 

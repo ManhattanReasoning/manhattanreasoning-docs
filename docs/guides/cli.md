@@ -46,13 +46,17 @@ the top module is auto-detected.
 ## `run`: program and run an app
 
 ```bash
-mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ] [--top NAME]
+mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ] [--top NAME] [--transport websocket|http]
 ```
 
 `--top` overrides `App(top=...)`; it's the Verilog-only top-module
 disambiguator described above (ignored when the `App`'s `design` is
 Amaranth), only needed if the app's `.v` file exposes more than one module
 matching the Wishbone contract.
+
+`--transport` overrides `App(transport=...)` and `$MRG_TRANSPORT`. Leave it
+unset to use a WebSocket; pass `http` on a network that blocks WebSockets
+(much slower, see [`App`](sdk.md#app)).
 
 Loads the [`mrg.cloud.App`](sdk.md#app) from `file.py`, submits the design and
 blocks until it's built and flashed, then calls its
@@ -131,12 +135,18 @@ Reflashes the base image and returns the board to `idle`. Async, poll
 ## `read` / `write`: poke registers directly
 
 ```bash
-mrg read  <fpga_id> <address> [--count N]
-mrg write <fpga_id> <address> <value>
+mrg read  <fpga_id> <address> [--count N] [--transport websocket|http]
+mrg write <fpga_id> <address> <value> [--transport websocket|http]
 ```
 
 `address`/`value` accept hex or decimal; `address` is a **byte** address.
 Works against a live (`reserved`) board.
+
+Each command opens a WebSocket to the board, makes its one call, and closes
+it. Pass `--transport http` (or set `MRG_TRANSPORT=http`) on a network that
+blocks WebSockets. If the socket can't open, or another connection is using
+the board, the command prints a one-line `error:` message instead of a
+traceback.
 
 ```bash
 mrg read 0 0x10            #   0x10: 0x00000005
