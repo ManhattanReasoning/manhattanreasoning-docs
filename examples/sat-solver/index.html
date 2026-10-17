@@ -118,12 +118,12 @@ binary counter sweeps the assignment space. Worst case is <code>2^n_vars</code> 
 ≈20 µs for 10 variables at 50 MHz.</p>
 <p>It's deliberately the naive baseline: a fast, verifiable reward signal that an
 agent is meant to <em>improve on</em> (toward DPLL/CDCL-style reasoning).</p>
-<p>Source: <a href="https://github.com/ManhattanReasoning/manhattan-reasoning-gym/tree/main/examples/sat_solver"><code>examples/sat_solver/</code></a> in the <code>manhattan-reasoning-gym</code> repo.</p>
+<p>Source: <a href="https://github.com/ManhattanReasoning/manhattan-reasoning-sdk/tree/main/examples/sat_solver"><code>examples/sat_solver/</code></a> in the <code>manhattan-reasoning-sdk</code> repo.</p>
 <h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>examples/sat_solver/client_sdk.py
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>solving ...
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>SAT  (8 cycles)  model={&#39;x1&#39;: True, &#39;x2&#39;: True, &#39;x3&#39;: True}
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>SAT  (8 cycles)  model={'x1': True, 'x2': True, 'x3': True}
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>solving (x1) ∧ (¬x1) ...
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>UNSAT  (3 cycles)
 </code></pre></div>
