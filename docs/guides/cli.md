@@ -47,7 +47,13 @@ the top module is auto-detected.
 
 ```bash
 mrg run <file.py> [--fpga-id N] [--no-program] [--sys-clk HZ] [--timing-target-mhz MHZ] [--top NAME] [--transport websocket|http]
+                  [--include-dir DIR] [--source FILE ...]
 ```
+
+`--include-dir` and `--source` (repeatable) override `App(include_dir=...)`
+and `App(sources=...)`, for designs whose dependencies need to be uploaded
+explicitly; see [Multi-file designs](sdk.md#multi-file-designs). Paths are
+relative to the design's folder, not the client script.
 
 `--top` overrides `App(top=...)`; it's the Verilog-only top-module
 disambiguator described above (ignored when the `App`'s `design` is
@@ -78,33 +84,51 @@ mrg run my_design.py --fpga-id 3 --no-program   # reconnect, skip rebuilding
 
 ```bash
 mrg status [fpga_id] [--json]
-mrg jobs   [--status STATUS] [--json]
+mrg jobs   [--status STATUS] [--type build|run|reset|all] [-n N | --all] [--json]
 mrg job    <job_id> [--json]
 mrg logs   <job_id>
 ```
 
-`status` with no argument prints the full board table; with an `fpga_id`,
-that board's detail (state, owner, current job). `jobs` lists every job the
-caller's API key has submitted, newest first — the only way to find a
-build's `job_id` while it's still in flight, since a board-less build has no
-board to look it up by. `job`/`logs` take a `job_id` directly (jobs are
-looked up by their own id now, not scoped under a board).
+`status` with no argument prints the server's deployed commit and the full
+board table. With an `fpga_id`, it prints that board's detail (state, owner,
+session, current job). `HELD FOR` is how long the current reservation has
+lasted; `JOB AGE` is the time since the board's current job was submitted
+(queueing, building and flashing included, so it isn't billable build time).
+When you're logged in, your active builds are listed below the table, including
+ones that have no board yet, with their elapsed time and current stage.
 
 ```text
-  ID  STATE           OWNER         CURRENT JOB
-  ─────────────────────────────────────────────
-   0  idle            -             -
-   3  reserved        alice         a1b2c3d4…
+  server commit: 92a7cf81eb64f941f7ee2454c12100681df3cb8d
+
+  ID  STATE           OWNER         HELD FOR      JOB AGE       CURRENT JOB
+  ─────────────────────────────────────────────────────────────────────────
+   0  idle            -             -             -             -
+   3  reserved        alice         00:12:40      00:15:02      a1b2c3d4…
+
+  Your active builds (elapsed since submission, including waiting):
+  8bf0de40…  00:01:37  build_gateware/nextpnr-ecp5
 ```
 
-States: `idle`, `programming`, `reserved`, `error`.
+States: `idle`, `programming`, `reserved`, `error`. Durations are `HH:MM:SS`
+snapshots; run the command again to refresh them.
+
+`jobs` lists **your 10 most recent builds**, newest first: the way to find a
+build's `job_id` while it's still in flight, since a board-less build has no
+board to look it up by. `-n N` shows more and `--all` shows them all.
+`--type all` includes `run` and `reset` jobs too (every HTTP `app.read()` or
+`app.write()` is its own `run` job, so that list is long). `--json` always
+prints the raw, unfiltered list. `job`/`logs` take a `job_id` directly.
 
 ```text
-  JOB_ID      TYPE                STATUS      FPGA   CREATED
-  ──────────────────────────────────────────────────────────
-  8bf0de40…   reset               complete    2      2026-07-15T12:48:23Z
-  a4c92b62…   run                 failed      2      2026-07-15T12:48:19Z
-  8d4fa7d8…   build_and_program   complete    2      2026-07-15T12:45:27Z
+$ mrg jobs -n 3
+
+  JOB_ID      TYPE                STATUS      FPGA   ELAPSED       CREATED
+  ────────────────────────────────────────────────────────────────────────
+  de6996c6…   build_and_program   complete    5      00:02:50      2026-10-17T02:12:14Z
+  efcd2252…   build_and_program   failed      0      00:03:02      2026-10-17T02:12:14Z
+  8d4fa7d8…   build_and_program   running     -      00:01:12      2026-10-17T02:20:03Z
+
+  showing the 3 most recent; hidden: 42 older (-n N or --all), 310 of other types (--type all)
 ```
 
 `FPGA` is blank until a board claims the job (still building, or waiting to
