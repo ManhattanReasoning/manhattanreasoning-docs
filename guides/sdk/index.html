@@ -159,16 +159,18 @@ design exposes), and API config.</p>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">name</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="o">*</span><span class="p">,</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">design</span><span class="p">,</span>                    <span class="c1"># path to the Amaranth .py or plain Verilog .v design</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                   <span class="c1"># Verilog-only top-module disambiguator, see below</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># for --no-program reconnect only, see below</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">registers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># a RegisterMap subclass (optional)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># explicit arg &gt; $MRG_API_KEY &gt; `mrg login`</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># SoC compute clock override (Hz)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># PnR/grading timing target (MHz)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">poll_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>             <span class="c1"># how long to wait for a build (s), see below</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">transport</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># "websocket" (default) or "http", see below</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">sources</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># exact list of supporting files, see Multi-file designs</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">include_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>           <span class="c1"># directory of supporting files, see Multi-file designs</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                   <span class="c1"># Verilog-only top-module disambiguator, see below</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">fpga_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># for --no-program reconnect only, see below</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">registers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># a RegisterMap subclass (optional)</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># explicit arg &gt; $MRG_API_KEY &gt; `mrg login`</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">api_url</span><span class="o">=</span><span class="n">DEFAULT_API_URL</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># SoC compute clock override (Hz)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># PnR/grading timing target (MHz)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">poll_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>             <span class="c1"># how long to wait for a build (s), see below</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">transport</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># "websocket" (default) or "http", see below</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">)</span>
 </code></pre></div>
 <p>Creating an <code>App</code> registers it so the CLI can discover it, you don't export
 anything. If a file defines several, <code>mrg run</code> uses the last one.</p>
@@ -241,6 +243,38 @@ name, width, and direction:</p>
 <p>If a file has more than one module matching this contract, pass <code>top="..."</code>
 (ignored for an Amaranth design) to disambiguate; with only one match it's
 auto-detected. See the <a href="../../examples/verilog-hello/">Verilog Hello</a> example.</p>
+<h3 id="multi-file-designs">Multi-file designs<a class="headerlink" href="#multi-file-designs" title="Permanent link">&para;</a></h3>
+<p><code>design=</code> names the top-level file, and the SDK uploads its local dependencies
+with it. It reads the source text, without running anything, and follows these
+recursively from the design's folder:</p>
+<ul>
+<li>Python imports of local modules (package <code>__init__.py</code> files included)</li>
+<li>Verilog module instances</li>
+<li>literal <code>`include "file.vh"</code> headers</li>
+<li>literal <code>$readmemh</code>/<code>$readmemb</code> data files</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">app</span> <span class="o">=</span> <span class="n">mrg</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="s2">"my_design"</span><span class="p">,</span> <span class="n">design</span><span class="o">=</span><span class="s2">"project/design.v"</span><span class="p">)</span>  <span class="c1"># dependencies found automatically</span>
+</code></pre></div>
+<p>Two alternatives for projects discovery can't follow (dynamic imports,
+generated file names, macro-based includes):</p>
+<ul>
+<li><strong><code>include_dir="support"</code></strong> uploads every supported file in that directory
+  and its subdirectories, with the design. It's relative to the design's
+  folder. Point it at a directory holding only what the build needs. Use
+  <code>include_dir=".."</code> when a design in <code>project/rtl/top.v</code> needs files elsewhere
+  under <code>project/</code>.</li>
+<li><strong><code>sources=["rtl/child.v", "include/constants.vh"]</code></strong> uploads exactly those
+  files and turns discovery off. Paths are relative to <code>include_dir</code> if given,
+  otherwise to the design's folder. Don't list the design itself.
+  <code>sources=[]</code> turns discovery off with no extra files.</li>
+</ul>
+<p>Supported files are <code>.py</code>, <code>.v</code>, <code>.vh</code>, <code>.mem</code> and <code>.hex</code>, with simple path
+names. Symlinks and paths that escape the project are rejected. A bundle is
+capped at 128 files, 8 MiB compressed and 16 MiB expanded. Python packages the
+server already has, such as Amaranth, are not uploaded. A design with no local
+dependencies is uploaded as a single file, exactly as before. Local
+<code>mrg synth</code>/<code>mrg pnr</code> still take a single file.</p>
+<p>See the <a href="../../examples/multi-file/">Multi-file example</a>.</p>
 <p><strong><code>fpga_id</code> is normally left unset.</strong> A fresh build never picks a board
 itself — the server claims a build slot (a network identity baked into the
 bitstream, independent of any physical board) and dispatches the build
@@ -296,12 +330,12 @@ push-register port where your design keeps its own internal write index
 a single register, with the RTL auto-advancing into the next clause/slot). A
 plain burst would scatter those words across whatever registers happen to sit
 at <code>addr+4</code>, <code>addr+8</code>, ... instead of pushing them all through the one port.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">with</span> <span class="n">app</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">LITERAL_IN</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">fixed_address</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">pass</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">with</span> <span class="n">app</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">LITERAL_IN</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">fixed_address</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">app</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="k">pass</span>
 </code></pre></div>
 <p>An open socket holds an exclusive lock on the board's link -- the bridge
 firmware only safely serves one connection at a time -- so
@@ -320,6 +354,10 @@ chunked calls.</p>
 <p>Release the active session, returning the board to <code>idle</code>. Closes the app's
 WebSocket first, since an open socket holds the board's lock. Returns the
 reset <code>job_id</code>. <code>App</code> is also a context manager that calls this on exit.</p>
+<p>Leaving <code>with app:</code> with Ctrl-C still releases the board: the release request
+is shielded from further Ctrl-C presses. Pressing Ctrl-C while a build is
+still running cancels that build, so it can't flash later and leave a board
+reserved in your name.</p>
 <h3 id="registermap"><code>RegisterMap</code><a class="headerlink" href="#registermap" title="Permanent link">&para;</a></h3>
 <p>A marker base class for your design's address map, subclass it and set
 integer class attributes for the byte offsets. Byte offset = 4 × word offset.
@@ -334,8 +372,8 @@ runnable app.</p>
 useful for API keys you want to fail loudly on rather than silently pass
 through as <code>None</code>.</p>
 <h3 id="module-level-session-functions">Module-level session functions<a class="headerlink" href="#module-level-session-functions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">get_session</span><span class="p">(</span><span class="n">fpga_id</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_url</span><span class="p">)</span>      <span class="c1"># current session info</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">release_session</span><span class="p">(</span><span class="n">fpga_id</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_url</span><span class="p">)</span>  <span class="c1"># release, returns job_id</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">get_session</span><span class="p">(</span><span class="n">fpga_id</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_url</span><span class="p">)</span>      <span class="c1"># current session info</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">mrg</span><span class="o">.</span><span class="n">cloud</span><span class="o">.</span><span class="n">release_session</span><span class="p">(</span><span class="n">fpga_id</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_url</span><span class="p">)</span>  <span class="c1"># release, returns job_id</span>
 </code></pre></div>
 <h2 id="mrgsandbox-locked-agent-execution"><code>mrg.Sandbox</code>: locked agent execution<a class="headerlink" href="#mrgsandbox-locked-agent-execution" title="Permanent link">&para;</a></h2>
 <p>For running an <strong>untrusted agent</strong>: the agent gets a locked-down container
@@ -343,25 +381,25 @@ with no API key and no network. Having vetted a candidate locally with
 <code>mrg.build</code>, it calls <code>mrg.sandbox.promote(...)</code>, a file handoff on the
 shared workspace, and your trusted process outside the container decides
 whether to run it on real silicon.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">manhattan_reasoning_gym</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mrg</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">sb</span> <span class="o">=</span> <span class="n">mrg</span><span class="o">.</span><span class="n">Sandbox</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">"design.py"</span><span class="p">,</span> <span class="s2">"agent.py"</span><span class="p">])</span>  <span class="c1"># mock silicon unless a key is set</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"agent.py"</span><span class="p">)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">for</span> <span class="n">promotion</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">promotions</span><span class="p">:</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">promotion</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">manhattan_reasoning_gym</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mrg</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">sb</span> <span class="o">=</span> <span class="n">mrg</span><span class="o">.</span><span class="n">Sandbox</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">"design.py"</span><span class="p">,</span> <span class="s2">"agent.py"</span><span class="p">])</span>  <span class="c1"># mock silicon unless a key is set</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"agent.py"</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">for</span> <span class="n">promotion</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">promotions</span><span class="p">:</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">promotion</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">Sandbox</span><span class="p">(</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">files</span><span class="o">=</span><span class="p">(),</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">isolation</span><span class="o">=</span><span class="s2">"locked"</span><span class="p">,</span>       <span class="c1"># or "dev", or a custom SandboxProfile</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">silicon</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span>           <span class="c1"># "auto" | "cloud" | "mock" | a callable</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">api_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">guard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># optional (design_bytes, report) -&gt; reject reason | None</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">poll_interval</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">Sandbox</span><span class="p">(</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">files</span><span class="o">=</span><span class="p">(),</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">isolation</span><span class="o">=</span><span class="s2">"locked"</span><span class="p">,</span>       <span class="c1"># or "dev", or a custom SandboxProfile</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">silicon</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span>           <span class="c1"># "auto" | "cloud" | "mock" | a callable</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">api_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">sys_clk_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">guard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>               <span class="c1"># optional (design_bytes, report) -&gt; reject reason | None</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">poll_interval</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="p">)</span>
 </code></pre></div>
 <p><code>sb.run(entrypoint, *, timeout=1800)</code> launches <code>entrypoint</code> in the container
 and brokers its promotes to silicon, returning a <code>SandboxResult(returncode,
@@ -374,25 +412,25 @@ trusted process outside the container holds the key and touches silicon.</p>
 <h3 id="inside-the-container-mrgsandboxpromote">Inside the container: <code>mrg.sandbox.promote</code><a class="headerlink" href="#inside-the-container-mrgsandboxpromote" title="Permanent link">&para;</a></h3>
 <p>The only function available to a sandboxed agent, it never holds a key or
 calls the orchestrator directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">report</span> <span class="o">=</span> <span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">pnr</span><span class="p">(</span><span class="s2">"design.py"</span><span class="p">)</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">fits</span> <span class="ow">and</span> <span class="n">report</span><span class="o">.</span><span class="n">timing_met</span><span class="p">:</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">mrg</span><span class="o">.</span><span class="n">sandbox</span><span class="o">.</span><span class="n">promote</span><span class="p">(</span><span class="s2">"design.py"</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="s2">"demo-agent"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">report</span> <span class="o">=</span> <span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">pnr</span><span class="p">(</span><span class="s2">"design.py"</span><span class="p">)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">fits</span> <span class="ow">and</span> <span class="n">report</span><span class="o">.</span><span class="n">timing_met</span><span class="p">:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">mrg</span><span class="o">.</span><span class="n">sandbox</span><span class="o">.</span><span class="n">promote</span><span class="p">(</span><span class="s2">"design.py"</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="s2">"demo-agent"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="mrgbuild-local-synth-pnr"><code>mrg.build</code>: local synth / PnR<a class="headerlink" href="#mrgbuild-local-synth-pnr" title="Permanent link">&para;</a></h2>
 <p>Fast, no-cloud, no-board build feedback. The same call works everywhere: run
 inside the sandbox image (toolchain present) executes in-process; run on a
 plain host transparently runs the pinned Docker image and parses its JSON
 report. Either way you get a <code>BuildReport</code> back.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">synth</span><span class="p">(</span><span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">pnr</span><span class="p">(</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Verilog-only top-module disambiguator</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># legacy alias, sets both knobs below</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">sys_clk_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">synth</span><span class="p">(</span><span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">mrg</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">pnr</span><span class="p">(</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">design</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Verilog-only top-module disambiguator</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>        <span class="c1"># legacy alias, sets both knobs below</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">sys_clk_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">timing_target_mhz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildReport</span>
 </code></pre></div>
 <ul>
 <li><code>synth</code>: resource utilization only, fast, no timing analysis.</li>
@@ -446,6 +484,10 @@ report. Either way you get a <code>BuildReport</code> back.</p>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
       <a class="toc-link" href="#app">App</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#multi-file-designs">Multi-file designs</a>
         <ul class="toc-list">
 
 

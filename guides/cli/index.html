@@ -148,7 +148,12 @@ file exposes more than one module matching the Wishbone contract; otherwise
 the top module is auto-detected.</p>
 <h2 id="run-program-and-run-an-app"><code>run</code>: program and run an app<a class="headerlink" href="#run-program-and-run-an-app" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>&lt;file.py&gt;<span class="w"> </span><span class="o">[</span>--fpga-id<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-program<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sys-clk<span class="w"> </span>HZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--timing-target-mhz<span class="w"> </span>MHZ<span class="o">]</span><span class="w"> </span><span class="o">[</span>--top<span class="w"> </span>NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>websocket<span class="p">|</span>http<span class="o">]</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">                  </span><span class="o">[</span>--include-dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--source<span class="w"> </span>FILE<span class="w"> </span>...<span class="o">]</span>
 </code></pre></div>
+<p><code>--include-dir</code> and <code>--source</code> (repeatable) override <code>App(include_dir=...)</code>
+and <code>App(sources=...)</code>, for designs whose dependencies need to be uploaded
+explicitly; see <a href="../sdk/#multi-file-designs">Multi-file designs</a>. Paths are
+relative to the design's folder, not the client script.</p>
 <p><code>--top</code> overrides <code>App(top=...)</code>; it's the Verilog-only top-module
 disambiguator described above (ignored when the <code>App</code>'s <code>design</code> is
 Amaranth), only needed if the app's <code>.v</code> file exposes more than one module
@@ -171,27 +176,44 @@ request a specific board for a fresh build.</p>
 </code></pre></div>
 <h2 id="status-jobs-job-logs-read-only-no-login-required"><code>status</code>, <code>jobs</code>, <code>job</code>, <code>logs</code>: read-only, no login required<a class="headerlink" href="#status-jobs-job-logs-read-only-no-login-required" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mrg<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>fpga_id<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mrg<span class="w"> </span><span class="nb">jobs</span><span class="w">   </span><span class="o">[</span>--status<span class="w"> </span>STATUS<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mrg<span class="w"> </span><span class="nb">jobs</span><span class="w">   </span><span class="o">[</span>--status<span class="w"> </span>STATUS<span class="o">]</span><span class="w"> </span><span class="o">[</span>--type<span class="w"> </span>build<span class="p">|</span>run<span class="p">|</span>reset<span class="p">|</span>all<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>N<span class="w"> </span><span class="p">|</span><span class="w"> </span>--all<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mrg<span class="w"> </span>job<span class="w">    </span>&lt;job_id&gt;<span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>mrg<span class="w"> </span>logs<span class="w">   </span>&lt;job_id&gt;
 </code></pre></div>
-<p><code>status</code> with no argument prints the full board table; with an <code>fpga_id</code>,
-that board's detail (state, owner, current job). <code>jobs</code> lists every job the
-caller's API key has submitted, newest first — the only way to find a
-build's <code>job_id</code> while it's still in flight, since a board-less build has no
-board to look it up by. <code>job</code>/<code>logs</code> take a <code>job_id</code> directly (jobs are
-looked up by their own id now, not scoped under a board).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>  ID  STATE           OWNER         CURRENT JOB
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  ─────────────────────────────────────────────
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>   0  idle            -             -
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>   3  reserved        alice         a1b2c3d4…
+<p><code>status</code> with no argument prints the server's deployed commit and the full
+board table. With an <code>fpga_id</code>, it prints that board's detail (state, owner,
+session, current job). <code>HELD FOR</code> is how long the current reservation has
+lasted; <code>JOB AGE</code> is the time since the board's current job was submitted
+(queueing, building and flashing included, so it isn't billable build time).
+When you're logged in, your active builds are listed below the table, including
+ones that have no board yet, with their elapsed time and current stage.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>  server commit: 92a7cf81eb64f941f7ee2454c12100681df3cb8d
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  ID  STATE           OWNER         HELD FOR      JOB AGE       CURRENT JOB
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  ─────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>   0  idle            -             -             -             -
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>   3  reserved        alice         00:12:40      00:15:02      a1b2c3d4…
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>  Your active builds (elapsed since submission, including waiting):
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>  8bf0de40…  00:01:37  build_gateware/nextpnr-ecp5
 </code></pre></div>
-<p>States: <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>error</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>  JOB_ID      TYPE                STATUS      FPGA   CREATED
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  ──────────────────────────────────────────────────────────
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  8bf0de40…   reset               complete    2      2026-07-15T12:48:23Z
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  a4c92b62…   run                 failed      2      2026-07-15T12:48:19Z
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  8d4fa7d8…   build_and_program   complete    2      2026-07-15T12:45:27Z
+<p>States: <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>error</code>. Durations are <code>HH:MM:SS</code>
+snapshots; run the command again to refresh them.</p>
+<p><code>jobs</code> lists <strong>your 10 most recent builds</strong>, newest first: the way to find a
+build's <code>job_id</code> while it's still in flight, since a board-less build has no
+board to look it up by. <code>-n N</code> shows more and <code>--all</code> shows them all.
+<code>--type all</code> includes <code>run</code> and <code>reset</code> jobs too (every HTTP <code>app.read()</code> or
+<code>app.write()</code> is its own <code>run</code> job, so that list is long). <code>--json</code> always
+prints the raw, unfiltered list. <code>job</code>/<code>logs</code> take a <code>job_id</code> directly.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$ mrg jobs -n 3
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  JOB_ID      TYPE                STATUS      FPGA   ELAPSED       CREATED
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  ────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  de6996c6…   build_and_program   complete    5      00:02:50      2026-10-17T02:12:14Z
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  efcd2252…   build_and_program   failed      0      00:03:02      2026-10-17T02:12:14Z
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  8d4fa7d8…   build_and_program   running     -      00:01:12      2026-10-17T02:20:03Z
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  showing the 3 most recent; hidden: 42 older (-n N or --all), 310 of other types (--type all)
 </code></pre></div>
 <p><code>FPGA</code> is blank until a board claims the job (still building, or waiting to
 flash) — poll <code>mrg jobs</code>/<code>mrg job &lt;job_id&gt;</code> rather than assuming a board is

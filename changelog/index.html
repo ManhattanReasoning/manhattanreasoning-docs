@@ -87,15 +87,46 @@
             <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Notable changes to the <code>manhattan-reasoning-gym</code> SDK and CLI. The project is in
 private beta, so surfaces may still change between <code>0.1.x</code> releases.</p>
-<h2 id="0110-private-beta">0.1.10 (private beta)<a class="headerlink" href="#0110-private-beta" title="Permanent link">&para;</a></h2>
+<h2 id="0111-private-beta">0.1.11 (private beta)<a class="headerlink" href="#0111-private-beta" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Multi-file designs.</strong> <code>App(design=...)</code> now uploads the design's local
+  dependencies too: Python imports, Verilog module instances, literal
+  <code>`include</code> headers and <code>$readmemh</code>/<code>$readmemb</code> data files are discovered
+  from the top-level file, without running any code. <code>include_dir=</code> sends a
+  whole directory of supporting files instead, and <code>sources=[...]</code> gives an
+  exact list. From the CLI: <code>mrg run --include-dir DIR</code> / <code>--source FILE</code>.
+  See <a href="../guides/sdk/#multi-file-designs">Multi-file designs</a> and the
+  <a href="../examples/multi-file/">Multi-file example</a>.</li>
+<li><strong>Durations in status output.</strong> <code>mrg status</code> shows <code>HELD FOR</code> (how long the
+  current reservation has lasted) and <code>JOB AGE</code> (time since the board's current
+  job was submitted). When you're logged in, it also lists your active builds,
+  including ones with no board yet, with their elapsed time and current stage.
+  <code>mrg jobs</code> and <code>mrg job</code> show elapsed time too.</li>
+<li><code>mrg status</code> prints the server's deployed commit.</li>
+<li><code>mrg jobs</code> options: <code>-n N</code>, <code>--all</code>, and <code>--type build|run|reset|all</code>.</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>mrg jobs</code> shows your 10 most recent builds by default</strong>, with a footer
+  counting what's hidden. It used to print every job, including one <code>run</code> job
+  per HTTP read or write. <code>--json</code> still prints the full, unfiltered list.</li>
+</ul>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Ctrl-C inside <code>with app:</code> releases the board.</strong> The release request is
+  shielded from repeated Ctrl-C, and a build interrupted while you're waiting
+  is cancelled, so it can't flash later and leave a board reserved.</li>
+</ul>
+<h2 id="0110-private-beta">0.1.10 (private beta)<a class="headerlink" href="#0110-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>App(transport=...)</code>, <code>$MRG_TRANSPORT</code>, and <code>--transport</code> on <code>mrg run</code>,
   <code>mrg read</code>, and <code>mrg write</code>: set <code>"http"</code> to send each call as its own HTTP
   job instead, for networks that block WebSockets. Much slower, since every
   call is queued and polled.</li>
 </ul>
-<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>app.read()</code>/<code>app.write()</code> use a WebSocket by default.</strong> The SDK opens one
   socket on the first call, reuses it for every call after, and closes it
@@ -115,7 +146,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   and <code>app.write()</code> calls.</li>
 </ul>
 <h2 id="019-private-beta">0.1.9 (private beta)<a class="headerlink" href="#019-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Long builds are no longer reported as failed.</strong> The SDK stopped waiting
   for a build after 40 minutes, but the server lets one run for up to about
@@ -124,13 +155,13 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
 <li>If the SDK does stop waiting, the <code>TimeoutError</code> now says the build was not
   cancelled and may still complete, and points to <code>mrg jobs</code>.</li>
 </ul>
-<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>App(poll_timeout=...)</code> and <code>$MRG_POLL_TIMEOUT</code>: how long, in seconds, the
   SDK waits for a build.</li>
 </ul>
 <h2 id="018-private-beta">0.1.8 (private beta)<a class="headerlink" href="#018-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
+<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Plain Verilog designs.</strong> <code>design=</code> on <code>App</code>, and the <code>design</code> argument to
   <code>mrg.build.synth</code>/<code>pnr</code> and <code>mrg synth</code>/<code>mrg pnr</code>, now also accept a <code>.v</code>
@@ -147,7 +178,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   argument. All are ignored for an Amaranth design.</li>
 </ul>
 <h2 id="017-private-beta">0.1.7 (private beta)<a class="headerlink" href="#017-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
+<h3 id="fixed_2">Fixed<a class="headerlink" href="#fixed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>mrg.bench.CloudSilicon</code> still called the pre-0.1.6 client API
   (<code>find_idle_fpga</code>/<code>NoFPGAAvailableError</code>, and <code>submit(fpga_id, ...)</code>), left
@@ -158,7 +189,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   success.</li>
 </ul>
 <h2 id="016-private-beta">0.1.6 (private beta)<a class="headerlink" href="#016-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Board-less submit.</strong> <code>App</code>/<code>mrg run</code> no longer picks a board before
   building — the server claims a build slot (a network identity baked into
@@ -178,7 +209,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   board; a build never touches a board anymore, so those states no longer
   apply to one.</li>
 </ul>
-<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
+<h3 id="added_4">Added<a class="headerlink" href="#added_4" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>mrg jobs [--status STATUS]</code>: list every job the caller's API key has
   submitted, newest first — the only way to find a board-less build's
@@ -186,7 +217,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   instead.</li>
 </ul>
 <h2 id="015-private-beta">0.1.5 (private beta)<a class="headerlink" href="#015-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="added_4">Added<a class="headerlink" href="#added_4" title="Permanent link">&para;</a></h3>
+<h3 id="added_5">Added<a class="headerlink" href="#added_5" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>App.write(addr, value, fixed_address=True)</code>: repeats <code>addr</code> for every word
   in a burst instead of incrementing it, for a FIFO or push-register port
@@ -252,7 +283,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#changelog">Changelog</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l2">
-      <a class="toc-link" href="#0110-private-beta">0.1.10 (private beta)</a>
+      <a class="toc-link" href="#0111-private-beta">0.1.11 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
       <a class="toc-link" href="#added">Added</a>
@@ -260,6 +291,24 @@ Add new releases above this line, newest first. Suggested format:
 
     <li class="toc-item toc-item--l3">
       <a class="toc-link" href="#changed">Changed</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#fixed">Fixed</a>
+    </li>
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#0110-private-beta">0.1.10 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#added_1">Added</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#changed_1">Changed</a>
     </li>
 
     <li class="toc-item toc-item--l3">
@@ -273,11 +322,11 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#019-private-beta">0.1.9 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#fixed">Fixed</a>
+      <a class="toc-link" href="#fixed_1">Fixed</a>
     </li>
 
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added_1">Added</a>
+      <a class="toc-link" href="#added_2">Added</a>
     </li>
 
         </ul>
@@ -287,7 +336,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#018-private-beta">0.1.8 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added_2">Added</a>
+      <a class="toc-link" href="#added_3">Added</a>
     </li>
 
         </ul>
@@ -297,7 +346,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#017-private-beta">0.1.7 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#fixed_1">Fixed</a>
+      <a class="toc-link" href="#fixed_2">Fixed</a>
     </li>
 
         </ul>
@@ -307,11 +356,11 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#016-private-beta">0.1.6 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#changed_1">Changed</a>
+      <a class="toc-link" href="#changed_2">Changed</a>
     </li>
 
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added_3">Added</a>
+      <a class="toc-link" href="#added_4">Added</a>
     </li>
 
         </ul>
@@ -321,7 +370,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#015-private-beta">0.1.5 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#added_4">Added</a>
+      <a class="toc-link" href="#added_5">Added</a>
     </li>
 
         </ul>
