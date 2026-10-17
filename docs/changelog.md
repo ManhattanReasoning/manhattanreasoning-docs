@@ -7,6 +7,35 @@ description: Release notes for the manhattan-reasoning-gym SDK and CLI.
 Notable changes to the `manhattan-reasoning-gym` SDK and CLI. The project is in
 private beta, so surfaces may still change between `0.1.x` releases.
 
+## 0.1.11 (private beta)
+
+### Added
+- **Multi-file designs.** `App(design=...)` now uploads the design's local
+  dependencies too: Python imports, Verilog module instances, literal
+  `` `include `` headers and `$readmemh`/`$readmemb` data files are discovered
+  from the top-level file, without running any code. `include_dir=` sends a
+  whole directory of supporting files instead, and `sources=[...]` gives an
+  exact list. From the CLI: `mrg run --include-dir DIR` / `--source FILE`.
+  See [Multi-file designs](guides/sdk.md#multi-file-designs) and the
+  [Multi-file example](examples/multi-file.md).
+- **Durations in status output.** `mrg status` shows `HELD FOR` (how long the
+  current reservation has lasted) and `JOB AGE` (time since the board's current
+  job was submitted). When you're logged in, it also lists your active builds,
+  including ones with no board yet, with their elapsed time and current stage.
+  `mrg jobs` and `mrg job` show elapsed time too.
+- `mrg status` prints the server's deployed commit.
+- `mrg jobs` options: `-n N`, `--all`, and `--type build|run|reset|all`.
+
+### Changed
+- **`mrg jobs` shows your 10 most recent builds by default**, with a footer
+  counting what's hidden. It used to print every job, including one `run` job
+  per HTTP read or write. `--json` still prints the full, unfiltered list.
+
+### Fixed
+- **Ctrl-C inside `with app:` releases the board.** The release request is
+  shielded from repeated Ctrl-C, and a build interrupted while you're waiting
+  is cancelled, so it can't flash later and leave a board reserved.
+
 ## 0.1.10 (private beta)
 
 ### Added

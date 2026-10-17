@@ -50,6 +50,8 @@ mrg.cloud.App(
     name,
     *,
     design,                    # path to the Amaranth .py or plain Verilog .v design
+    sources=None,               # exact list of supporting files, see Multi-file designs
+    include_dir=None,           # directory of supporting files, see Multi-file designs
     top=None,                   # Verilog-only top-module disambiguator, see below
     fpga_id=None,               # for --no-program reconnect only, see below
     registers=None,              # a RegisterMap subclass (optional)
@@ -87,6 +89,43 @@ name, width, and direction:
 If a file has more than one module matching this contract, pass `top="..."`
 (ignored for an Amaranth design) to disambiguate; with only one match it's
 auto-detected. See the [Verilog Hello](../examples/verilog-hello.md) example.
+
+### Multi-file designs
+
+`design=` names the top-level file, and the SDK uploads its local dependencies
+with it. It reads the source text, without running anything, and follows these
+recursively from the design's folder:
+
+- Python imports of local modules (package `__init__.py` files included)
+- Verilog module instances
+- literal `` `include "file.vh" `` headers
+- literal `$readmemh`/`$readmemb` data files
+
+```python
+app = mrg.App("my_design", design="project/design.v")  # dependencies found automatically
+```
+
+Two alternatives for projects discovery can't follow (dynamic imports,
+generated file names, macro-based includes):
+
+- **`include_dir="support"`** uploads every supported file in that directory
+  and its subdirectories, with the design. It's relative to the design's
+  folder. Point it at a directory holding only what the build needs. Use
+  `include_dir=".."` when a design in `project/rtl/top.v` needs files elsewhere
+  under `project/`.
+- **`sources=["rtl/child.v", "include/constants.vh"]`** uploads exactly those
+  files and turns discovery off. Paths are relative to `include_dir` if given,
+  otherwise to the design's folder. Don't list the design itself.
+  `sources=[]` turns discovery off with no extra files.
+
+Supported files are `.py`, `.v`, `.vh`, `.mem` and `.hex`, with simple path
+names. Symlinks and paths that escape the project are rejected. A bundle is
+capped at 128 files, 8 MiB compressed and 16 MiB expanded. Python packages the
+server already has, such as Amaranth, are not uploaded. A design with no local
+dependencies is uploaded as a single file, exactly as before. Local
+`mrg synth`/`mrg pnr` still take a single file.
+
+See the [Multi-file example](../examples/multi-file.md).
 
 **`fpga_id` is normally left unset.** A fresh build never picks a board
 itself — the server claims a build slot (a network identity baked into the
@@ -178,6 +217,11 @@ chunked calls.
 Release the active session, returning the board to `idle`. Closes the app's
 WebSocket first, since an open socket holds the board's lock. Returns the
 reset `job_id`. `App` is also a context manager that calls this on exit.
+
+Leaving `with app:` with Ctrl-C still releases the board: the release request
+is shielded from further Ctrl-C presses. Pressing Ctrl-C while a build is
+still running cancels that build, so it can't flash later and leave a board
+reserved in your name.
 
 ### `RegisterMap`
 
