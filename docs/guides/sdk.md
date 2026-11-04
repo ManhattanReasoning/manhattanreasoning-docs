@@ -161,13 +161,10 @@ seconds) or set `$MRG_POLL_TIMEOUT` only to change that limit.
 **`transport` is normally left unset.** Every `app.read()`/`app.write()` goes
 over a single WebSocket to the orchestrator, relayed straight through to the
 FPGA's Wishbone bus. The SDK opens it on the first call, reuses it for every
-call after that. The socket stays open for your whole session. A session ends
-after 60 minutes without a read or write, or after its maximum length (120
-minutes by default); the SDK then reports that the session ended, and you
-submit your design again to get a board. If another connection is using the
-board, the SDK reports that it is busy. A tight loop -- loading a CNF instance one literal per
-write, or an RL reward loop grading many episodes per training step -- pays
-the connection cost once rather than once per op. Pass `transport="http"` (or
+call after that. The socket stays open for your whole session. A tight loop --
+loading a CNF instance one literal per write, or an RL reward loop grading
+many episodes per training step -- pays the connection cost once rather than
+once per op. Pass `transport="http"` (or
 set `$MRG_TRANSPORT=http`, or `mrg run --transport http`) only if your network
 blocks WebSockets: each call then dispatches its own job against the cloud API
 and polls for completion every 0.5s, so it costs roughly that much wall-clock
@@ -200,12 +197,22 @@ with app:
         pass
 ```
 
-An open socket holds an exclusive lock on the board's link -- the bridge
-firmware only safely serves one connection at a time -- so
-`mrg read`/`mrg write` or a second script against the same board fails with a
-`ConnectionError` until the socket closes. The same error, saying the op may
-or may not have run, is what you get if the connection drops mid-call; the
-next call opens a fresh socket.
+**Sessions and sharing.** A session ends after 60 minutes without a read or
+write, or after its maximum length (120 minutes by default). The next call
+then raises a `ConnectionError`: "Your session on FPGA N has ended
+(<reason>). Submit your design again to get a board." Submit your design again
+to start a new session.
+
+The lab PC locks each single operation on a board, so an open stream holds
+nothing between operations. Several connections of the session owner -- two
+scripts, or `mrg read` while a script streams -- can use the board at once and
+take turns, one operation at a time. An operation waits up to 20 s for its
+turn. If the board stays busy longer, for example while it is being flashed or
+reset, the call raises a `ConnectionError`: "FPGA N is busy (<reason>). Try
+again in a moment." Only the session owner can use the board.
+
+If the connection drops mid-call you also get a `ConnectionError`, saying the
+op may or may not have run; the next call opens a fresh socket.
 
 **Per-write payload limit:** a burst `write(addr, value, ...)` is capped at
 roughly **2KB (~500 32-bit words)**. Going over it closes the connection,
@@ -218,8 +225,7 @@ chunked calls.
 #### `app.release()`
 
 Release the active session, returning the board to `idle`. Closes the app's
-WebSocket first, since an open socket holds the board's lock. Returns the
-reset `job_id`. `App` is also a context manager that calls this on exit.
+WebSocket first, then releases the board. Returns the reset `job_id`. `App` is also a context manager that calls this on exit.
 
 Leaving `with app:` with Ctrl-C still releases the board: the release request
 is shielded from further Ctrl-C presses. Pressing Ctrl-C while a build is

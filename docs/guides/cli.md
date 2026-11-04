@@ -110,8 +110,8 @@ ones that have no board yet, with their elapsed time and current stage.
 ```
 
 States: `idle`, `programming`, `reserved`, `dirty` (session over, wiping the
-board), `error`. Durations are `HH:MM:SS`
-snapshots; run the command again to refresh them.
+board), `error`. Durations are `HH:MM:SS` snapshots; run the command again to
+refresh them.
 
 `jobs` lists **your 10 most recent builds**, newest first: the way to find a
 build's `job_id` while it's still in flight, since a board-less build has no
