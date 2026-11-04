@@ -109,7 +109,8 @@ ones that have no board yet, with their elapsed time and current stage.
   8bf0de40…  00:01:37  build_gateware/nextpnr-ecp5
 ```
 
-States: `idle`, `programming`, `reserved`, `error`. Durations are `HH:MM:SS`
+States: `idle`, `programming`, `reserved`, `dirty` (session over, wiping the
+board), `error`. Durations are `HH:MM:SS`
 snapshots; run the command again to refresh them.
 
 `jobs` lists **your 10 most recent builds**, newest first: the way to find a

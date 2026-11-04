@@ -161,8 +161,11 @@ seconds) or set `$MRG_POLL_TIMEOUT` only to change that limit.
 **`transport` is normally left unset.** Every `app.read()`/`app.write()` goes
 over a single WebSocket to the orchestrator, relayed straight through to the
 FPGA's Wishbone bus. The SDK opens it on the first call, reuses it for every
-call after that, and closes it once it has gone 25 s without one (the next
-call reopens it), so a tight loop -- loading a CNF instance one literal per
+call after that. The socket stays open for your whole session. A session ends
+after 60 minutes without a read or write, or after its maximum length (120
+minutes by default); the SDK then reports that the session ended, and you
+submit your design again to get a board. If another connection is using the
+board, the SDK reports that it is busy. A tight loop -- loading a CNF instance one literal per
 write, or an RL reward loop grading many episodes per training step -- pays
 the connection cost once rather than once per op. Pass `transport="http"` (or
 set `$MRG_TRANSPORT=http`, or `mrg run --transport http`) only if your network

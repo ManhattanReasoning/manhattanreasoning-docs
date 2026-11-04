@@ -7,6 +7,20 @@ description: Release notes for the manhattan-reasoning-gym SDK and CLI.
 Notable changes to the `manhattan-reasoning-gym` SDK and CLI. The project is in
 private beta, so surfaces may still change between `0.1.x` releases.
 
+## 0.1.12 (private beta)
+
+### Changed
+- **Streams stay open for your whole session.** The SDK no longer closes an
+  idle socket after 25 s. The server ends a session after 60 minutes without
+  a read or write, or after its maximum length (120 minutes by default).
+- **Clear messages when a session ends or a board is busy.** When the server
+  ends your session, the next `read`/`write` raises `ConnectionError`:
+  "Your session on FPGA N has ended (<reason>). Submit your design again to
+  get a board." If the board is busy, it says "FPGA N is busy (<reason>). Try
+  again in a moment."
+- `mrg status` shows a `dirty` state: the session is over and the board is
+  being wiped.
+
 ## 0.1.11 (private beta)
 
 ### Added
