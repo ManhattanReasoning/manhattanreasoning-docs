@@ -197,8 +197,9 @@ ones that have no board yet, with their elapsed time and current stage.</p>
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>  Your active builds (elapsed since submission, including waiting):
 <a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>  8bf0de40…  00:01:37  build_gateware/nextpnr-ecp5
 </code></pre></div>
-<p>States: <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>error</code>. Durations are <code>HH:MM:SS</code>
-snapshots; run the command again to refresh them.</p>
+<p>States: <code>idle</code>, <code>programming</code>, <code>reserved</code>, <code>dirty</code> (session over, wiping the
+board), <code>error</code>. Durations are <code>HH:MM:SS</code> snapshots; run the command again to
+refresh them.</p>
 <p><code>jobs</code> lists <strong>your 10 most recent builds</strong>, newest first: the way to find a
 build's <code>job_id</code> while it's still in flight, since a board-less build has no
 board to look it up by. <code>-n N</code> shows more and <code>--all</code> shows them all.

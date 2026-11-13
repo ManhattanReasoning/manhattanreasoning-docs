@@ -308,10 +308,10 @@ seconds) or set <code>$MRG_POLL_TIMEOUT</code> only to change that limit.</p>
 <p><strong><code>transport</code> is normally left unset.</strong> Every <code>app.read()</code>/<code>app.write()</code> goes
 over a single WebSocket to the orchestrator, relayed straight through to the
 FPGA's Wishbone bus. The SDK opens it on the first call, reuses it for every
-call after that, and closes it once it has gone 25 s without one (the next
-call reopens it), so a tight loop -- loading a CNF instance one literal per
-write, or an RL reward loop grading many episodes per training step -- pays
-the connection cost once rather than once per op. Pass <code>transport="http"</code> (or
+call after that. The socket stays open for your whole session. A tight loop --
+loading a CNF instance one literal per write, or an RL reward loop grading
+many episodes per training step -- pays the connection cost once rather than
+once per op. Pass <code>transport="http"</code> (or
 set <code>$MRG_TRANSPORT=http</code>, or <code>mrg run --transport http</code>) only if your network
 blocks WebSockets: each call then dispatches its own job against the cloud API
 and polls for completion every 0.5s, so it costs roughly that much wall-clock
@@ -337,12 +337,20 @@ at <code>addr+4</code>, <code>addr+8</code>, ... instead of pushing them all thr
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">REG_CTRL</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="k">pass</span>
 </code></pre></div>
-<p>An open socket holds an exclusive lock on the board's link -- the bridge
-firmware only safely serves one connection at a time -- so
-<code>mrg read</code>/<code>mrg write</code> or a second script against the same board fails with a
-<code>ConnectionError</code> until the socket closes. The same error, saying the op may
-or may not have run, is what you get if the connection drops mid-call; the
-next call opens a fresh socket.</p>
+<p><strong>Sessions and sharing.</strong> A session ends after 60 minutes without a read or
+write, or after its maximum length (120 minutes by default). The next call
+then raises a <code>ConnectionError</code>: "Your session on FPGA N has ended
+(<reason>). Submit your design again to get a board." Submit your design again
+to start a new session.</p>
+<p>The lab PC locks each single operation on a board, so an open stream holds
+nothing between operations. Several connections of the session owner -- two
+scripts, or <code>mrg read</code> while a script streams -- can use the board at once and
+take turns, one operation at a time. An operation waits up to 20 s for its
+turn. If the board stays busy longer, for example while it is being flashed or
+reset, the call raises a <code>ConnectionError</code>: "FPGA N is busy (<reason>). Try
+again in a moment." Only the session owner can use the board.</p>
+<p>If the connection drops mid-call you also get a <code>ConnectionError</code>, saying the
+op may or may not have run; the next call opens a fresh socket.</p>
 <p><strong>Per-write payload limit:</strong> a burst <code>write(addr, value, ...)</code> is capped at
 roughly <strong>2KB (~500 32-bit words)</strong>. Going over it closes the connection,
 raised client-side as a <code>ConnectionError</code> that may say the board is in use or
@@ -352,8 +360,7 @@ call <code>write()</code> once per chunk; <code>fixed_address=True</code> compos
 chunked calls.</p>
 <h4 id="apprelease"><code>app.release()</code><a class="headerlink" href="#apprelease" title="Permanent link">&para;</a></h4>
 <p>Release the active session, returning the board to <code>idle</code>. Closes the app's
-WebSocket first, since an open socket holds the board's lock. Returns the
-reset <code>job_id</code>. <code>App</code> is also a context manager that calls this on exit.</p>
+WebSocket first, then releases the board. Returns the reset <code>job_id</code>. <code>App</code> is also a context manager that calls this on exit.</p>
 <p>Leaving <code>with app:</code> with Ctrl-C still releases the board: the release request
 is shielded from further Ctrl-C presses. Pressing Ctrl-C while a build is
 still running cancels that build, so it can't flash later and leave a board
