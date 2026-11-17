@@ -76,6 +76,7 @@ nav:
       - Quickstart: guides/quickstart.md
       - SDK Usage: guides/sdk.md
       - CLI Usage: guides/cli.md
+      - Membership & Usage: guides/membership.md
   - Examples:
       - Overview: examples/index.md
       - Hello Wishbone: examples/hello-wishbone.md

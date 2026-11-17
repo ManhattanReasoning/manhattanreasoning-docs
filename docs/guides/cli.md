@@ -139,6 +139,21 @@ assigned right after submit.
 When a build fails, `mrg logs <job_id>` prints the toolchain output (Yosys /
 nextpnr) so you can see what was rejected.
 
+## `usage`, `subscribe`, `billing`: membership
+
+```bash
+mrg usage     [--json]
+mrg subscribe [--no-open]
+mrg billing   [--no-open]
+```
+
+`usage` shows the build-minutes you've used this month and your quota.
+`subscribe` and `billing` print a link to a Stripe-hosted page (checkout, and
+the customer portal for your card, invoices and cancelling) and open it in
+your browser; `--no-open` only prints it. See
+[Membership and usage](membership.md) for what a membership includes and
+what to do when a build is refused.
+
 ## `cancel`: stop a job
 
 ```bash
@@ -181,4 +196,5 @@ mrg write 0 0x04 3
 ## See also
 
 - [Python SDK](sdk.md), the `App`/`Sandbox`/`build` surfaces the CLI drives.
+- [Membership and usage](membership.md), quota, subscribing, and refused builds.
 - [Examples](../examples/index.md), runnable apps.
