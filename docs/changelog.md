@@ -7,6 +7,32 @@ description: Release notes for the manhattan-reasoning-gym SDK and CLI.
 Notable changes to the `manhattan-reasoning-gym` SDK and CLI. The project is in
 private beta, so surfaces may still change between `0.1.x` releases.
 
+## 0.2.0 (private beta)
+
+### Changed
+- **Sessions, not board numbers.** You never choose a board or see which one
+  you got: the server assigns one when your build is flashed, and each
+  reservation gets a random session id that stops working when it ends.
+  `app.session_id` holds it after a build, and `App(session=...)` reconnects
+  to a session you hold.
+- `mrg run --no-program` reconnects to your session; `--session ID` picks one
+  if you hold several. `--fpga-id` was removed.
+- `mrg status` lists your sessions. `mrg reset [SESSION]`,
+  `mrg read ADDRESS` and `mrg write ADDRESS VALUE` act on your session.
+- `mrg jobs` shows a `SESSION` column instead of `FPGA`.
+- Messages no longer name a board: "Your session has ended (<reason>)",
+  "Your board is busy (<reason>)".
+- New `mrg.cloud.list_sessions()`; `get_session` and `release_session` take a
+  session id.
+
+### Deprecated
+- `App(fpga_id=...)` and `app.fpga_id` raise a `FutureWarning` and are
+  ignored.
+
+### Upgrading
+- Older SDKs stop working once the server requires sessions and get an
+  "upgrade required" error. Upgrade with `pip install -U manhattan-reasoning-gym`.
+
 ## 0.1.12 (private beta)
 
 ### Changed
