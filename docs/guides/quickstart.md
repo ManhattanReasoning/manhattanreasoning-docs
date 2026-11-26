@@ -54,25 +54,20 @@ useful in scripts and CI without ever touching a real board.
 mrg run examples/app.py
 ```
 
-```text
-  ID  STATE           OWNER         CURRENT JOB
-  ─────────────────────────────────────────────
-   0  idle            -             -
-```
-
 `mrg run` submits the design, builds it (~2-3 min the first time), and flashes
-whichever board frees up first — no board is chosen up front, so which one
-you land on isn't known until the build finishes. The board stays reserved to
-you afterward; if the build is still in flight and you want to check on it
-from elsewhere, `mrg jobs` lists your jobs (a build with no board yet has
-nowhere else to be found). Free the board for someone else with:
+it onto a board. You don't pick the board: the server assigns one and gives
+you a **session** for it. The board stays yours afterward, so
+`mrg run --no-program`, `mrg read` and `mrg write` reach it again without
+rebuilding; `mrg status` shows your session. If the build is still in flight
+and you want to check on it from elsewhere, `mrg jobs` lists your jobs. Free
+the board for someone else with:
 
 ```bash
-mrg reset 0
+mrg reset
 ```
 
 `reset` is an async queued job that reflashes the base image (~1 min); poll
-with `mrg status 0` rather than expecting it to complete instantly.
+with `mrg status` rather than expecting it to complete instantly.
 
 ## What's next
 

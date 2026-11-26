@@ -53,7 +53,7 @@ mrg.cloud.App(
     sources=None,               # exact list of supporting files, see Multi-file designs
     include_dir=None,           # directory of supporting files, see Multi-file designs
     top=None,                   # Verilog-only top-module disambiguator, see below
-    fpga_id=None,               # for --no-program reconnect only, see below
+    session=None,               # reconnect to a session you hold, see below
     registers=None,              # a RegisterMap subclass (optional)
     api_key=None,                # explicit arg > $MRG_API_KEY > `mrg login`
     api_url=DEFAULT_API_URL,
@@ -127,16 +127,15 @@ dependencies is uploaded as a single file, exactly as before. Local
 
 See the [Multi-file example](../examples/multi-file.md).
 
-**`fpga_id` is normally left unset.** A fresh build never picks a board
-itself — the server claims a build slot (a network identity baked into the
-bitstream, independent of any physical board) and dispatches the build
-immediately; whichever board frees up first claims the finished bitstream and
-flashes it. `app.fpga_id` is filled in from that completed job once
-[`_program()`](#apprelease) finishes, not chosen up front. Pass `fpga_id`
-explicitly only to reconnect to a board you already have a live session on
-without rebuilding (`mrg run --no-program --fpga-id N` / `App(...,
-fpga_id=N)` with programming skipped) — on any run that does build, whatever
-you pass here is overwritten with the real assigned board.
+**Sessions, not boards.** You never pick a board or learn which one you got:
+the server assigns one when your build is flashed and gives the reservation a
+session with a random id. `app.session_id` is filled in once the build is
+flashed. Pass `session=` to reconnect to a session you already hold without
+rebuilding (`mrg run --no-program` does this for you). A session's id stops
+working when the session ends; the next build gets a new one.
+
+`fpga_id=` and `app.fpga_id` were removed in 0.2.0: they raise a
+`FutureWarning` and are ignored.
 
 !!! info "Sys clock vs. timing target"
     A build carries two independent frequencies. **Sys clock** is what the SoC
@@ -199,17 +198,17 @@ with app:
 
 **Sessions and sharing.** A session ends after 60 minutes without a read or
 write, or after its maximum length (120 minutes by default). The next call
-then raises a `ConnectionError`: "Your session on FPGA N has ended
-(<reason>). Submit your design again to get a board." Submit your design again
-to start a new session.
+then raises a `ConnectionError`: "Your session has ended (<reason>). Submit
+your design again to get a board." Submit your design again to start a new
+session.
 
 The lab PC locks each single operation on a board, so an open stream holds
 nothing between operations. Several connections of the session owner -- two
 scripts, or `mrg read` while a script streams -- can use the board at once and
 take turns, one operation at a time. An operation waits up to 20 s for its
 turn. If the board stays busy longer, for example while it is being flashed or
-reset, the call raises a `ConnectionError`: "FPGA N is busy (<reason>). Try
-again in a moment." Only the session owner can use the board.
+reset, the call raises a `ConnectionError`: "Your board is busy (<reason>).
+Try again in a moment." Only the session owner can use the board.
 
 If the connection drops mid-call you also get a `ConnectionError`, saying the
 op may or may not have run; the next call opens a fresh socket.
@@ -254,8 +253,9 @@ through as `None`.
 ### Module-level session functions
 
 ```python
-mrg.cloud.get_session(fpga_id, api_key, api_url)      # current session info
-mrg.cloud.release_session(fpga_id, api_key, api_url)  # release, returns job_id
+mrg.cloud.list_sessions(api_key, api_url)                # your live sessions
+mrg.cloud.get_session(session_id, api_key, api_url)      # one session's info
+mrg.cloud.release_session(session_id, api_key, api_url)  # release, returns job_id
 ```
 
 ## `mrg.Sandbox`: locked agent execution
