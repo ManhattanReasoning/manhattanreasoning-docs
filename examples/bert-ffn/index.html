@@ -143,7 +143,7 @@ board's BRAM and the MMIO load path, not by correctness.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  input    : 'fpga runs bert'
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  tokens   : ['[CLS]', 'f', '##pg', '##a']
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  config   : d_model=8  d_ff=32  heads=2  seq=4
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  feed-forward backend: FPGA bert_ffn (fpga0)
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  feed-forward backend: FPGA bert_ffn (session 5f0c6f1e)
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  running the FFN sublayer on the accelerator ...
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  FPGA vs golden FFN  : max abs diff = 0.000e+00 (EXACT MATCH)
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  int8 FFN vs float   : relative L2 error = 0.83%

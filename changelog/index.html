@@ -87,8 +87,36 @@
             <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Notable changes to the <code>manhattan-reasoning-gym</code> SDK and CLI. The project is in
 private beta, so surfaces may still change between <code>0.1.x</code> releases.</p>
-<h2 id="0112-private-beta">0.1.12 (private beta)<a class="headerlink" href="#0112-private-beta" title="Permanent link">&para;</a></h2>
+<h2 id="020-private-beta">0.2.0 (private beta)<a class="headerlink" href="#020-private-beta" title="Permanent link">&para;</a></h2>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Sessions, not board numbers.</strong> You never choose a board or see which one
+  you got: the server assigns one when your build is flashed, and each
+  reservation gets a random session id that stops working when it ends.
+  <code>app.session_id</code> holds it after a build, and <code>App(session=...)</code> reconnects
+  to a session you hold.</li>
+<li><code>mrg run --no-program</code> reconnects to your session; <code>--session ID</code> picks one
+  if you hold several. <code>--fpga-id</code> was removed.</li>
+<li><code>mrg status</code> lists your sessions. <code>mrg reset [SESSION]</code>,
+  <code>mrg read ADDRESS</code> and <code>mrg write ADDRESS VALUE</code> act on your session.</li>
+<li><code>mrg jobs</code> shows a <code>SESSION</code> column instead of <code>FPGA</code>.</li>
+<li>Messages no longer name a board: "Your session has ended (<reason>)",
+  "Your board is busy (<reason>)".</li>
+<li>New <code>mrg.cloud.list_sessions()</code>; <code>get_session</code> and <code>release_session</code> take a
+  session id.</li>
+</ul>
+<h3 id="deprecated">Deprecated<a class="headerlink" href="#deprecated" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>App(fpga_id=...)</code> and <code>app.fpga_id</code> raise a <code>FutureWarning</code> and are
+  ignored.</li>
+</ul>
+<h3 id="upgrading">Upgrading<a class="headerlink" href="#upgrading" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Older SDKs stop working once the server requires sessions and get an
+  "upgrade required" error. Upgrade with <code>pip install -U manhattan-reasoning-gym</code>.</li>
+</ul>
+<h2 id="0112-private-beta">0.1.12 (private beta)<a class="headerlink" href="#0112-private-beta" title="Permanent link">&para;</a></h2>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Streams stay open for your whole session.</strong> The SDK no longer closes an
   idle socket after 25 s. The server ends a session after 60 minutes without
@@ -120,7 +148,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
 <li><code>mrg status</code> prints the server's deployed commit.</li>
 <li><code>mrg jobs</code> options: <code>-n N</code>, <code>--all</code>, and <code>--type build|run|reset|all</code>.</li>
 </ul>
-<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>mrg jobs</code> shows your 10 most recent builds by default</strong>, with a footer
   counting what's hidden. It used to print every job, including one <code>run</code> job
@@ -140,7 +168,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   job instead, for networks that block WebSockets. Much slower, since every
   call is queued and polled.</li>
 </ul>
-<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
+<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>app.read()</code>/<code>app.write()</code> use a WebSocket by default.</strong> The SDK opens one
   socket on the first call, reuses it for every call after, and closes it
@@ -203,7 +231,7 @@ private beta, so surfaces may still change between <code>0.1.x</code> releases.<
   success.</li>
 </ul>
 <h2 id="016-private-beta">0.1.6 (private beta)<a class="headerlink" href="#016-private-beta" title="Permanent link">&para;</a></h2>
-<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
+<h3 id="changed_4">Changed<a class="headerlink" href="#changed_4" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Board-less submit.</strong> <code>App</code>/<code>mrg run</code> no longer picks a board before
   building — the server claims a build slot (a network identity baked into
@@ -297,10 +325,28 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#changelog">Changelog</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l2">
-      <a class="toc-link" href="#0112-private-beta">0.1.12 (private beta)</a>
+      <a class="toc-link" href="#020-private-beta">0.2.0 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
       <a class="toc-link" href="#changed">Changed</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#deprecated">Deprecated</a>
+    </li>
+
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#upgrading">Upgrading</a>
+    </li>
+
+        </ul>
+    </li>
+
+    <li class="toc-item toc-item--l2">
+      <a class="toc-link" href="#0112-private-beta">0.1.12 (private beta)</a>
+        <ul class="toc-list">
+    <li class="toc-item toc-item--l3">
+      <a class="toc-link" href="#changed_1">Changed</a>
     </li>
 
         </ul>
@@ -314,7 +360,7 @@ Add new releases above this line, newest first. Suggested format:
     </li>
 
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#changed_1">Changed</a>
+      <a class="toc-link" href="#changed_2">Changed</a>
     </li>
 
     <li class="toc-item toc-item--l3">
@@ -332,7 +378,7 @@ Add new releases above this line, newest first. Suggested format:
     </li>
 
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#changed_2">Changed</a>
+      <a class="toc-link" href="#changed_3">Changed</a>
     </li>
 
     <li class="toc-item toc-item--l3">
@@ -380,7 +426,7 @@ Add new releases above this line, newest first. Suggested format:
       <a class="toc-link" href="#016-private-beta">0.1.6 (private beta)</a>
         <ul class="toc-list">
     <li class="toc-item toc-item--l3">
-      <a class="toc-link" href="#changed_3">Changed</a>
+      <a class="toc-link" href="#changed_4">Changed</a>
     </li>
 
     <li class="toc-item toc-item--l3">

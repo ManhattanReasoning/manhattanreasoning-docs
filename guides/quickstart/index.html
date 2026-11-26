@@ -137,20 +137,17 @@ useful in scripts and CI without ever touching a real board.</p>
 <h2 id="4-run-it-on-real-hardware">4. Run it on real hardware<a class="headerlink" href="#4-run-it-on-real-hardware" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mrg<span class="w"> </span>run<span class="w"> </span>examples/app.py
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>  ID  STATE           OWNER         CURRENT JOB
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  ─────────────────────────────────────────────
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>   0  idle            -             -
-</code></pre></div>
 <p><code>mrg run</code> submits the design, builds it (~2-3 min the first time), and flashes
-whichever board frees up first — no board is chosen up front, so which one
-you land on isn't known until the build finishes. The board stays reserved to
-you afterward; if the build is still in flight and you want to check on it
-from elsewhere, <code>mrg jobs</code> lists your jobs (a build with no board yet has
-nowhere else to be found). Free the board for someone else with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mrg<span class="w"> </span>reset<span class="w"> </span><span class="m">0</span>
+it onto a board. You don't pick the board: the server assigns one and gives
+you a <strong>session</strong> for it. The board stays yours afterward, so
+<code>mrg run --no-program</code>, <code>mrg read</code> and <code>mrg write</code> reach it again without
+rebuilding; <code>mrg status</code> shows your session. If the build is still in flight
+and you want to check on it from elsewhere, <code>mrg jobs</code> lists your jobs. Free
+the board for someone else with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mrg<span class="w"> </span>reset
 </code></pre></div>
 <p><code>reset</code> is an async queued job that reflashes the base image (~1 min); poll
-with <code>mrg status 0</code> rather than expecting it to complete instantly.</p>
+with <code>mrg status</code> rather than expecting it to complete instantly.</p>
 <h2 id="whats-next">What's next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
