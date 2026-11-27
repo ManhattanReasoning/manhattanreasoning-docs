@@ -1513,27 +1513,27 @@ link lock, which the reset job needs.</p>
 
             <details class="quote">
               <summary>Source code in <code>_code/src/manhattan_reasoning_gym/_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-371">371</a></span>
-<span class="normal"><a href="#__codelineno-0-372">372</a></span>
-<span class="normal"><a href="#__codelineno-0-373">373</a></span>
-<span class="normal"><a href="#__codelineno-0-374">374</a></span>
-<span class="normal"><a href="#__codelineno-0-375">375</a></span>
-<span class="normal"><a href="#__codelineno-0-376">376</a></span>
-<span class="normal"><a href="#__codelineno-0-377">377</a></span>
-<span class="normal"><a href="#__codelineno-0-378">378</a></span>
-<span class="normal"><a href="#__codelineno-0-379">379</a></span>
-<span class="normal"><a href="#__codelineno-0-380">380</a></span>
-<span class="normal"><a href="#__codelineno-0-381">381</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="w">    </span><span class="sd">"""A live session: its deadlines and the state of its board.</span>
-<a id="__codelineno-0-373" name="__codelineno-0-373"></a>
-<a id="__codelineno-0-374" name="__codelineno-0-374"></a><span class="sd">    404 if the session has ended, isn't yours, or doesn't exist.</span>
-<a id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="sd">    """</span>
-<a id="__codelineno-0-376" name="__codelineno-0-376"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">_target_path</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-<a id="__codelineno-0-377" name="__codelineno-0-377"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-<a id="__codelineno-0-378" name="__codelineno-0-378"></a>        <span class="n">path</span> <span class="o">+=</span> <span class="s2">"/session"</span>
-<a id="__codelineno-0-379" name="__codelineno-0-379"></a>    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">api_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-API-Key"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">})</span>
-<a id="__codelineno-0-380" name="__codelineno-0-380"></a>    <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a id="__codelineno-0-381" name="__codelineno-0-381"></a>    <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-437">437</a></span>
+<span class="normal"><a href="#__codelineno-0-438">438</a></span>
+<span class="normal"><a href="#__codelineno-0-439">439</a></span>
+<span class="normal"><a href="#__codelineno-0-440">440</a></span>
+<span class="normal"><a href="#__codelineno-0-441">441</a></span>
+<span class="normal"><a href="#__codelineno-0-442">442</a></span>
+<span class="normal"><a href="#__codelineno-0-443">443</a></span>
+<span class="normal"><a href="#__codelineno-0-444">444</a></span>
+<span class="normal"><a href="#__codelineno-0-445">445</a></span>
+<span class="normal"><a href="#__codelineno-0-446">446</a></span>
+<span class="normal"><a href="#__codelineno-0-447">447</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-437" name="__codelineno-0-437"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a><span class="w">    </span><span class="sd">"""A live session: its deadlines and the state of its board.</span>
+<a id="__codelineno-0-439" name="__codelineno-0-439"></a>
+<a id="__codelineno-0-440" name="__codelineno-0-440"></a><span class="sd">    404 if the session has ended, isn't yours, or doesn't exist.</span>
+<a id="__codelineno-0-441" name="__codelineno-0-441"></a><span class="sd">    """</span>
+<a id="__codelineno-0-442" name="__codelineno-0-442"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">_target_path</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+<a id="__codelineno-0-443" name="__codelineno-0-443"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+<a id="__codelineno-0-444" name="__codelineno-0-444"></a>        <span class="n">path</span> <span class="o">+=</span> <span class="s2">"/session"</span>
+<a id="__codelineno-0-445" name="__codelineno-0-445"></a>    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">api_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-API-Key"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">})</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a>    <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a>    <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1557,23 +1557,23 @@ link lock, which the reset job needs.</p>
 
             <details class="quote">
               <summary>Source code in <code>_code/src/manhattan_reasoning_gym/_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-384">384</a></span>
-<span class="normal"><a href="#__codelineno-0-385">385</a></span>
-<span class="normal"><a href="#__codelineno-0-386">386</a></span>
-<span class="normal"><a href="#__codelineno-0-387">387</a></span>
-<span class="normal"><a href="#__codelineno-0-388">388</a></span>
-<span class="normal"><a href="#__codelineno-0-389">389</a></span>
-<span class="normal"><a href="#__codelineno-0-390">390</a></span>
-<span class="normal"><a href="#__codelineno-0-391">391</a></span>
-<span class="normal"><a href="#__codelineno-0-392">392</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-384" name="__codelineno-0-384"></a><span class="k">def</span><span class="w"> </span><span class="nf">release_session</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-0-385" name="__codelineno-0-385"></a><span class="w">    </span><span class="sd">"""End a session; the board is wiped and freed. Returns the reset job id."""</span>
-<a id="__codelineno-0-386" name="__codelineno-0-386"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">_target_path</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-<a id="__codelineno-0-387" name="__codelineno-0-387"></a>    <span class="n">path</span> <span class="o">+=</span> <span class="s2">"/session/release"</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"/release"</span>
-<a id="__codelineno-0-388" name="__codelineno-0-388"></a>    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a id="__codelineno-0-389" name="__codelineno-0-389"></a>        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">api_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-API-Key"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span>
-<a id="__codelineno-0-390" name="__codelineno-0-390"></a>    <span class="p">)</span>
-<a id="__codelineno-0-391" name="__codelineno-0-391"></a>    <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a id="__codelineno-0-392" name="__codelineno-0-392"></a>    <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"job_id"</span><span class="p">]</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-450">450</a></span>
+<span class="normal"><a href="#__codelineno-0-451">451</a></span>
+<span class="normal"><a href="#__codelineno-0-452">452</a></span>
+<span class="normal"><a href="#__codelineno-0-453">453</a></span>
+<span class="normal"><a href="#__codelineno-0-454">454</a></span>
+<span class="normal"><a href="#__codelineno-0-455">455</a></span>
+<span class="normal"><a href="#__codelineno-0-456">456</a></span>
+<span class="normal"><a href="#__codelineno-0-457">457</a></span>
+<span class="normal"><a href="#__codelineno-0-458">458</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-450" name="__codelineno-0-450"></a><span class="k">def</span><span class="w"> </span><span class="nf">release_session</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a><span class="w">    </span><span class="sd">"""End a session; the board is wiped and freed. Returns the reset job id."""</span>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">_target_path</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+<a id="__codelineno-0-453" name="__codelineno-0-453"></a>    <span class="n">path</span> <span class="o">+=</span> <span class="s2">"/session/release"</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"/release"</span>
+<a id="__codelineno-0-454" name="__codelineno-0-454"></a>    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-0-455" name="__codelineno-0-455"></a>        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">api_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-API-Key"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span>
+<a id="__codelineno-0-456" name="__codelineno-0-456"></a>    <span class="p">)</span>
+<a id="__codelineno-0-457" name="__codelineno-0-457"></a>    <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a id="__codelineno-0-458" name="__codelineno-0-458"></a>    <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"job_id"</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

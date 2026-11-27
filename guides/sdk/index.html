@@ -340,7 +340,7 @@ write, or after its maximum length (120 minutes by default). The next call
 then raises a <code>ConnectionError</code>: "Your session has ended (<reason>). Submit
 your design again to get a board." Submit your design again to start a new
 session.</p>
-<p>The lab PC locks each single operation on a board, so an open stream holds
+<p>The server locks each single operation on a board, so an open stream holds
 nothing between operations. Several connections of the session owner -- two
 scripts, or <code>mrg read</code> while a script streams -- can use the board at once and
 take turns, one operation at a time. An operation waits up to 20 s for its
