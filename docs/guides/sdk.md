@@ -202,7 +202,7 @@ then raises a `ConnectionError`: "Your session has ended (<reason>). Submit
 your design again to get a board." Submit your design again to start a new
 session.
 
-The lab PC locks each single operation on a board, so an open stream holds
+The server locks each single operation on a board, so an open stream holds
 nothing between operations. Several connections of the session owner -- two
 scripts, or `mrg read` while a script streams -- can use the board at once and
 take turns, one operation at a time. An operation waits up to 20 s for its
